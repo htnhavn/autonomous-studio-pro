@@ -1,0 +1,25 @@
+# Autonomous Studio Pro - AI Sidecar Requirements (Python 3.10+)
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+websockets>=13.1
+pydantic>=2.9.0
+httpx>=0.28.0
+aiofiles>=24.1.0
+
+# Audio & Speech AI
+faster-whisper>=1.1.0
+librosa>=0.10.2
+soundfile>=0.12.1
+numpy>=1.26.0
+
+# Video & Computer Vision
+opencv-python-headless>=4.10.0
+Pillow>=10.4.0
+yt-dlp>=2024.12.0
+playwright>=1.49.0
+
+# AI APIs & Multimodal LLMs
+google-genai>=1.0.0
+anthropic>=0.40.0
+openai>=1.55.0
+

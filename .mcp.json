@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "autonomous-video-studio": {
+      "command": "python3",
+      "args": [
+        "services/ai-sidecar/mcp_stdio_bridge.py"
+      ]
+    }
+  }
+}
+

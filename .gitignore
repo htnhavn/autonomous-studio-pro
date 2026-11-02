@@ -1,0 +1,23 @@
+# Dependencies & Build Artifacts
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+target/
+**/target/
+__pycache__/
+**/__pycache__/
+*.pyc
+.vite/
+**/.vite/
+
+# Cloned Open-Source Reference Repositories (use `python3 scripts/clone_references.py` to restore)
+references/
+
+# OS & Local Binary Files
+.DS_Store
+**/.DS_Store
+scripts/native_mp4_encoder_bin
+*.log
+.env
+.env.local
