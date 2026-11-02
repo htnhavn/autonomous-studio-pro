@@ -31,3 +31,4 @@ python3 scripts/studio_agent_cli.py render-video \
   --script "FED hạ lãi suất khẩn cấp! Dòng tiền thông minh bùng nổ trên biểu đồ!" \
   --output "exports/flash_stickman_demo_3s.mp4"
 ```
+

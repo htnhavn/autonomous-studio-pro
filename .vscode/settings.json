@@ -1,0 +1,19 @@
+{
+  "git.ignoredRepositories": [
+    "references",
+    "references/artcraft",
+    "references/WeftCut",
+    "references/Clypra",
+    "references/OpenCut",
+    "references/FableCut",
+    "references/gl-transitions",
+    "references/revideo",
+    "references/agentic-video-editor",
+    "references/autobroll",
+    "references/MoneyPrinterTurbo",
+    "references/ShortGPT",
+    "references/whisperX",
+    "references/auto-editor",
+    "references/olive"
+  ]
+}
