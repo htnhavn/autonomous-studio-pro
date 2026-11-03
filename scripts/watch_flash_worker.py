@@ -33,8 +33,12 @@ POLL_INTERVAL_SEC = 2.0
 
 
 def all_expected_targets_exist(changed_since_start: set[str]) -> bool:
-    mp4_path = ROOT / "exports" / "flash_stickman_demo_3s.mp4"
-    return mp4_path.exists() and mp4_path.stat().st_size > 10000 and "exports/flash_stickman_demo_3s.mp4" in changed_since_start
+    return (
+        (ROOT / "ARCHITECTURE.md").exists()
+        and (ROOT / "PROJECT_PACKAGE_SPEC.md").exists()
+        and (ROOT / "IMPLEMENTATION_STATUS.md").exists()
+        and "services/ai-sidecar/pipelines/audio_studio.py" in changed_since_start
+    )
 
 
 def snapshot_mtimes() -> dict[str, float]:

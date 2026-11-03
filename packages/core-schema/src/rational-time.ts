@@ -95,6 +95,8 @@ export function subtractTime(a: RationalTime, b: RationalTime): RationalTime {
   return addTime(a, { value: -b.value, rate: b.rate });
 }
 
+export const subTime = subtractTime;
+
 /**
  * Compare two RationalTime values: returns -1 if a < b, 0 if a == b, 1 if a > b.
  */

@@ -408,3 +408,8 @@ export interface StudioProject {
   readonly youtubePackage: YouTubePublishPackage;
 }
 
+export type Track = TimelineTrack;
+export type Clip = TimelineClip;
+export type { ChoreographedStageScene };
+
+

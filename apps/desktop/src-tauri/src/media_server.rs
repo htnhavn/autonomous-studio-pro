@@ -32,7 +32,7 @@ async fn health_handler() -> &'static str {
     "Local Media Streaming Server OK (Port 49210)"
 }
 
-async fn stream_frame_handler(Query(params): Query<FrameRequest>) -> Result<Response, StatusCode> {
+async fn stream_frame_handler(Query(_params): Query<FrameRequest>) -> Result<Response, StatusCode> {
     // In production, pulls decoded frame from FFmpeg NVDEC pool or disk cache
     let mut headers = HeaderMap::new();
     headers.insert(header::CONTENT_TYPE, "image/jpeg".parse().unwrap());

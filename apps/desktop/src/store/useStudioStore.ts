@@ -8,23 +8,47 @@
 import {
   addTime,
   AgentCursorState,
+  BatchProductionJobPlan,
+  buildVprojPackage,
+  CommandExecutionResult,
+  CommandGatewayState,
   compareTime,
+  compileVideoDslToGatewayCommands,
+  createBatchProductionDag,
+  createDefaultAssetRegistry,
   createRationalTime,
   CriticReviewReport,
+  executeGatewayCommand,
   fromSeconds,
+  GatewayCommandEnvelope,
+  get_asset,
+  get_dependency_graph,
+  get_project_summary,
+  get_qa_issues,
+  get_scene,
+  get_timeline_range,
+  get_visual_index,
+  invalidateSceneInBatchDag,
   LiveAssetFlightEvent,
   rangeEndTime,
   RationalTime,
+  stepBatchProductionDag,
   StudioProject,
   subtractTime,
   TimelineClip,
   TimelineCommandEnvelope,
   TimelineTrack,
+  VideoDSLSpecification,
+  VprojPackageV1,
 } from '../../../../packages/core-schema/src';
 import { compileScriptToDeterministicStageScenes } from '../../../../packages/stage-engine/src/genre-kits';
 
 export interface StudioStoreState {
   project: StudioProject;
+  /** Unified Versioned Command Gateway state (revision, audit log, asset registry, Video DSL) */
+  gatewayState: CommandGatewayState;
+  /** Mode B Offline Batch Production DAG state */
+  batchProductionDag: BatchProductionJobPlan | null;
   playheadTime: RationalTime;
   isPlaying: boolean;
   selectedClipIds: string[];
@@ -740,8 +764,23 @@ export function createSelectiveAgentUndo(
 
 import { create } from 'zustand';
 
+function createInitialGatewayState(project: StudioProject): CommandGatewayState {
+  return {
+    project,
+    revision: 1,
+    assetRegistry: createDefaultAssetRegistry(),
+    undoStack: [],
+    redoStack: [],
+    auditHistory: [],
+  };
+}
+
+const DEFAULT_INITIAL_PROJECT = createDefaultStudioProject();
+
 export const INITIAL_STUDIO_STORE_STATE: StudioStoreState = {
-  project: createDefaultStudioProject(),
+  project: DEFAULT_INITIAL_PROJECT,
+  gatewayState: createInitialGatewayState(DEFAULT_INITIAL_PROJECT),
+  batchProductionDag: null,
   playheadTime: createRationalTime(0, 60),
   isPlaying: false,
   selectedClipIds: [],
@@ -756,6 +795,28 @@ export const INITIAL_STUDIO_STORE_STATE: StudioStoreState = {
 
 export interface StudioStoreActions {
   dispatchCommand: (envelope: TimelineCommandEnvelope) => { success: boolean; rejectedReason?: string };
+  /** Validated Versioned Command Gateway with optimistic revision control */
+  dispatchGatewayCommand: (envelope: GatewayCommandEnvelope) => CommandExecutionResult;
+  /** Compile a declarative VideoDSLSpecification v1.0.0 into Gateway commands and execute */
+  compileAndExecuteVideoDsl: (dsl: VideoDSLSpecification) => CommandExecutionResult[];
+  /** Export full .vproj package including ai_context.json */
+  exportVprojPackage: () => VprojPackageV1;
+  /** Query Selective AI Context API (get_project_summary, get_scene, get_asset, etc.) */
+  getSelectiveAiContext: () => {
+    get_project_summary: () => ReturnType<typeof get_project_summary>;
+    get_scene: (sceneId: string) => ReturnType<typeof get_scene>;
+    get_asset: (assetId: string) => ReturnType<typeof get_asset>;
+    get_timeline_range: (start: RationalTime, end: RationalTime) => ReturnType<typeof get_timeline_range>;
+    get_visual_index: (sceneId: string) => ReturnType<typeof get_visual_index>;
+    get_dependency_graph: (sceneId: string) => ReturnType<typeof get_dependency_graph>;
+    get_qa_issues: () => ReturnType<typeof get_qa_issues>;
+  };
+  /** Start Mode B Offline Batch Production DAG */
+  startBatchProduction: (dsl: VideoDSLSpecification) => BatchProductionJobPlan;
+  /** Step runnable nodes in the Offline Batch Production DAG */
+  stepBatchProduction: (maxNodesToExecute?: number) => BatchProductionJobPlan | null;
+  /** Invalidate a single scene in the Batch Production DAG for partial rebuild */
+  invalidateBatchScene: (sceneId: string, updatedDslSpec?: VideoDSLSpecification) => BatchProductionJobPlan | null;
   undo: () => boolean;
   redo: () => boolean;
   undoAgent: (agentId: string) => void;
@@ -791,6 +852,11 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
 
     set({
       project: nextProject,
+      gatewayState: {
+        ...state.gatewayState,
+        project: nextProject,
+        revision: state.gatewayState.revision + 1,
+      },
       commandHistory: [...state.commandHistory, { envelope, previousProjectSnapshot }],
       redoStack: [], // New command clears redo stack
     });
@@ -798,18 +864,118 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
     return { success: true };
   },
 
+  dispatchGatewayCommand: (envelope) => {
+    const state = get();
+    const syncedGateway: CommandGatewayState = {
+      ...state.gatewayState,
+      project: state.project,
+    };
+    const res = executeGatewayCommand(syncedGateway, envelope);
+    if (res.accepted) {
+      set({
+        project: res.state.project,
+        gatewayState: res.state,
+      });
+    }
+    return res;
+  },
+
+  compileAndExecuteVideoDsl: (dsl) => {
+    const state = get();
+    let currentGateway: CommandGatewayState = {
+      ...state.gatewayState,
+      project: state.project,
+    };
+    const envelopes = compileVideoDslToGatewayCommands(dsl);
+    const results: CommandExecutionResult[] = [];
+    for (const env of envelopes) {
+      const step = executeGatewayCommand(currentGateway, {
+        ...env,
+        expectedRevision: currentGateway.revision,
+      });
+      currentGateway = step.state;
+      results.push(step);
+    }
+    set({
+      project: currentGateway.project,
+      gatewayState: currentGateway,
+    });
+    return results;
+  },
+
+  exportVprojPackage: () => {
+    const state = get();
+    return buildVprojPackage(
+      state.project,
+      state.gatewayState.assetRegistry,
+      state.gatewayState.revision
+    );
+  },
+
+  getSelectiveAiContext: () => {
+    const pkg = get().exportVprojPackage();
+    return {
+      get_project_summary: () => get_project_summary(pkg),
+      get_scene: (sceneId: string) => get_scene(pkg, sceneId),
+      get_asset: (assetId: string) => get_asset(pkg, assetId),
+      get_timeline_range: (start: RationalTime, end: RationalTime) => get_timeline_range(pkg, start, end),
+      get_visual_index: (sceneId: string) => get_visual_index(pkg, sceneId),
+      get_dependency_graph: (sceneId: string) => get_dependency_graph(pkg, sceneId),
+      get_qa_issues: () => get_qa_issues(pkg),
+    };
+  },
+
+  startBatchProduction: (dsl) => {
+    const dag = createBatchProductionDag(dsl, false);
+    set({ batchProductionDag: dag });
+    return dag;
+  },
+
+  stepBatchProduction: (maxNodesToExecute = 1) => {
+    const state = get();
+    if (!state.batchProductionDag) return null;
+    const syncedGateway: CommandGatewayState = {
+      ...state.gatewayState,
+      project: state.project,
+    };
+    const res = stepBatchProductionDag(state.batchProductionDag, syncedGateway, maxNodesToExecute);
+    set({
+      batchProductionDag: res.plan,
+      gatewayState: res.gatewayState,
+      project: res.gatewayState.project,
+    });
+    return res.plan;
+  },
+
+  invalidateBatchScene: (sceneId, updatedDslSpec) => {
+    const state = get();
+    if (!state.batchProductionDag) return null;
+    const nextDag = invalidateSceneInBatchDag(
+      state.batchProductionDag,
+      sceneId,
+      updatedDslSpec ?? state.batchProductionDag.dslSpec
+    );
+    set({ batchProductionDag: nextDag });
+    return nextDag;
+  },
+
   undo: () => {
-    const { commandHistory, redoStack, project } = get();
+    const { commandHistory, redoStack } = get();
     if (commandHistory.length === 0) return false;
 
     const lastEntry = commandHistory[commandHistory.length - 1];
     const newHistory = commandHistory.slice(0, -1);
 
-    set({
+    set((s) => ({
       project: lastEntry.previousProjectSnapshot,
+      gatewayState: {
+        ...s.gatewayState,
+        project: lastEntry.previousProjectSnapshot,
+        revision: s.gatewayState.revision + 1,
+      },
       commandHistory: newHistory,
       redoStack: [...redoStack, lastEntry.envelope],
-    });
+    }));
 
     return true;
   },
@@ -832,12 +998,17 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
   undoAgent: (agentId: string) => {
     const { project, commandHistory } = get();
     const reverted = createSelectiveAgentUndo(project, commandHistory, agentId);
-    set({
+    set((s) => ({
       project: reverted,
+      gatewayState: {
+        ...s.gatewayState,
+        project: reverted,
+        revision: s.gatewayState.revision + 1,
+      },
       commandHistory: commandHistory.filter(
         (h) => !(h.envelope.actor.kind === 'agent' && h.envelope.actor.id === agentId)
       ),
-    });
+    }));
   },
 
   setPlayheadTime: (time) => set({ playheadTime: time }),
@@ -888,7 +1059,13 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
   },
 
   setLatestCriticReport: (report) => set({ latestCriticReport: report }),
-  loadProject: (project) => set({ project, commandHistory: [], redoStack: [] }),
+  loadProject: (project) =>
+    set({
+      project,
+      gatewayState: createInitialGatewayState(project),
+      commandHistory: [],
+      redoStack: [],
+    }),
 }));
 
 

@@ -40,6 +40,8 @@ pub struct RenderExportConfig {
     /// Windows GPU Hardware Encoder: `"h264_nvenc"`, `"hevc_nvenc"`, `"av1_nvenc"`, `"h264_amf"`, or `"libx264"`
     pub video_encoder: String,
     pub target_lufs: f32,
+    #[serde(default)]
+    pub input_files: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

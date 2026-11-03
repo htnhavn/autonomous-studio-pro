@@ -1,4 +1,9 @@
 export * from './rational-time';
 export * from './timeline';
 export * from './agent-protocol';
-
+export * from './asset-registry';
+export * from './character-library';
+export * from './video-dsl';
+export * from './command-gateway';
+export * from './vproj-package';
+export * from './batch-dag';
