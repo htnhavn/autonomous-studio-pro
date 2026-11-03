@@ -21,4 +21,7 @@ scripts/native_mp4_encoder_bin
 *.log
 .env
 .env.local
+.kilo/
+cache/
+exports/test_clean_stage.mp4
 

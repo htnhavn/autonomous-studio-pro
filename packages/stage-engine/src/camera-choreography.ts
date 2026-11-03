@@ -212,6 +212,23 @@ export function evaluateCameraRigAtProgress(
         rotationDeg: Math.sin(timeSec * 1.1) * 0.6,
       };
 
+    case 'split-screen-versus-duel':
+      return {
+        ...base,
+        zoom: 1.15,
+        panX: Math.sin(timeSec * 0.5) * 0.05,
+        tilt3DYDeg: 12 * (p > 0.5 ? -1 : 1),
+        vignetteStrength: 0.5,
+      };
+
+    case 'vertigo-contra-zoom':
+      return {
+        ...base,
+        zoom: 1.0 + p * 0.4,
+        parallaxMultiplier: 2.8 - p * 1.5,
+        vignetteStrength: 0.3 + p * 0.3,
+      };
+
     case 'whip-pan-target-snap':
       return {
         ...base,

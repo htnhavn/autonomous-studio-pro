@@ -14,6 +14,9 @@ export const App: React.FC = () => {
 
   // Initialize demo project data with sample clips so the workspace looks full and alive immediately
   useEffect(() => {
+    const tracksAlreadyHaveClips = useStudioStore.getState().project.tracks.some((t) => t.clips.length > 0);
+    if (tracksAlreadyHaveClips) return;
+
     // 1. Initial Sample A-Roll Clip
     dispatchCommand({
       commandId: 'cmd_init_aroll',

@@ -234,8 +234,8 @@ export function compileScriptToDeterministicStageScenes(
   let cursorSec = 0;
   const compiledScenes = fallbackSentences.map((line, idx) => {
     const wordCount = line.split(/\s+/).length;
-    // Average speaking rate ~ 2.8 words/sec, clamped between 3.0s and 6.5s per visual beat
-    const durationSec = Math.min(6.5, Math.max(3.0, Number((wordCount / 2.8).toFixed(1))));
+    // Average speaking rate ~ 2.8 words/sec, flexible dynamic duration
+    const durationSec = Math.min(20.0, Math.max(2.0, Number((wordCount / 2.8).toFixed(1))));
     const startTimeSec = cursorSec;
     cursorSec = Number((cursorSec + durationSec).toFixed(1));
 

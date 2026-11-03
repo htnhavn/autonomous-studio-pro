@@ -241,8 +241,8 @@ export interface AudioProcessingConfig {
   /** AI Audio Enhancement (Demucs v4 + DeepFilterNet3) */
   readonly aiDenoiseEnabled: boolean;
   readonly aiVocalIsolationEnabled: boolean;
-  /** Auto-Ducking role: 'trigger' (Voice lowers music) or 'target' (Music ducks when voice speaks) */
-  readonly duckingRole: 'none' | 'voice-trigger' | 'music-target';
+  /** Auto-Ducking role: 'voice-trigger'/'ducker' (Voice lowers music) or 'music-target'/'duckee' (Music ducks when voice speaks) */
+  readonly duckingRole: 'none' | 'voice-trigger' | 'music-target' | 'ducker' | 'duckee';
   readonly duckingAmountDb: number; // e.g., -14 dB
 }
 

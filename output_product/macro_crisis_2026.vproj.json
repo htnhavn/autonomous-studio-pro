@@ -1,14 +1,14 @@
 {
   "packageFormat": "autonomous-studio.vproj",
   "packageVersion": "1.0.0",
-  "savedAtIso": "2026-11-03T06:29:47.356Z",
+  "savedAtIso": "2026-11-03T09:13:28.646Z",
   "revision": 7,
   "project": {
     "schemaVersion": "1.0.0",
-    "id": "proj_1793687387343",
+    "id": "proj_1793697208635",
     "name": "Macro Crisis 2026: The Liquidity Squeeze",
-    "createdAtIso": "2026-11-03T06:29:47.343Z",
-    "updatedAtIso": "2026-11-03T06:29:47.351Z",
+    "createdAtIso": "2026-11-03T09:13:28.635Z",
+    "updatedAtIso": "2026-11-03T09:13:28.642Z",
     "settings": {
       "width": 1920,
       "height": 1080,
@@ -55,7 +55,7 @@
                 "rate": 60
               }
             },
-            "playbackSpeed": 1,
+            "speedMultiplier": 1,
             "blendMode": "normal",
             "enabled": true,
             "lockedByUser": false,
@@ -183,7 +183,7 @@
               "duckingRole": "none",
               "duckingAmountDb": 0
             },
-            "dynamicCaptions": {
+            "captionData": {
               "stylePresetId": "hormozi-punch",
               "fontFamily": "Montserrat, sans-serif",
               "fontSizePx": 48,
@@ -393,7 +393,7 @@
                 "rate": 60
               }
             },
-            "playbackSpeed": 1,
+            "speedMultiplier": 1,
             "blendMode": "normal",
             "enabled": true,
             "lockedByUser": false,
@@ -521,7 +521,7 @@
               "duckingRole": "none",
               "duckingAmountDb": 0
             },
-            "dynamicCaptions": {
+            "captionData": {
               "stylePresetId": "hormozi-punch",
               "fontFamily": "Montserrat, sans-serif",
               "fontSizePx": 48,
@@ -759,7 +759,7 @@
                 "rate": 60
               }
             },
-            "playbackSpeed": 1,
+            "speedMultiplier": 1,
             "blendMode": "normal",
             "enabled": true,
             "lockedByUser": false,
@@ -887,7 +887,7 @@
               "duckingRole": "none",
               "duckingAmountDb": 0
             },
-            "dynamicCaptions": {
+            "captionData": {
               "stylePresetId": "hormozi-punch",
               "fontFamily": "Montserrat, sans-serif",
               "fontSizePx": 48,
@@ -2243,8 +2243,8 @@
   },
   "productionSpec": {
     "schemaVersion": "1.0.0",
-    "specId": "dsl_spec_1793687387343",
-    "createdAtIso": "2026-11-03T06:29:47.343Z",
+    "specId": "dsl_spec_1793697208634",
+    "createdAtIso": "2026-11-03T09:13:28.634Z",
     "brief": {
       "title": "Macro Crisis 2026: The Liquidity Squeeze",
       "logline": "Compiled via Deterministic Video DSL v1.0",
@@ -2461,7 +2461,7 @@
     }
   },
   "qaReport": {
-    "evaluatedAtIso": "2026-11-03T06:29:47.356Z",
+    "evaluatedAtIso": "2026-11-03T09:13:28.646Z",
     "passedAllErrorGates": true,
     "errorCount": 0,
     "warningCount": 0,

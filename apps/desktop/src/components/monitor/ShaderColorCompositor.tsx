@@ -21,6 +21,29 @@ export interface ShaderColorCompositorProps {
   readonly className?: string;
 }
 
+function evaluateAnimatable(
+  prop: { staticValue?: number; keyframes?: readonly { timeOffset: { value: number; rate: number }; value: number }[] } | undefined,
+  clipTimeSec: number,
+  fallback: number
+): number {
+  if (!prop) return fallback;
+  if (!prop.keyframes || prop.keyframes.length === 0) {
+    return prop.staticValue ?? fallback;
+  }
+  const kfs = [...prop.keyframes].sort((a, b) => toSeconds(a.timeOffset) - toSeconds(b.timeOffset));
+  if (clipTimeSec <= toSeconds(kfs[0].timeOffset)) return kfs[0].value;
+  if (clipTimeSec >= toSeconds(kfs[kfs.length - 1].timeOffset)) return kfs[kfs.length - 1].value;
+  for (let i = 0; i < kfs.length - 1; i++) {
+    const t0 = toSeconds(kfs[i].timeOffset);
+    const t1 = toSeconds(kfs[i + 1].timeOffset);
+    if (clipTimeSec >= t0 && clipTimeSec <= t1) {
+      const alpha = t1 > t0 ? (clipTimeSec - t0) / (t1 - t0) : 0;
+      return kfs[i].value + (kfs[i + 1].value - kfs[i].value) * alpha;
+    }
+  }
+  return prop.staticValue ?? fallback;
+}
+
 export const ShaderColorCompositor: React.FC<ShaderColorCompositorProps> = ({
   clip,
   currentTimeSec,
@@ -30,14 +53,16 @@ export const ShaderColorCompositor: React.FC<ShaderColorCompositorProps> = ({
   // 1. Evaluate DaVinci Color Grade
   const colorGrade = clip?.colorGrade;
   const isGradeEnabled = colorGrade?.enabled !== false;
+  const clipStartSec = clip ? toSeconds(clip.timelineRange.startTime) : 0;
+  const localClipSec = Math.max(0, currentTimeSec - clipStartSec);
 
-  const exposure = isGradeEnabled ? colorGrade?.exposure.staticValue || 0 : 0;
-  const contrast = isGradeEnabled ? colorGrade?.contrast.staticValue ?? 1 : 1;
-  const saturation = isGradeEnabled ? colorGrade?.saturation.staticValue ?? 1 : 1;
-  const temperature = isGradeEnabled ? colorGrade?.temperature.staticValue || 0 : 0;
-  const tint = isGradeEnabled ? colorGrade?.tint.staticValue || 0 : 0;
-  const halation = isGradeEnabled ? colorGrade?.halationIntensity?.staticValue || 0 : 0;
-  const filmGrain = isGradeEnabled ? colorGrade?.filmGrainIntensity?.staticValue || 0 : 0;
+  const exposure = isGradeEnabled ? evaluateAnimatable(colorGrade?.exposure, localClipSec, 0) : 0;
+  const contrast = isGradeEnabled ? evaluateAnimatable(colorGrade?.contrast, localClipSec, 1) : 1;
+  const saturation = isGradeEnabled ? evaluateAnimatable(colorGrade?.saturation, localClipSec, 1) : 1;
+  const temperature = isGradeEnabled ? evaluateAnimatable(colorGrade?.temperature, localClipSec, 0) : 0;
+  const tint = isGradeEnabled ? evaluateAnimatable(colorGrade?.tint, localClipSec, 0) : 0;
+  const halation = isGradeEnabled ? evaluateAnimatable(colorGrade?.halationIntensity, localClipSec, 0) : 0;
+  const filmGrain = isGradeEnabled ? evaluateAnimatable(colorGrade?.filmGrainIntensity, localClipSec, 0) : 0;
 
   // Lift / Gamma / Gain vectors [R, G, B, Master]
   const lift = colorGrade?.lift || [0, 0, 0, 0];
@@ -68,12 +93,16 @@ export const ShaderColorCompositor: React.FC<ShaderColorCompositorProps> = ({
     return `${tempFilter} ${tintFilter} brightness(${brightnessPct.toFixed(1)}%) contrast(${contrastPct.toFixed(1)}%) saturate(${saturatePct.toFixed(1)}%)`.trim();
   }, [exposure, contrast, saturation, temperature, tint, lift, gain]);
 
-  // 3. Evaluate Active Shaders (CapCut 3D Zoom, CRT Scanline, Chromatic Aberration)
+  // 3. Evaluate Active Shaders (CapCut 3D Zoom, RGB Stroke, CRT Scanline, TV Wall, Chromatic Aberration)
   const activeShaders = clip?.shaders || [];
   const has3DZoom = activeShaders.some((s) => s.shaderId.includes('3d-zoom') || s.shaderId.includes('zoom'));
   const hasCrtRetro = activeShaders.some((s) => s.shaderId.includes('crt') || s.shaderId.includes('retro'));
   const hasChromatic = activeShaders.some((s) => s.shaderId.includes('chromatic') || s.shaderId.includes('glitch'));
   const hasHalationShader = activeShaders.some((s) => s.shaderId.includes('halation') || s.shaderId.includes('glow'));
+  const hasRgbStroke = activeShaders.some((s) => s.shaderId.includes('rgb-stroke') || s.shaderId.includes('stroke'));
+  const hasBlur = activeShaders.some((s) => s.shaderId.includes('blur'));
+  const hasTvWall = activeShaders.some((s) => s.shaderId.includes('tv-wall'));
+  const hasEdgeGlow = activeShaders.some((s) => s.shaderId.includes('edge-glow'));
 
   // 3D Zoom Motion evaluation
   const zoom3DTransform = useMemo(() => {
@@ -83,10 +112,11 @@ export const ShaderColorCompositor: React.FC<ShaderColorCompositorProps> = ({
     return `scale(${1.04 + zoomOsc}) rotateZ(${rotOsc}deg)`;
   }, [has3DZoom, currentTimeSec]);
 
-  // Chromatic Aberration Split filter
+  // Chromatic Aberration Split filter & Blur
   const chromaticFilter = hasChromatic
     ? 'drop-shadow(2px 0px 0px rgba(239, 68, 68, 0.7)) drop-shadow(-2px 0px 0px rgba(6, 182, 212, 0.7))'
     : '';
+  const blurFilter = hasBlur ? 'blur(4px)' : '';
 
   // 4. Evaluate Active Transitions (In / Out)
   const transitionInfo = useMemo(() => {
@@ -144,12 +174,32 @@ export const ShaderColorCompositor: React.FC<ShaderColorCompositorProps> = ({
       <div
         className="w-full h-full relative will-change-transform"
         style={{
-          filter: `${colorFilterStyle} ${chromaticFilter}`.trim(),
+          filter: `${colorFilterStyle} ${chromaticFilter} ${blurFilter}`.trim(),
           transform: zoom3DTransform || undefined,
           ...transitionStyle,
         }}
       >
         {children}
+
+        {/* RGB Stroke Neon Outline Overlay (CapCut Viral Look) */}
+        {hasRgbStroke && (
+          <div className="absolute inset-0 pointer-events-none z-30 border-[3px] border-[#00e5cc] shadow-[inset_0_0_24px_rgba(0,229,204,0.45),0_0_30px_rgba(0,229,204,0.6)] animate-pulse" />
+        )}
+
+        {/* Edge Glow Contour Overlay */}
+        {hasEdgeGlow && (
+          <div className="absolute inset-0 pointer-events-none z-30 border-2 border-pink-500/70 shadow-[inset_0_0_16px_rgba(236,72,153,0.4)]" />
+        )}
+
+        {/* TV Wall Mosaic Grid Overlay */}
+        {hasTvWall && (
+          <div className="absolute inset-0 pointer-events-none z-25 grid grid-cols-2 grid-rows-2 gap-1 p-1 bg-black/40">
+            <div className="border border-white/20" />
+            <div className="border border-white/20" />
+            <div className="border border-white/20" />
+            <div className="border border-white/20" />
+          </div>
+        )}
 
         {/* Halation Warm Bloom Overlay */}
         {(halation > 0.05 || hasHalationShader) && (

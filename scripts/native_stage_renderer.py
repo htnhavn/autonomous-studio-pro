@@ -182,84 +182,48 @@ def render_stickman_stage_mp4(
                 last_pt = curve_pts[-1]
                 draw.ellipse([last_pt[0] - 8, last_pt[1] - 8, last_pt[0] + 8, last_pt[1] + 8], fill=(250, 204, 21))
 
-            # 4. Stickman Puppet Rig (2D Skeletal Kinematics on Left Stage)
-            # Switch moveSet dynamically: first half 'point-chart-upper-right', second half 'econ-celebrate-stonks'
-            actor_cx = 310 + int(25 * math.sin(progress * math.pi))
-            actor_cy = 370 + int(6 * math.sin(t * 8.0))  # breathing bounce
+            # 4. Professional Stage Presenter & Cinematic Media Compositor (No Crude Stickman)
+            # Replaced crude Pillow stickman lines with broadcast presenter card & dynamic speaker visualizer
+            actor_card_x1 = 90 + cam_pan_x
+            actor_card_y1 = 110 + cam_pan_y
+            actor_card_x2 = 560 + cam_pan_x
+            actor_card_y2 = 520 + cam_pan_y
 
-            # Head
-            head_r = 42
-            head_x = actor_cx
-            head_y = actor_cy - 125
-            draw.ellipse(
-                [head_x - head_r, head_y - head_r, head_x + head_r, head_y + head_r],
-                fill=(24, 34, 48),
-                outline=(248, 250, 252),
-                width=6,
-            )
-
-            # Eyes & Animated Lip-Sync Mouth
-            eye_y = head_y - 10
-            draw.ellipse([head_x - 18, eye_y - 5, head_x - 8, eye_y + 5], fill=(56, 189, 248))
-            draw.ellipse([head_x + 8, eye_y - 5, head_x + 18, eye_y + 5], fill=(56, 189, 248))
-            mouth_open = 4 + int(8 * abs(math.sin(t * 14.0)))
-            draw.ellipse(
-                [head_x - 12, head_y + 10, head_x + 12, head_y + 10 + mouth_open],
-                fill=(244, 63, 94),
-            )
-
-            # Neck & Torso
-            neck_pt = (head_x, head_y + head_r)
-            hip_pt = (actor_cx, actor_cy + 40)
-            draw.line([neck_pt, hip_pt], fill=(248, 250, 252), width=8)
-
-            # Red Economics Tie
-            draw.polygon(
-                [
-                    (neck_pt[0], neck_pt[1] + 6),
-                    (neck_pt[0] - 10, neck_pt[1] + 55),
-                    (neck_pt[0], neck_pt[1] + 72),
-                    (neck_pt[0] + 10, neck_pt[1] + 55),
-                ],
-                fill=(239, 68, 68),
-            )
-
-            # Left Arm (Gesturing)
-            shoulder_pt = (actor_cx, neck_pt[1] + 18)
-            l_elbow = (shoulder_pt[0] - 55, shoulder_pt[1] + int(25 * math.cos(t * 6.0)))
-            l_hand = (l_elbow[0] - 35, l_elbow[1] - int(35 * math.sin(t * 6.0)))
-            draw.line([shoulder_pt, l_elbow, l_hand], fill=(248, 250, 252), width=7)
-
-            # Right Arm (Pointing Pointer Stick at the Chart!)
-            r_elbow = (shoulder_pt[0] + 62, shoulder_pt[1] - 15)
-            r_hand = (r_elbow[0] + 58, r_elbow[1] - int(45 + 25 * math.sin(t * 5.0)))
-            draw.line([shoulder_pt, r_elbow, r_hand], fill=(248, 250, 252), width=7)
-
-            # Pointer Stick Prop extending from right hand to the chart!
-            stick_tip = (r_hand[0] + 145, r_hand[1] - 55)
-            draw.line([r_hand, stick_tip], fill=(250, 204, 21), width=4)
-            draw.ellipse([stick_tip[0] - 6, stick_tip[1] - 6, stick_tip[0] + 6, stick_tip[1] + 6], fill=(239, 68, 68))
-
-            # Legs
-            l_knee = (hip_pt[0] - 32, hip_pt[1] + 68)
-            l_foot = (hip_pt[0] - 48, hip_pt[1] + 135)
-            r_knee = (hip_pt[0] + 32, hip_pt[1] + 68)
-            r_foot = (hip_pt[0] + 48, hip_pt[1] + 135)
-            draw.line([hip_pt, l_knee, l_foot], fill=(248, 250, 252), width=8)
-            draw.line([hip_pt, r_knee, r_foot], fill=(248, 250, 252), width=8)
-
-            # Stage Floor Glow
-            draw.ellipse(
-                [actor_cx - 110, hip_pt[1] + 125, actor_cx + 110, hip_pt[1] + 150],
+            # Stage Presenter Panel
+            draw.rounded_rectangle(
+                [actor_card_x1, actor_card_y1, actor_card_x2, actor_card_y2],
+                radius=18,
+                fill=(18, 26, 38),
                 outline=accent_color,
-                width=2,
+                width=3,
             )
 
-            # Speech Bubble above Stickman
-            bubble_rect = [90, 95, 535, 165]
-            draw.rounded_rectangle(bubble_rect, radius=14, fill=(24, 36, 52), outline=(56, 189, 248), width=2)
-            bubble_txt = "⚡ Move-Set: point-chart-upper-right (0 Token)" if progress < 0.5 else "🚀 Move-Set: econ-celebrate-stonks (0 Token)"
-            draw.text((112, 118), bubble_txt, font=font_bubble, fill=(125, 211, 252))
+            # Presenter Header & Title
+            presenter_title = (
+                "👔 CHIEF ECONOMIST & MARKET STRATEGIST" if genre == "economics-stickman"
+                else "🚀 LEAD ASTROPHYSICIST & EXPLORER" if genre == "universe-cosmic"
+                else "📜 CHIEF HISTORIAN & WAR STRATEGIST"
+            )
+            draw.text((actor_card_x1 + 24, actor_card_y1 + 18), presenter_title, font=_load_font(16, bold=True), fill=accent_color)
+
+            # Presenter Center Frame & Dynamic Waveform Visualizer
+            presenter_inner_box = [actor_card_x1 + 24, actor_card_y1 + 54, actor_card_x2 - 24, actor_card_y2 - 70]
+            draw.rounded_rectangle(presenter_inner_box, radius=12, fill=(10, 16, 26), outline=(30, 45, 65), width=2)
+
+            # Animated presenter speech equalizer bars
+            eq_bar_count = 20
+            eq_w = (presenter_inner_box[2] - presenter_inner_box[0] - 40) // eq_bar_count
+            for bar_i in range(eq_bar_count):
+                bar_x = presenter_inner_box[0] + 20 + bar_i * eq_w
+                bar_h = int((20 + 75 * abs(math.sin(t * 10.0 + bar_i * 0.45))) * (1.0 if (t % 1.5) < 1.2 else 0.15))
+                bar_y1 = presenter_inner_box[3] - 20 - bar_h
+                bar_y2 = presenter_inner_box[3] - 20
+                draw.rectangle([bar_x, bar_y1, bar_x + eq_w - 4, bar_y2], fill=accent_color if bar_i % 3 != 0 else secondary_color)
+
+            # Presenter Live Status & Directing Label
+            stage_move_label = "⚡ Live Gesture: Explaining Supply/Demand Shock" if progress < 0.5 else "🚀 Live Gesture: Tactical Market Breakout"
+            draw.text((actor_card_x1 + 24, actor_card_y2 - 50), stage_move_label, font=font_bubble, fill=(240, 248, 255))
+            draw.text((actor_card_x1 + 24, actor_card_y2 - 25), "DIRECTOR AI: SYNCHRONIZED BROADCAST FEED", font=_load_font(12, bold=True), fill=(125, 211, 252))
 
             # 5. Top Live Agent HUD Bar (Showing Flash Agent Ghost Cursor Status)
             draw.rounded_rectangle([28, 22, 1252, 72], radius=12, fill=(15, 23, 42), outline=(30, 58, 138), width=2)

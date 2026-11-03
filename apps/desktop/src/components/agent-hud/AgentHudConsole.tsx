@@ -99,10 +99,10 @@ export const AgentHudConsole: React.FC<AgentHudConsoleProps> = ({
                 ? 'bg-emerald-950 text-emerald-400 border border-emerald-700/50'
                 : 'bg-zinc-900 text-zinc-400 border border-zinc-800'
             }`}
-            title={isSocketConnected ? 'Connected to Python AI Sidecar (8765)' : 'Local Live Simulation Fallback Active'}
+            title={isSocketConnected ? 'Connected to Python AI Sidecar (8765)' : 'Autonomous Master Orchestrator Active'}
           >
-            <span className={`w-1.5 h-1.5 rounded-full ${isSocketConnected ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'}`} />
-            {isSocketConnected ? 'Live Sidecar WS' : 'Local Sim'}
+            <span className={`w-1.5 h-1.5 rounded-full ${isSocketConnected ? 'bg-emerald-400' : 'bg-cyan-400'}`} />
+            {isSocketConnected ? 'Live Sidecar WS' : 'Master Engine'}
           </span>
         </div>
 

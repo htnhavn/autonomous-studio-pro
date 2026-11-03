@@ -205,31 +205,28 @@ def build_real_storyboard(out_bmp: Path) -> dict:
         draw.text((x0 + 24, 24), p["scene"], fill=(255, 255, 255))
         draw.text((x0 + 24, 46), f"{p['time']} • {p['genre']}", fill=p["accent"])
 
-        # Draw Mini Stickman Representation
-        center_x = x0 + panel_w // 2
-        center_y = height // 2 + 30
+        # Professional Stage Presenter Card & Dynamic Speaker Visualizer (No Crude Stickman)
+        center_y = height // 2
+        card_x0 = x0 + 30
+        card_y0 = center_y - 90
+        card_x1 = x0 + panel_w - 30
+        card_y1 = center_y + 150
 
-        # Head
-        draw.ellipse([center_x - 30, center_y - 120, center_x + 30, center_y - 60], outline=(255, 255, 255), width=4)
-        # Spine
-        draw.line([(center_x, center_y - 60), (center_x, center_y + 40)], fill=(255, 255, 255), width=4)
-        # Arms
-        if idx == 0:
-            # Panic head grab
-            draw.line([(center_x, center_y - 40), (center_x - 40, center_y - 90)], fill=(255, 255, 255), width=4)
-            draw.line([(center_x, center_y - 40), (center_x + 40, center_y - 90)], fill=(255, 255, 255), width=4)
-        elif idx == 1:
-            # Floating astronaut arms
-            draw.line([(center_x, center_y - 40), (center_x - 50, center_y - 60)], fill=(255, 255, 255), width=4)
-            draw.line([(center_x, center_y - 40), (center_x + 50, center_y - 60)], fill=(255, 255, 255), width=4)
-        else:
-            # Pointing sword
-            draw.line([(center_x, center_y - 40), (center_x + 60, center_y - 70)], fill=(255, 255, 255), width=4)
-            draw.line([(center_x + 60, center_y - 70), (center_x + 100, center_y - 100)], fill=(250, 204, 21), width=5)
+        draw.rounded_rectangle([card_x0, card_y0, card_x1, card_y1], radius=14, fill=(18, 26, 38), outline=p["accent"], width=2)
+        draw.text((card_x0 + 16, card_y0 + 12), f"ACTOR: {p['actor']}", fill=p["accent"])
 
-        # Legs
-        draw.line([(center_x, center_y + 40), (center_x - 35, center_y + 120)], fill=(255, 255, 255), width=4)
-        draw.line([(center_x, center_y + 40), (center_x + 35, center_y + 120)], fill=(255, 255, 255), width=4)
+        # Inner speaker monitor with voice equalizer bars
+        inner_box = [card_x0 + 16, card_y0 + 38, card_x1 - 16, card_y1 - 16]
+        draw.rounded_rectangle(inner_box, radius=8, fill=(10, 16, 26), outline=(30, 45, 65), width=1)
+
+        bar_count = 14
+        bar_w = (inner_box[2] - inner_box[0] - 28) // bar_count
+        for b_i in range(bar_count):
+            bx = inner_box[0] + 14 + b_i * bar_w
+            bh = int(15 + 40 * abs(math.sin(idx * 2.0 + b_i * 0.5)))
+            by1 = inner_box[3] - 12 - bh
+            by2 = inner_box[3] - 12
+            draw.rectangle([bx, by1, bx + bar_w - 3, by2], fill=p["accent"])
 
         # Speech Bubble
         bubble_box = [x0 + 40, center_y - 180, x0 + panel_w - 40, center_y - 135]
@@ -318,24 +315,42 @@ def build_real_master_mp4(out_mp4: Path, fps: int = 30) -> dict:
             # Scene Title Banner
             draw.text((60, 80), sc["name"], fill=sc["accent"])
 
-            # Center Stage Actor (Stickman Rig with dynamic movement)
-            cx = 400 + cam_pan_x
-            cy = 440
-            head_y = cy - 140 - int(10 * math.sin(scene_progress * 8.0))
-            draw.ellipse([cx - 35, head_y - 70, cx + 35, head_y], outline=(255, 255, 255), width=5)
-            draw.line([(cx, head_y), (cx, cy + 40)], fill=(255, 255, 255), width=5)
+            # Professional Stage Presenter Panel & Dynamic Waveform Visualizer (No Crude Stickman)
+            actor_card_x1 = 70 + cam_pan_x
+            actor_card_y1 = 160
+            actor_card_x2 = 560 + cam_pan_x
+            actor_card_y2 = 540
 
-            # Animated Arms
-            arm_angle = math.sin(scene_progress * 10.0) * 0.4
-            r_arm_x = cx + int(60 * math.cos(arm_angle))
-            r_arm_y = cy - 80 + int(60 * math.sin(arm_angle))
-            draw.line([(cx, cy - 80), (cx - 50, cy - 40)], fill=(255, 255, 255), width=5)
-            draw.line([(cx, cy - 80), (r_arm_x, r_arm_y)], fill=(255, 255, 255), width=5)
+            draw.rounded_rectangle(
+                [actor_card_x1, actor_card_y1, actor_card_x2, actor_card_y2],
+                radius=18,
+                fill=(18, 26, 38),
+                outline=sc["accent"],
+                width=3,
+            )
 
-            # Animated Legs
-            leg_stride = int(25 * math.sin(scene_progress * 12.0))
-            draw.line([(cx, cy + 40), (cx - 30 + leg_stride, cy + 150)], fill=(255, 255, 255), width=5)
-            draw.line([(cx, cy + 40), (cx + 30 - leg_stride, cy + 150)], fill=(255, 255, 255), width=5)
+            presenter_title = (
+                "👔 CHIEF ECONOMIST & MARKET STRATEGIST" if sc["genre"] == "economics-stickman"
+                else "🚀 LEAD ASTROPHYSICIST & EXPLORER" if sc["genre"] == "universe-cosmic"
+                else "📜 CHIEF HISTORIAN & WAR STRATEGIST"
+            )
+            draw.text((actor_card_x1 + 24, actor_card_y1 + 18), presenter_title, fill=sc["accent"])
+
+            presenter_inner_box = [actor_card_x1 + 24, actor_card_y1 + 54, actor_card_x2 - 24, actor_card_y2 - 60]
+            draw.rounded_rectangle(presenter_inner_box, radius=12, fill=(10, 16, 26), outline=(30, 45, 65), width=2)
+
+            eq_bar_count = 18
+            eq_w = (presenter_inner_box[2] - presenter_inner_box[0] - 36) // eq_bar_count
+            for bar_i in range(eq_bar_count):
+                bar_x = presenter_inner_box[0] + 18 + bar_i * eq_w
+                bar_h = int((20 + 75 * abs(math.sin(f_idx * 0.35 + bar_i * 0.45))))
+                bar_y1 = presenter_inner_box[3] - 20 - bar_h
+                bar_y2 = presenter_inner_box[3] - 20
+                draw.rectangle([bar_x, bar_y1, bar_x + eq_w - 4, bar_y2], fill=sc["accent"])
+
+            stage_move_label = "⚡ Live Gesture: Explaining Market Shock" if scene_progress < 0.5 else "🚀 Live Gesture: Strategic Market Move"
+            draw.text((actor_card_x1 + 24, actor_card_y2 - 45), stage_move_label, fill=(240, 248, 255))
+            draw.text((actor_card_x1 + 24, actor_card_y2 - 25), "DIRECTOR AI: SYNCHRONIZED BROADCAST FEED", fill=(125, 211, 252))
 
             # Right Side Widget Card
             wx = 780

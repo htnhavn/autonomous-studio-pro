@@ -9,6 +9,7 @@ import { ChoreographedStageScene, VideoGenreKitId } from '../../stage-engine/src
 import { ProductionAutonomyTier } from '../../mcp-bridge/src/ai-playbooks';
 import {
   AIVisualEffectsConfig,
+  AudioProcessingConfig,
   ClipTransition,
   ColorGradeConfig,
   DynamicCaptionPayload,
@@ -210,6 +211,16 @@ export type TimelineCommand =
       readonly scriptText: string;
       readonly genreKit: VideoGenreKitId;
       readonly replaceExistingStageTrack: boolean;
+    }
+  | {
+      readonly type: 'CLIP_UPDATE_AUDIO';
+      readonly clipId: string;
+      readonly audio: Partial<AudioProcessingConfig>;
+    }
+  | {
+      readonly type: 'CLIP_SET_SPEED';
+      readonly clipId: string;
+      readonly speedMultiplier: number;
     }
   | {
       readonly type: 'TRACK_UPDATE_STATE';

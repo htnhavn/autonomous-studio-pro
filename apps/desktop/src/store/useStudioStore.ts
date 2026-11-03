@@ -293,7 +293,12 @@ export function applyTimelineCommand(
             return c;
           });
         }
-        nextClips.push(cmd.clip);
+        const existingClipIdx = nextClips.findIndex((c) => c.id === cmd.clip.id);
+        if (existingClipIdx !== -1) {
+          nextClips[existingClipIdx] = cmd.clip;
+        } else {
+          nextClips.push(cmd.clip);
+        }
         nextClips.sort((a, b) => compareTime(a.timelineRange.startTime, b.timelineRange.startTime));
         return { ...track, clips: nextClips };
       });
@@ -556,6 +561,44 @@ export function applyTimelineCommand(
       };
     }
 
+    case 'CLIP_UPDATE_AUDIO': {
+      let rejectedReason: string | undefined;
+      const updatedTracks = project.tracks.map((track) => ({
+        ...track,
+        clips: track.clips.map((c) => {
+          if (c.id !== cmd.clipId) return c;
+          if (isClipLockedForActor(c, track)) {
+            rejectedReason = `Clip "${c.name}" is locked by user.`;
+            return c;
+          }
+          return { ...c, audio: { ...c.audio, ...cmd.audio } };
+        }),
+      }));
+      if (rejectedReason) return { nextProject: project, rejectedReason };
+      return {
+        nextProject: { ...project, updatedAtIso: new Date().toISOString(), tracks: updatedTracks },
+      };
+    }
+
+    case 'CLIP_SET_SPEED': {
+      let rejectedReason: string | undefined;
+      const updatedTracks = project.tracks.map((track) => ({
+        ...track,
+        clips: track.clips.map((c) => {
+          if (c.id !== cmd.clipId) return c;
+          if (isClipLockedForActor(c, track)) {
+            rejectedReason = `Clip "${c.name}" is locked by user.`;
+            return c;
+          }
+          return { ...c, speedMultiplier: cmd.speedMultiplier };
+        }),
+      }));
+      if (rejectedReason) return { nextProject: project, rejectedReason };
+      return {
+        nextProject: { ...project, updatedAtIso: new Date().toISOString(), tracks: updatedTracks },
+      };
+    }
+
     case 'CLIP_SET_STAGE_SCENE': {
       let rejectedReason: string | undefined;
       const updatedTracks = project.tracks.map((track) => ({
@@ -709,7 +752,7 @@ export function applyTimelineCommand(
             duckingRole: 'none' as const,
             duckingAmountDb: 0,
           },
-          dynamicCaptions: {
+          captionData: {
             stylePresetId: 'hormozi-punch' as const,
             fontFamily: 'Montserrat, sans-serif',
             fontSizePx: 48,
@@ -844,8 +887,13 @@ export function applyTimelineCommand(
       };
     }
 
-    default:
-      return { nextProject: project };
+    default: {
+      const unhandledType = (cmd as any)?.type || 'UNKNOWN';
+      return {
+        nextProject: project,
+        rejectedReason: `Unhandled or unimplemented timeline command type: ${unhandledType}`,
+      };
+    }
   }
 }
 
@@ -882,7 +930,24 @@ function createInitialGatewayState(project: StudioProject): CommandGatewayState 
   };
 }
 
-const DEFAULT_INITIAL_PROJECT = createDefaultStudioProject();
+function getInitialProject(): StudioProject {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = window.localStorage.getItem('autonomous_studio_project');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && Array.isArray(parsed.tracks) && parsed.tracks.length > 0) {
+          return parsed;
+        }
+      }
+    }
+  } catch {
+    // fallback to default
+  }
+  return createDefaultStudioProject();
+}
+
+const DEFAULT_INITIAL_PROJECT = getInitialProject();
 
 export const INITIAL_STUDIO_STORE_STATE: StudioStoreState = {
   project: DEFAULT_INITIAL_PROJECT,
@@ -967,6 +1032,14 @@ export const useStudioStore = create<StudioStore>((set, get) => ({
       commandHistory: [...state.commandHistory, { envelope, previousProjectSnapshot }],
       redoStack: [], // New command clears redo stack
     });
+
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem('autonomous_studio_project', JSON.stringify(nextProject));
+      }
+    } catch {
+      // ignore quota errors
+    }
 
     return { success: true };
   },

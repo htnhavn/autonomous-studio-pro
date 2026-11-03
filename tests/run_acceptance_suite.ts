@@ -638,3 +638,6 @@ export function runAllArchitectureTests(): readonly TestResultRecord[] {
   return results;
 }
 
+// Auto-run all architecture tests when executed as CLI script
+runAllArchitectureTests();
+

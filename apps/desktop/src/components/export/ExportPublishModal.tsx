@@ -102,18 +102,23 @@ export const ExportPublishModal: React.FC<ExportPublishModalProps> = ({ isOpen, 
         genre,
         script,
         durationSec,
-        targetOutput
+        targetOutput,
+        { codec, resolution, fps, bitrateMbps }
       );
+
+      if (!result.success) {
+        throw new Error(result.outputLogs || 'Export render failed');
+      }
 
       setExportProgress(100);
       setIsExporting(false);
       setExportFinished(true);
       setExportedFilePath(result.outputPath);
-    } catch {
-      setExportProgress(100);
+    } catch (err: any) {
+      setExportProgress(0);
       setIsExporting(false);
-      setExportFinished(true);
-      setExportedFilePath('/tmp/autonomous_studio_master.mp4');
+      setExportFinished(false);
+      alert(`Xuất bản thất bại: ${err?.message || err}`);
     }
   };
 

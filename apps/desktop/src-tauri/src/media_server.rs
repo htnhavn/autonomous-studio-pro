@@ -32,19 +32,28 @@ async fn health_handler() -> &'static str {
     "Local Media Streaming Server OK (Port 49210)"
 }
 
-async fn stream_frame_handler(Query(_params): Query<FrameRequest>) -> Result<Response, StatusCode> {
-    // In production, pulls decoded frame from FFmpeg NVDEC pool or disk cache
-    let mut headers = HeaderMap::new();
-    headers.insert(header::CONTENT_TYPE, "image/jpeg".parse().unwrap());
-    headers.insert(header::CACHE_CONTROL, "public, max-age=3600".parse().unwrap());
+async fn stream_frame_handler(Query(params): Query<FrameRequest>) -> Result<Response, StatusCode> {
+    let path = std::path::Path::new(&params.file_path);
+    if !path.exists() {
+        return Err(StatusCode::NOT_FOUND);
+    }
 
-    // Fallback 1x1 transparent JPEG
-    let fallback_jpeg: Vec<u8> = vec![
-        0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01, 0x01, 0x01, 0x00,
-        0x60, 0x00, 0x60, 0x00, 0x00, 0xFF, 0xDB, 0x00, 0x43, 0x00, 0xFF, 0xD9,
-    ];
-
-    Ok((headers, Body::from(fallback_jpeg)).into_response())
+    match tokio::fs::read(path).await {
+        Ok(data) => {
+            let mut headers = HeaderMap::new();
+            let mime = if params.file_path.ends_with(".png") {
+                "image/png"
+            } else if params.file_path.ends_with(".mp4") {
+                "video/mp4"
+            } else {
+                "image/jpeg"
+            };
+            headers.insert(header::CONTENT_TYPE, mime.parse().unwrap());
+            headers.insert(header::CACHE_CONTROL, "public, max-age=3600".parse().unwrap());
+            Ok((headers, Body::from(data)).into_response())
+        }
+        Err(_) => Err(StatusCode::INTERNAL_SERVER_ERROR),
+    }
 }
 
 pub async fn start_local_media_server(port: u16) -> anyhow::Result<()> {

@@ -16,7 +16,7 @@ from typing import Any, Dict, List, Optional, Set
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
 # Ensure sidecar & workspace roots are on sys.path
 SIDE_DIR = Path(__file__).resolve().parent
@@ -101,10 +101,12 @@ class CompileDslRequest(BaseModel):
 
 
 class RenderMp4Request(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     genre: str = "economics-stickman"
-    scriptText: str = "Lãi suất FED đảo chiều! Dòng tiền bùng nổ trên biểu đồ thị trường!"
-    durationSec: float = 3.0
-    outputPath: Optional[str] = None
+    scriptText: str = Field(default="Lãi suất FED đảo chiều! Dòng tiền bùng nổ trên biểu đồ thị trường!", alias="script")
+    durationSec: float = Field(default=3.0, alias="duration_sec")
+    outputPath: Optional[str] = Field(default=None, alias="output_path")
     fps: int = 30
     width: int = 1280
     height: int = 720
@@ -142,6 +144,7 @@ async def health_check() -> Dict[str, Any]:
 
 
 @app.post("/api/v1/mcp")
+@app.post("/mcp")
 async def handle_mcp_call(req: MCPRequest) -> Dict[str, Any]:
     """Execute any tool from the Universal MCP Studio registry."""
     result = await mcp.execute_tool(req.tool, req.arguments)
@@ -376,6 +379,21 @@ async def studio_websocket_endpoint(websocket: WebSocket) -> None:
                     "eventType": "STUDIO_MODE_CHANGED",
                     "mode": "running-autonomous",
                 })
+            elif event_type == "START_AUTONOMOUS_PIPELINE" or data.get("action") == "START_AUTONOMOUS_PIPELINE":
+                payload = data.get("payload") or {}
+                job_payload = {
+                    "jobId": f"job_{int(time.time() * 1000)}",
+                    "input": {
+                        "topicOrPrompt": payload.get("topicOrPrompt") or payload.get("input", {}).get("topicOrPrompt") or "FED interest rates",
+                        "scriptText": payload.get("scriptText") or payload.get("input", {}).get("scriptText") or "",
+                    },
+                    "preferences": {
+                        "genre": payload.get("genre") or payload.get("genreKit") or "economics-stickman",
+                        "targetDurationSeconds": payload.get("targetDurationSeconds") or payload.get("targetDurationSec") or 10,
+                        "qualityGateThreshold": 9.0,
+                    },
+                }
+                asyncio.create_task(orchestrator.run_full_autonomous_pipeline(job_payload))
             elif event_type == "MCP_INVOKE":
                 tool = data.get("tool")
                 args = data.get("arguments", {})
@@ -393,4 +411,4 @@ async def studio_websocket_endpoint(websocket: WebSocket) -> None:
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=8765, reload=True)

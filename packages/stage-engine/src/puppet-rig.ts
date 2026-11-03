@@ -413,6 +413,86 @@ export function evaluateMoveSetAtTime(
         kneeRightDeg: Math.max(0, -medOsc * 40),
       };
 
+    case 'point-at-board-side':
+      return {
+        ...basePose,
+        torsoLeanDeg: -4,
+        headTiltDeg: -8,
+        shoulderLeftDeg: -20,
+        elbowLeftDeg: -15,
+        shoulderRightDeg: 80 + Math.sin(t * 3.0) * 10,
+        elbowRightDeg: 15,
+      };
+
+    case 'facepalm-disappointed':
+      return {
+        ...basePose,
+        torsoLeanDeg: 12 + breathe * 2,
+        headTiltDeg: 25,
+        shoulderLeftDeg: -25,
+        elbowLeftDeg: -15,
+        shoulderRightDeg: 135,
+        elbowRightDeg: 110,
+        overheadEmote: '🤦',
+      };
+
+    case 'eureka-lightbulb':
+      return {
+        ...basePose,
+        torsoLeanDeg: -5,
+        headTiltDeg: -12,
+        shoulderLeftDeg: -30,
+        elbowLeftDeg: -20,
+        shoulderRightDeg: 160 + breathe * 4,
+        elbowRightDeg: -10,
+        overheadEmote: '💡',
+      };
+
+    case 'typing-furious':
+      return {
+        ...basePose,
+        torsoLeanDeg: 15 + Math.sin(t * 8.0) * 2,
+        headTiltDeg: 15,
+        shoulderLeftDeg: -45,
+        elbowLeftDeg: -85 + fastOsc * 15,
+        shoulderRightDeg: 45,
+        elbowRightDeg: 85 - fastOsc * 15,
+      };
+
+    case 'telescope-observe':
+      return {
+        ...basePose,
+        torsoLeanDeg: -10,
+        headTiltDeg: -20,
+        shoulderLeftDeg: -60,
+        elbowLeftDeg: -70,
+        shoulderRightDeg: 75,
+        elbowRightDeg: 80,
+      };
+
+    case 'lore-scroll-read':
+      return {
+        ...basePose,
+        torsoLeanDeg: 8 + breathe * 2,
+        headTiltDeg: 18,
+        shoulderLeftDeg: -50,
+        elbowLeftDeg: -65,
+        shoulderRightDeg: 50,
+        elbowRightDeg: 65,
+        overheadEmote: '📜',
+      };
+
+    case 'bowtie-adjust-smug':
+      return {
+        ...basePose,
+        torsoLeanDeg: -8,
+        headTiltDeg: -5 + Math.sin(t * 2.0) * 4,
+        shoulderLeftDeg: -70 + medOsc * 10,
+        elbowLeftDeg: -100,
+        shoulderRightDeg: 70 - medOsc * 10,
+        elbowRightDeg: 100,
+      };
+
     case 'run-flee-danger':
       return {
         ...basePose,

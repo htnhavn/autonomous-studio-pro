@@ -24,4 +24,12 @@ Khi kích hoạt kỹ năng này, Agent đóng vai trò **Đạo Diễn Toàn N�
   ```bash
   python3 scripts/studio_agent_cli.py insert-broll --query "Global Economy Chart" --start 3.5 --duration 4.0 --shader "capcut.3d-zoom-pro"
   ```
+- **Chạy toàn bộ Multi-Agent Workflow từ Prompt JSON có cấu trúc:**
+  ```bash
+  python3 scripts/studio_agent_cli.py workflow-run --genre economics-stickman --script "Kịch bản..." --duration 9.0
+  ```
+- **Nhận Visual & Audio Feedback từ App để kiểm tra trước khi bắn lệnh:**
+  ```bash
+  python3 scripts/studio_agent_cli.py inspect-feedback
+  ```
 

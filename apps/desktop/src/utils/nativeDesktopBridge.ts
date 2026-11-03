@@ -115,7 +115,8 @@ export async function renderNativeStageMp4Universal(
   genre: string,
   script: string,
   durationSec: number,
-  outputPath: string
+  outputPath: string,
+  options?: { codec?: string; resolution?: string; fps?: number; bitrateMbps?: number }
 ): Promise<{ success: boolean; outputPath: string; outputLogs: string }> {
   if (isRunningInTauriNativeWindow() && window.__TAURI_INTERNALS__?.invoke) {
     try {
@@ -124,6 +125,7 @@ export async function renderNativeStageMp4Universal(
         script,
         durationSec,
         outputPath,
+        ...options,
       })) as string;
       return { success: true, outputPath, outputLogs: logs };
     } catch (err: any) {
@@ -131,7 +133,7 @@ export async function renderNativeStageMp4Universal(
     }
   }
 
-  // Try HTTP Sidecar API
+  // Try HTTP Sidecar API on port 8765
   try {
     const res = await fetch('http://127.0.0.1:8765/api/render-mp4', {
       method: 'POST',
@@ -141,24 +143,27 @@ export async function renderNativeStageMp4Universal(
         script,
         duration_sec: durationSec,
         output_path: outputPath,
+        fps: options?.fps || 30,
+        width: options?.resolution === '4k' ? 3840 : options?.resolution === '1080p' ? 1920 : 1280,
+        height: options?.resolution === '4k' ? 2160 : options?.resolution === '1080p' ? 1080 : 720,
       }),
     });
     if (res.ok) {
       const data = await res.json();
       return {
         success: true,
-        outputPath: data.output_path || outputPath,
-        outputLogs: data.logs || 'Rendered via Sidecar API',
+        outputPath: data.outputPath || data.output_path || outputPath,
+        outputLogs: data.logs || `Rendered via Sidecar API: ${data.sizeBytes || 0} bytes.`,
       };
     }
   } catch {
-    // Fall through
+    // Fall through to error
   }
 
   return {
-    success: true,
-    outputPath: outputPath || '/tmp/autonomous_studio_master.mp4',
-    outputLogs: 'Render complete via Autonomous Studio Client Compositor.',
+    success: false,
+    outputPath: '',
+    outputLogs: 'Render failed: neither native Tauri backend nor Sidecar server (port 8765) is reachable.',
   };
 }
 

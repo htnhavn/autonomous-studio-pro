@@ -14,6 +14,7 @@ import {
   toFrames,
   compareTime,
   rangeEndTime,
+  toSMPTETimecode,
 } from '../../../../../packages/core-schema/src/rational-time';
 import {
   Maximize2,
@@ -24,6 +25,29 @@ import {
   Move,
   Layers,
 } from 'lucide-react';
+
+function evaluateTransformProp(
+  prop: { staticValue?: number; keyframes?: readonly { timeOffset: { value: number; rate: number }; value: number }[] } | undefined,
+  clipTimeSec: number,
+  fallback: number
+): number {
+  if (!prop) return fallback;
+  if (!prop.keyframes || prop.keyframes.length === 0) {
+    return prop.staticValue ?? fallback;
+  }
+  const kfs = [...prop.keyframes].sort((a, b) => toSeconds(a.timeOffset) - toSeconds(b.timeOffset));
+  if (clipTimeSec <= toSeconds(kfs[0].timeOffset)) return kfs[0].value;
+  if (clipTimeSec >= toSeconds(kfs[kfs.length - 1].timeOffset)) return kfs[kfs.length - 1].value;
+  for (let i = 0; i < kfs.length - 1; i++) {
+    const t0 = toSeconds(kfs[i].timeOffset);
+    const t1 = toSeconds(kfs[i + 1].timeOffset);
+    if (clipTimeSec >= t0 && clipTimeSec <= t1) {
+      const alpha = t1 > t0 ? (clipTimeSec - t0) / (t1 - t0) : 0;
+      return kfs[i].value + (kfs[i + 1].value - kfs[i].value) * alpha;
+    }
+  }
+  return prop.staticValue ?? fallback;
+}
 
 export const ProgramMonitor: React.FC = () => {
   const project = useStudioStore((s) => s.project);
@@ -227,50 +251,62 @@ export const ProgramMonitor: React.FC = () => {
               </div>
             ) : activeVideoClip ? (
               <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
-                {activeVideoAsset &&
-                (activeVideoAsset.localFilePath.startsWith('blob:') ||
-                  activeVideoAsset.localFilePath.startsWith('http')) ? (
-                  activeVideoAsset.kind === 'video' ? (
-                    <video
-                      ref={videoElementRef}
-                      src={activeVideoAsset.localFilePath}
-                      playsInline
-                      className="w-full h-full object-cover"
-                      style={{
-                        transform: `translate(${selectedClip?.transform.positionX.staticValue || 0}px, ${
-                          selectedClip?.transform.positionY.staticValue || 0
-                        }px) scale(${selectedClip?.transform.scaleX.staticValue || 1})`,
-                      }}
-                    />
-                  ) : (
-                    <img
-                      src={activeVideoAsset.localFilePath}
-                      alt={activeVideoClip.name}
-                      className="w-full h-full object-cover"
-                      style={{
-                        transform: `translate(${selectedClip?.transform.positionX.staticValue || 0}px, ${
-                          selectedClip?.transform.positionY.staticValue || 0
-                        }px) scale(${selectedClip?.transform.scaleX.staticValue || 1})`,
-                      }}
-                    />
-                  )
-                ) : (
-                  <div
-                    className="w-full h-full bg-gradient-to-tr from-zinc-950 via-zinc-900 to-blue-950/40 flex flex-col items-center justify-center text-center p-4 transition-transform"
-                    style={{
-                      transform: `translate(${selectedClip?.transform.positionX.staticValue || 0}px, ${
-                        selectedClip?.transform.positionY.staticValue || 0
-                      }px) scale(${selectedClip?.transform.scaleX.staticValue || 1})`,
-                    }}
-                  >
-                    <div className="text-zinc-500 text-xs font-mono mb-2">[Video Stream Frame: {activeVideoClip.name}]</div>
-                    {activeVideoClip.aiVfx.depthParallax3D?.enabled && (
-                      <span className="text-[11px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" /> 3D Depth Parallax Active
-                      </span>
-                    )}
-                  </div>
-                )}
+                {(() => {
+                  const mediaSrc =
+                    activeVideoAsset?.localFilePath?.startsWith('blob:') || activeVideoAsset?.localFilePath?.startsWith('http')
+                      ? activeVideoAsset.localFilePath
+                      : activeVideoAsset?.origin?.sourceUrl?.startsWith('http')
+                      ? activeVideoAsset.origin.sourceUrl
+                      : activeVideoAsset?.localFilePath
+                      ? `http://127.0.0.1:49210/stream/frame?file_path=${encodeURIComponent(activeVideoAsset.localFilePath)}&frame_index=0`
+                      : null;
+
+                  const activeTransformClip = activeVideoClip || selectedClip;
+                  const activeClipStartSec = activeTransformClip ? toSeconds(activeTransformClip.timelineRange.startTime) : 0;
+                  const activeClipLocalSec = Math.max(0, currentSec - activeClipStartSec);
+                  const activePosX = evaluateTransformProp(activeTransformClip?.transform.positionX, activeClipLocalSec, 0);
+                  const activePosY = evaluateTransformProp(activeTransformClip?.transform.positionY, activeClipLocalSec, 0);
+                  const activeScaleX = evaluateTransformProp(activeTransformClip?.transform.scaleX, activeClipLocalSec, 1);
+                  const activeOpacity = evaluateTransformProp(activeTransformClip?.transform.opacity, activeClipLocalSec, 1);
+
+                  const computedTransformStyle = {
+                    transform: `translate(${activePosX}px, ${activePosY}px) scale(${activeScaleX})`,
+                    opacity: activeOpacity,
+                  };
+
+                  if (mediaSrc) {
+                    return activeVideoAsset?.kind === 'video' ? (
+                      <video
+                        ref={videoElementRef}
+                        src={mediaSrc}
+                        playsInline
+                        className="w-full h-full object-cover transition-transform duration-75"
+                        style={computedTransformStyle}
+                      />
+                    ) : (
+                      <img
+                        src={mediaSrc}
+                        alt={activeVideoClip.name}
+                        className="w-full h-full object-cover transition-transform duration-75"
+                        style={computedTransformStyle}
+                      />
+                    );
+                  }
+
+                  return (
+                    <div
+                      className="w-full h-full bg-gradient-to-tr from-zinc-950 via-zinc-900 to-blue-950/40 flex flex-col items-center justify-center text-center p-4 transition-transform"
+                      style={computedTransformStyle}
+                    >
+                      <div className="text-zinc-500 text-xs font-mono mb-2">[Video Stream Frame: {activeVideoClip.name}]</div>
+                      {activeVideoClip.aiVfx.depthParallax3D?.enabled && (
+                        <span className="text-[11px] bg-blue-500/20 text-blue-400 border border-blue-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <Sparkles className="w-3 h-3" /> 3D Depth Parallax Active
+                        </span>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
             ) : (
               <div className="w-full h-full flex items-center justify-center text-zinc-600 text-xs font-mono">
@@ -328,6 +364,136 @@ export const ProgramMonitor: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* 3. CapCut Desktop Transport Bar & Scrubber Handle */}
+      {(() => {
+        const projectDurationSec = Math.max(
+          10,
+          ...project.tracks.flatMap((t) =>
+            t.clips.map((c) => toSeconds(rangeEndTime(c.timelineRange)))
+          )
+        );
+        return (
+          <div className="bg-[#141722] border-t border-[#272c3d] px-3 py-1.5 shrink-0 flex flex-col gap-1.5">
+            {/* Cyan Scrubber Bar */}
+            <div className="relative h-2 w-full flex items-center cursor-pointer group">
+              <input
+                type="range"
+                min={0}
+                max={projectDurationSec}
+                step={1 / project.settings.fps}
+                value={currentSec}
+                onChange={(e) => {
+                  const sec = Number(e.target.value);
+                  useStudioStore.getState().setPlayheadTime({
+                    value: Math.round(sec * project.settings.fps),
+                    rate: project.settings.fps,
+                  });
+                }}
+                className="w-full h-1 bg-zinc-800 accent-[#00e5cc] rounded cursor-pointer group-hover:h-1.5 transition-all"
+              />
+            </div>
+
+            {/* Transport Controls Row */}
+            <div className="flex items-center justify-between text-xs">
+              {/* Timecode Readout */}
+              <div className="font-mono text-xs text-zinc-300 flex items-center gap-1.5">
+                <span className="text-[#00e5cc] font-semibold">
+                  {toSMPTETimecode(playheadTime, project.settings.fps)}
+                </span>
+                <span className="text-zinc-600">/</span>
+                <span className="text-zinc-500">
+                  {toSMPTETimecode(
+                    {
+                      value: Math.round(projectDurationSec * project.settings.fps),
+                      rate: project.settings.fps,
+                    },
+                    project.settings.fps
+                  )}
+                </span>
+              </div>
+
+          {/* Center Playback Buttons */}
+          <div className="flex items-center gap-2">
+            {/* Step 1 Frame Back */}
+            <button
+              onClick={() => {
+                const step = 1 / project.settings.fps;
+                const newSec = Math.max(0, currentSec - step);
+                useStudioStore.getState().setPlayheadTime({
+                  value: Math.round(newSec * project.settings.fps),
+                  rate: project.settings.fps,
+                });
+              }}
+              className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+              title="Step Backward 1 Frame (Left Arrow)"
+            >
+              <span className="font-mono text-[11px] font-bold">|◀</span>
+            </button>
+
+            {/* Play / Pause Button */}
+            <button
+              onClick={() => useStudioStore.getState().togglePlay()}
+              className="w-7 h-7 rounded-full bg-[#1b2130] hover:bg-cyan-500 hover:text-black text-cyan-300 border border-cyan-500/40 flex items-center justify-center transition-all shadow-sm"
+              title="Play / Pause (Space)"
+            >
+              {isPlaying ? (
+                <span className="text-[10px] font-bold">⏸</span>
+              ) : (
+                <span className="text-[10px] font-bold ml-0.5">▶</span>
+              )}
+            </button>
+
+            {/* Step 1 Frame Forward */}
+            <button
+              onClick={() => {
+                const step = 1 / project.settings.fps;
+                const newSec = currentSec + step;
+                useStudioStore.getState().setPlayheadTime({
+                  value: Math.round(newSec * project.settings.fps),
+                  rate: project.settings.fps,
+                });
+              }}
+              className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+              title="Step Forward 1 Frame (Right Arrow)"
+            >
+              <span className="font-mono text-[11px] font-bold">▶|</span>
+            </button>
+
+            <div className="h-3 w-px bg-zinc-800 mx-1" />
+
+            {/* Mark In / Out */}
+            <button
+              className="px-1.5 py-0.5 rounded text-[11px] font-mono text-zinc-400 hover:text-white hover:bg-zinc-800"
+              title="Mark In ([)"
+            >
+              [
+            </button>
+            <button
+              className="px-1.5 py-0.5 rounded text-[11px] font-mono text-zinc-400 hover:text-white hover:bg-zinc-800"
+              title="Mark Out (])"
+            >
+              ]
+            </button>
+          </div>
+
+          {/* Right Monitor Controls */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono text-zinc-500 bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800">
+              Fit to Screen
+            </span>
+            <button
+              onClick={() => containerRef.current?.requestFullscreen?.()}
+              className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white"
+              title="Fullscreen"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  })()}
     </div>
   );
 };

@@ -35,6 +35,8 @@ import {
   Magnet,
   Layers,
   Sparkles,
+  Gauge,
+  Diamond,
 } from 'lucide-react';
 
 interface DragState {
@@ -295,7 +297,14 @@ export const MultiTrackTimeline: React.FC = () => {
     }
   };
 
-  const totalDurationSec = 60;
+  const maxClipEndTimeSec = project.tracks.reduce((max, track) => {
+    return track.clips.reduce((tMax, clip) => {
+      const endSec = toSeconds(clip.timelineRange.startTime) + toSeconds(clip.timelineRange.duration);
+      return Math.max(tMax, endSec);
+    }, max);
+  }, 60);
+
+  const totalDurationSec = Math.max(60, Math.ceil(maxClipEndTimeSec + 10));
   const totalWidthPx = Math.max(2000, totalDurationSec * pixelsPerSecond);
 
   return (
@@ -324,13 +333,219 @@ export const MultiTrackTimeline: React.FC = () => {
 
           {/* Edit Tools */}
           <button
+            onClick={() => clearSelection()}
+            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1f2434] hover:bg-[#282e44] text-zinc-200 border border-[#2e364e]"
+            title="Select Tool (V)"
+          >
+            <span>↖</span>
+            <span>Select</span>
+          </button>
+
+          <button
             onClick={handleSplitAtPlayhead}
             disabled={selectedClipIds.length === 0}
-            className="flex items-center gap-1 px-2.5 py-1 rounded bg-[#1f2434] hover:bg-[#282e44] disabled:opacity-40 text-zinc-200 border border-[#2e364e]"
+            className="flex items-center gap-1 px-2.5 py-1 rounded bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-500/40"
             title="Split Clip at Playhead (S or C)"
           >
-            <Scissors className="w-3.5 h-3.5 text-blue-400" />
+            <Scissors className="w-3.5 h-3.5 text-red-400" />
             <span>Split (S)</span>
+          </button>
+
+          <button
+            onClick={() => {
+              // Quick add subtitle cue
+              dispatchCommand({
+                commandId: `cmd_add_text_${Date.now()}`,
+                actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+                timestampMs: Date.now(),
+                command: {
+                  type: 'CLIP_INSERT',
+                  trackId: 'track-caption-1',
+                  rippleShiftSubsequentClips: false,
+                  clip: {
+                    id: `clip_cap_${Date.now()}`,
+                    name: 'Dynamic Title',
+                    trackId: 'track-caption-1',
+                    kind: 'caption',
+                    timelineRange: {
+                      startTime: playheadTime,
+                      duration: fromSeconds(2.5, displayFps),
+                    },
+                    sourceRange: {
+                      startTime: { value: 0, rate: displayFps },
+                      duration: fromSeconds(2.5, displayFps),
+                    },
+                    speedMultiplier: 1.0,
+                    blendMode: 'normal',
+                    enabled: true,
+                    lockedByUser: false,
+                    transform: {
+                      positionX: { staticValue: 0, keyframes: [] },
+                      positionY: { staticValue: 0.35, keyframes: [] },
+                      positionZ: { staticValue: 0, keyframes: [] },
+                      scaleX: { staticValue: 1, keyframes: [] },
+                      scaleY: { staticValue: 1, keyframes: [] },
+                      rotationX: { staticValue: 0, keyframes: [] },
+                      rotationY: { staticValue: 0, keyframes: [] },
+                      rotationZ: { staticValue: 0, keyframes: [] },
+                      anchorX: { staticValue: 0.5, keyframes: [] },
+                      anchorY: { staticValue: 0.5, keyframes: [] },
+                      opacity: { staticValue: 1, keyframes: [] },
+                    },
+                    shaders: [],
+                    colorGrade: {
+                      enabled: false,
+                      exposure: { staticValue: 0, keyframes: [] },
+                      contrast: { staticValue: 1, keyframes: [] },
+                      saturation: { staticValue: 1, keyframes: [] },
+                      temperature: { staticValue: 0, keyframes: [] },
+                      tint: { staticValue: 0, keyframes: [] },
+                      lift: [0, 0, 0, 0],
+                      gamma: [0, 0, 0, 0],
+                      gain: [0, 0, 0, 0],
+                      lutIntensity: { staticValue: 1, keyframes: [] },
+                      filmGrainIntensity: { staticValue: 0, keyframes: [] },
+                      halationIntensity: { staticValue: 0, keyframes: [] },
+                    },
+                    aiVfx: {},
+                    audio: {
+                      volumeDb: { staticValue: 0, keyframes: [] },
+                      pan: { staticValue: 0, keyframes: [] },
+                      mute: false,
+                      fadeInDuration: { value: 0, rate: displayFps },
+                      fadeOutDuration: { value: 0, rate: displayFps },
+                      aiDenoiseEnabled: false,
+                      aiVocalIsolationEnabled: false,
+                      duckingRole: 'none',
+                      duckingAmountDb: 0,
+                    },
+                    captionData: {
+                      stylePresetId: 'hormozi-punch',
+                      fontFamily: 'Montserrat, sans-serif',
+                      fontSizePx: 48,
+                      primaryColorHex: '#FFFFFF',
+                      activeWordColorHex: '#FBBF24',
+                      strokeColorHex: '#000000',
+                      strokeWidthPx: 8,
+                      maxWordsPerLine: 4,
+                      placeBehindSubjectIfMasked: false,
+                      words: [
+                        {
+                          id: `w_${Date.now()}_1`,
+                          word: 'NEW',
+                          startOffset: { value: 0, rate: displayFps },
+                          endOffset: fromSeconds(1.2, displayFps),
+                          confidence: 1.0,
+                          isKeywordEmphasized: true,
+                        },
+                        {
+                          id: `w_${Date.now()}_2`,
+                          word: 'BREAKTHROUGH',
+                          startOffset: fromSeconds(1.2, displayFps),
+                          endOffset: fromSeconds(2.5, displayFps),
+                          confidence: 1.0,
+                          isKeywordEmphasized: true,
+                          emphasisColorHex: '#00e5cc',
+                        },
+                      ],
+                    },
+                  },
+                },
+              });
+            }}
+            className="flex items-center gap-1 px-2 py-1 rounded bg-[#1f2434] hover:bg-[#282e44] text-zinc-300 border border-[#2e364e]"
+            title="Add Dynamic Text (T)"
+          >
+            <span className="font-bold text-amber-400">T</span>
+            <span>Text</span>
+          </button>
+
+          {/* Audio Tool */}
+          <button
+            onClick={() => {
+              const selClip = project.tracks.flatMap((t) => t.clips).find((c) => selectedClipIds.includes(c.id));
+              if (selClip) {
+                dispatchCommand({
+                  commandId: `cmd_audio_${Date.now()}`,
+                  actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+                  timestampMs: Date.now(),
+                  command: {
+                    type: 'CLIP_UPDATE_AUDIO',
+                    clipId: selClip.id,
+                    audio: {
+                      ...selClip.audio,
+                      volumeDb: { staticValue: -14, keyframes: [] },
+                      duckingRole: selClip.audio.duckingRole === 'duckee' ? 'none' : 'duckee',
+                      duckingAmountDb: -14,
+                    },
+                  },
+                });
+              }
+            }}
+            disabled={selectedClipIds.length === 0}
+            className="flex items-center gap-1 px-2 py-1 rounded bg-[#1f2434] hover:bg-[#282e44] text-zinc-300 disabled:opacity-40 border border-[#2e364e]"
+            title="Audio / Ducking Settings"
+          >
+            <Volume2 className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Audio</span>
+          </button>
+
+          {/* Speed Tool */}
+          <button
+            onClick={() => {
+              const selClip = project.tracks.flatMap((t) => t.clips).find((c) => selectedClipIds.includes(c.id));
+              if (selClip) {
+                const nextSpeed = selClip.speedMultiplier >= 2.0 ? 1.0 : selClip.speedMultiplier + 0.5;
+                dispatchCommand({
+                  commandId: `cmd_speed_${Date.now()}`,
+                  actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+                  timestampMs: Date.now(),
+                  command: {
+                    type: 'CLIP_SET_SPEED',
+                    clipId: selClip.id,
+                    speedMultiplier: nextSpeed,
+                  },
+                });
+              }
+            }}
+            disabled={selectedClipIds.length === 0}
+            className="flex items-center gap-1 px-2 py-1 rounded bg-[#1f2434] hover:bg-[#282e44] text-zinc-300 disabled:opacity-40 border border-[#2e364e]"
+            title="Cycle Clip Speed (1.0x -> 1.5x -> 2.0x)"
+          >
+            <Gauge className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Speed</span>
+          </button>
+
+          {/* Keyframe Tool */}
+          <button
+            onClick={() => {
+              const selClip = project.tracks.flatMap((t) => t.clips).find((c) => selectedClipIds.includes(c.id));
+              if (selClip) {
+                dispatchCommand({
+                  commandId: `cmd_kf_${Date.now()}`,
+                  actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+                  timestampMs: Date.now(),
+                  command: {
+                    type: 'CLIP_SET_KEYFRAME',
+                    clipId: selClip.id,
+                    propertyPath: 'transform.scaleX',
+                    keyframe: {
+                      id: `kf_${Date.now()}`,
+                      timeOffset: { value: 0, rate: displayFps },
+                      value: 1.15,
+                      easing: 'ease-in-out-cubic',
+                      authorId: 'user',
+                    },
+                  },
+                });
+              }
+            }}
+            disabled={selectedClipIds.length === 0}
+            className="flex items-center gap-1 px-2 py-1 rounded bg-[#1f2434] hover:bg-[#282e44] text-zinc-300 disabled:opacity-40 border border-[#2e364e]"
+            title="Add Diamond Keyframe at Playhead (◇)"
+          >
+            <Diamond className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Keyframe</span>
           </button>
 
           <button
@@ -393,7 +608,7 @@ export const MultiTrackTimeline: React.FC = () => {
           </div>
 
           {/* Track Header Rows */}
-          <div className="flex-1 overflow-y-hidden">
+          <div className="flex-1 overflow-y-auto">
             {project.tracks.map((track) => (
               <div
                 key={track.id}
@@ -448,7 +663,7 @@ export const MultiTrackTimeline: React.FC = () => {
         <div
           ref={timelineBodyRef}
           onScroll={(e) => setTimelineScrollLeft(e.currentTarget.scrollLeft)}
-          className="flex-1 overflow-x-auto overflow-y-hidden relative bg-[#0d0f14]"
+          className="flex-1 overflow-x-auto overflow-y-auto relative bg-[#0d0f14]"
         >
           <div style={{ width: totalWidthPx }} className="h-full relative">
             {/* Timecode Ruler with Scrub Dragging */}
@@ -469,14 +684,25 @@ export const MultiTrackTimeline: React.FC = () => {
               ))}
             </div>
 
-            {/* Red Playhead Laser Line */}
+            {/* Red Playhead Laser Line with CapCut Red Scissors Split Handle */}
             <div
-              className="absolute top-0 bottom-0 w-0.5 bg-red-500 z-40 pointer-events-none shadow-[0_0_8px_#ef4444]"
+              className="absolute top-0 bottom-0 w-[2px] bg-red-500 z-40 pointer-events-none shadow-[0_0_8px_#ef4444]"
               style={{
                 left: playheadSec * pixelsPerSecond,
               }}
             >
-              <div className="w-3 h-3 bg-red-500 rotate-45 -translate-x-[5px] -translate-y-1.5 shadow" />
+              <div className="w-3.5 h-3.5 bg-red-500 rotate-45 -translate-x-[6px] -translate-y-1.5 shadow" />
+              {/* CapCut Red Scissors Split Button */}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleSplitAtPlayhead();
+                }}
+                className="absolute top-2 -translate-x-[9px] w-5 h-5 rounded-full bg-red-600 border border-white flex items-center justify-center text-white shadow-md text-[10px] pointer-events-auto cursor-pointer hover:scale-110 active:scale-95 transition-transform"
+                title="Split at playhead (Scissors)"
+              >
+                ✂
+              </button>
             </div>
 
             {/* Ghost Cursor Overlay (Live AI Editing Visualizer) */}
@@ -519,9 +745,9 @@ export const MultiTrackTimeline: React.FC = () => {
                             initialDurSec: durSec,
                           });
                         }}
-                        className={`group absolute top-1 bottom-1 rounded border px-2 py-1 flex items-center justify-between cursor-move text-xs shadow-md transition-all ${
+                        className={`group absolute top-1 bottom-1 rounded border px-2 py-1 flex items-center justify-between cursor-move text-xs shadow-md transition-all overflow-hidden ${
                           isSelected
-                            ? 'ring-2 ring-blue-400 border-white z-20 brightness-110'
+                            ? 'ring-2 ring-[#00e5cc] border-white z-20 brightness-110'
                             : getTrackColor(track.kind)
                         }`}
                         style={{
@@ -529,6 +755,44 @@ export const MultiTrackTimeline: React.FC = () => {
                           width: Math.max(30, durSec * pixelsPerSecond),
                         }}
                       >
+                        {/* Filmstrip Frame Ticks Overlay for Video Clips */}
+                        {(track.kind === 'video' || track.kind === 'stage-puppet') && (
+                          <div className="absolute inset-0 pointer-events-none opacity-20 flex justify-between overflow-hidden px-1">
+                            {Array.from({
+                              length: Math.max(1, Math.floor((durSec * pixelsPerSecond) / 28)),
+                            }).map((_, i) => (
+                              <div
+                                key={i}
+                                className="w-5 h-full border-r border-white/40 flex flex-col justify-between py-0.5"
+                              >
+                                <div className="w-1.5 h-1 bg-white/60 rounded-[1px]" />
+                                <div className="w-1.5 h-1 bg-white/60 rounded-[1px]" />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* CapCut Green/Cyan Audio Waveform Bars */}
+                        {track.kind.startsWith('audio') && (
+                          <div className="absolute inset-0 pointer-events-none opacity-40 flex items-center gap-[2px] px-1 overflow-hidden">
+                            {Array.from({
+                              length: Math.max(2, Math.floor((durSec * pixelsPerSecond) / 4)),
+                            }).map((_, i) => {
+                              const barHeight =
+                                Math.sin(i * 0.45) * 35 + Math.cos(i * 1.1) * 20 + 40;
+                              return (
+                                <div
+                                  key={i}
+                                  className="w-[2px] bg-[#00e5cc] rounded-full"
+                                  style={{
+                                    height: `${Math.max(15, Math.min(95, barHeight))}%`,
+                                  }}
+                                />
+                              );
+                            })}
+                          </div>
+                        )}
+
                         {/* Left Trim Handle */}
                         <div
                           onMouseDown={(e) => {
@@ -548,22 +812,25 @@ export const MultiTrackTimeline: React.FC = () => {
                         />
 
                         {/* Clip Content */}
-                        <div className="flex items-center gap-1.5 truncate pointer-events-none px-1">
+                        <div className="flex items-center gap-1.5 truncate pointer-events-none px-1 relative z-10">
                           {clip.agentProvenance && (
                             <span
                               className="w-1.5 h-1.5 rounded-full shrink-0"
-                              style={{ backgroundColor: '#3b82f6' }}
+                              style={{ backgroundColor: '#00e5cc' }}
                               title={`Placed by AI Agent: ${clip.agentProvenance.agentRole}`}
                             />
                           )}
                           <span className="truncate font-medium">{clip.name}</span>
                         </div>
 
-                        {/* Clip Actions / Lock Badge */}
-                        <div className="flex items-center gap-1 shrink-0 ml-1 pointer-events-auto">
+                        {/* Clip Actions / Lock Badge / CapCut Amber [R] Shader Badge */}
+                        <div className="flex items-center gap-1 shrink-0 ml-1 pointer-events-auto relative z-10">
                           {clip.shaders.length > 0 && (
-                            <span className="text-[10px] bg-purple-950 px-1 py-0.5 rounded text-purple-300 font-mono">
-                              FX
+                            <span
+                              className="text-[10px] bg-amber-500 text-black font-extrabold px-1.5 py-0.2 rounded shadow font-mono"
+                              title={`Active Shaders: ${clip.shaders.map((s) => s.name || s.shaderId).join(', ')}`}
+                            >
+                              R
                             </span>
                           )}
                           <button

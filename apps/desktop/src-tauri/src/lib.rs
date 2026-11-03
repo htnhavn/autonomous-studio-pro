@@ -185,6 +185,12 @@ pub use ipc::{
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .setup(|_app| {
+            tauri::async_runtime::spawn(async {
+                let _ = media_server::start_local_media_server(49210).await;
+            });
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             ipc::get_hardware_capabilities,
             ipc::save_vproj_to_disk,
