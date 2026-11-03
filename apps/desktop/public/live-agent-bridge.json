@@ -1,11 +1,11 @@
 {
-  "seqId": 10,
-  "updatedAtMs": 1793624498895,
+  "seqId": 33,
+  "updatedAtMs": 1793691641218,
   "activeExternalAgent": {
-    "agentId": "agent_vscode_external",
-    "displayName": "⚡ Flash Worker Agent",
-    "provider": "external-mcp",
-    "lastSeenMs": 1793624498895
+    "agentId": "agent_antigravity_master",
+    "displayName": "🤖 Antigravity AI Director",
+    "provider": "antigravity-live-bridge",
+    "lastSeenMs": 1793691641218
   },
   "events": [
     {
@@ -430,6 +430,1148 @@
       },
       "seqId": 10,
       "timestampMs": 1793624498895
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_vscode_external",
+        "role": "external-mcp",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "external-mcp",
+        "status": "thinking",
+        "currentTimelineTime": {
+          "value": 150,
+          "rate": 60
+        },
+        "targetTrackId": "track-stage-1",
+        "targetClipId": null,
+        "liveActionBubble": "🎬 Antigravity khởi động kết nối Live Studio...",
+        "reasoningStream": null,
+        "updatedAtMs": 1793691366553
+      },
+      "seqId": 11,
+      "timestampMs": 1793691366557
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "thinking",
+        "currentTimelineTime": {
+          "value": 0,
+          "rate": 60
+        },
+        "targetTrackId": "track-stage-1",
+        "liveActionBubble": "🧠 [Antigravity] Phân tích chủ đề: 'Kỷ Nguyên AI Tự Động Hóa 2026: Phố Wall, Siêu...' & sinh kịch bản",
+        "reasoningStream": "🧠 [Antigravity] Phân tích chủ đề: 'Kỷ Nguyên AI Tự Động Hóa 2026: Phố Wall, Siêu...' & sinh kịch bản",
+        "updatedAtMs": 1793691626618
+      },
+      "seqId": 12,
+      "timestampMs": 1793691626622
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "thinking",
+        "currentTimelineTime": {
+          "value": 0,
+          "rate": 60
+        },
+        "targetTrackId": "track-stage-1",
+        "liveActionBubble": "⚡ [Antigravity] Dựng kịch bản sân khấu 'economics-stickman' (Move-Sets & 2.5D Rig)...",
+        "reasoningStream": "⚡ [Antigravity] Dựng kịch bản sân khấu 'economics-stickman' (Move-Sets & 2.5D Rig)...",
+        "updatedAtMs": 1793691627850
+      },
+      "seqId": 13,
+      "timestampMs": 1793691627853
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_05a87059",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691627850,
+        "reasoning": "Antigravity compiled deterministic stage script using economics-stickman genre kit.",
+        "command": {
+          "type": "PROJECT_COMPILE_DETERMINISTIC_STAGE",
+          "scriptText": "Làn sóng AI Agent năm 2026 bùng nổ, kéo theo dòng vốn nghìn tỷ USD đổ dồn vào hạ tầng siêu máy chủ! Các quỹ đầu tư Phố Wall đồng loạt rót vốn khi biên lợi nhuận điện toán tăng vọt kỷ lục! Nhưng đây mới chỉ là khởi đầu: kỷ nguyên tự động hóa sản xuất video không cần can thiệp thủ công đã bắt đầu!",
+          "genreKit": "economics-stickman",
+          "replaceExistingStageTrack": true
+        }
+      },
+      "seqId": 14,
+      "timestampMs": 1793691627853
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "searching-web",
+        "currentTimelineTime": {
+          "value": 90,
+          "rate": 60
+        },
+        "targetTrackId": "track-video-broll",
+        "liveActionBubble": "🔍 [Antigravity] Săn B-Roll 'Wall Street Surge' & phóng Live Asset Flight...",
+        "reasoningStream": "🔍 [Antigravity] Săn B-Roll 'Wall Street Surge' & phóng Live Asset Flight...",
+        "updatedAtMs": 1793691629666
+      },
+      "seqId": 15,
+      "timestampMs": 1793691629670
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_c26dbb10",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691629666,
+        "reasoning": "Registered asset Wall Street Surge into Media Pool",
+        "command": {
+          "type": "MEDIA_POOL_REGISTER_ASSET",
+          "asset": {
+            "id": "asset_market_surge_01",
+            "name": "📈 Wall Street Stock Market Surge (High-Res)",
+            "kind": "image",
+            "localFilePath": "/media/ai_market_chart.jpg",
+            "semanticTags": [
+              "wall-street",
+              "stock-market",
+              "trading",
+              "finance",
+              "surge"
+            ],
+            "aestheticScore": 9.7,
+            "origin": {
+              "provider": "unsplash",
+              "searchQuery": "Wall Street Market Surge",
+              "sourceUrl": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1280&q=80"
+            }
+          }
+        }
+      },
+      "seqId": 16,
+      "timestampMs": 1793691629670
+    },
+    {
+      "eventType": "LIVE_ASSET_FLIGHT",
+      "flight": {
+        "eventId": "flight_4e9fdd",
+        "agentId": "agent_antigravity_master",
+        "asset": {
+          "id": "asset_market_surge_01",
+          "name": "📈 Wall Street Stock Market Surge (High-Res)",
+          "kind": "image",
+          "localFilePath": "/media/ai_market_chart.jpg",
+          "semanticTags": [
+            "wall-street",
+            "stock-market",
+            "trading",
+            "finance",
+            "surge"
+          ],
+          "aestheticScore": 9.7,
+          "origin": {
+            "provider": "unsplash",
+            "searchQuery": "Wall Street Market Surge",
+            "sourceUrl": "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1280&q=80"
+          }
+        },
+        "targetTrackId": "track-video-broll",
+        "targetStartTime": {
+          "value": 90,
+          "rate": 60
+        },
+        "searchQueryUsed": "Wall Street Market Surge",
+        "vlmMatchScore": 9.8,
+        "timestampMs": 1793691629667
+      },
+      "seqId": 17,
+      "timestampMs": 1793691629670
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_14de8baf",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691629667,
+        "reasoning": "Inserted Wall Street B-Roll clip at 1.5s with CapCut 3D Zoom Pro",
+        "command": {
+          "type": "CLIP_INSERT",
+          "trackId": "track-video-broll",
+          "clip": {
+            "id": "clip_broll_market_01",
+            "name": "📊 B-Roll • Wall Street Stock Surge",
+            "trackId": "track-video-broll",
+            "assetId": "asset_market_surge_01",
+            "kind": "video",
+            "timelineRange": {
+              "startTime": {
+                "value": 90,
+                "rate": 60
+              },
+              "duration": {
+                "value": 210,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 210,
+                "rate": 60
+              }
+            },
+            "speedMultiplier": 1.0,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "agentProvenance": {
+              "agentId": "agent_antigravity_master",
+              "agentRole": "asset-hunter",
+              "modelId": "antigravity-gemini",
+              "reasoningSummary": "Inserted B-Roll for Market Surge dialogue",
+              "timestampIso": "2026-11-03T07:40:29Z"
+            },
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1.05,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1.05,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [
+              {
+                "id": "sh_836710",
+                "shaderId": "capcut.3d-zoom-pro",
+                "name": "3D Dynamic Zoom Pro",
+                "enabled": true,
+                "category": "camera-motion",
+                "mix": {
+                  "staticValue": 1.0,
+                  "keyframes": []
+                },
+                "uniforms": {}
+              }
+            ],
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": true,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            }
+          },
+          "rippleShiftSubsequentClips": false
+        }
+      },
+      "seqId": 18,
+      "timestampMs": 1793691629670
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "color-grading",
+        "currentTimelineTime": {
+          "value": 168,
+          "rate": 60
+        },
+        "targetTrackId": "track-video-broll",
+        "liveActionBubble": "🎨 [Antigravity] Đang cân chỉnh màu DaVinci (Exposure +0.35, Contrast 1.25, Temp +0.25, Halation 0.45)...",
+        "reasoningStream": "🎨 [Antigravity] Đang cân chỉnh màu DaVinci (Exposure +0.35, Contrast 1.25, Temp +0.25, Halation 0.45)...",
+        "updatedAtMs": 1793691631698
+      },
+      "seqId": 19,
+      "timestampMs": 1793691631702
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_3ac598b3",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691631699,
+        "reasoning": "Antigravity applied cinematic DaVinci color grade to Market B-Roll.",
+        "command": {
+          "type": "CLIP_SET_COLOR_GRADE",
+          "clipId": "clip_broll_market_01",
+          "colorGrade": {
+            "enabled": true,
+            "exposure": {
+              "staticValue": 0.35,
+              "keyframes": []
+            },
+            "contrast": {
+              "staticValue": 1.25,
+              "keyframes": []
+            },
+            "saturation": {
+              "staticValue": 1.15,
+              "keyframes": []
+            },
+            "temperature": {
+              "staticValue": 0.25,
+              "keyframes": []
+            },
+            "tint": {
+              "staticValue": -0.05,
+              "keyframes": []
+            },
+            "lift": [
+              0.0,
+              0.02,
+              0.04,
+              0.0
+            ],
+            "gamma": [
+              0.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            "gain": [
+              1.05,
+              1.02,
+              0.98,
+              1.0
+            ],
+            "lutIntensity": {
+              "staticValue": 0.85,
+              "keyframes": []
+            },
+            "filmGrainIntensity": {
+              "staticValue": 0.3,
+              "keyframes": []
+            },
+            "halationIntensity": {
+              "staticValue": 0.45,
+              "keyframes": []
+            }
+          }
+        }
+      },
+      "seqId": 20,
+      "timestampMs": 1793691631702
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "searching-web",
+        "currentTimelineTime": {
+          "value": 330,
+          "rate": 60
+        },
+        "targetTrackId": "track-video-broll",
+        "liveActionBubble": "🔍 [Antigravity] Thả B-Roll 'AI Silicon Supercomputer' & áp Shader CRT...",
+        "reasoningStream": "🔍 [Antigravity] Thả B-Roll 'AI Silicon Supercomputer' & áp Shader CRT...",
+        "updatedAtMs": 1793691633516
+      },
+      "seqId": 21,
+      "timestampMs": 1793691633520
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_249fa831",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691633517,
+        "reasoning": "Registered asset AI Neural Matrix into Media Pool",
+        "command": {
+          "type": "MEDIA_POOL_REGISTER_ASSET",
+          "asset": {
+            "id": "asset_neural_matrix_02",
+            "name": "🧠 AI Silicon Neural Matrix (UltraHD)",
+            "kind": "image",
+            "localFilePath": "/media/ai_neural_grid.jpg",
+            "semanticTags": [
+              "ai",
+              "supercomputer",
+              "neural-network",
+              "silicon",
+              "gpu"
+            ],
+            "aestheticScore": 9.9,
+            "origin": {
+              "provider": "unsplash",
+              "searchQuery": "AI Supercomputer Neural Matrix",
+              "sourceUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1280&q=80"
+            }
+          }
+        }
+      },
+      "seqId": 22,
+      "timestampMs": 1793691633520
+    },
+    {
+      "eventType": "LIVE_ASSET_FLIGHT",
+      "flight": {
+        "eventId": "flight_8fd0b8",
+        "agentId": "agent_antigravity_master",
+        "asset": {
+          "id": "asset_neural_matrix_02",
+          "name": "🧠 AI Silicon Neural Matrix (UltraHD)",
+          "kind": "image",
+          "localFilePath": "/media/ai_neural_grid.jpg",
+          "semanticTags": [
+            "ai",
+            "supercomputer",
+            "neural-network",
+            "silicon",
+            "gpu"
+          ],
+          "aestheticScore": 9.9,
+          "origin": {
+            "provider": "unsplash",
+            "searchQuery": "AI Supercomputer Neural Matrix",
+            "sourceUrl": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1280&q=80"
+          }
+        },
+        "targetTrackId": "track-video-broll",
+        "targetStartTime": {
+          "value": 330,
+          "rate": 60
+        },
+        "searchQueryUsed": "AI Supercomputer Neural Matrix",
+        "vlmMatchScore": 9.8,
+        "timestampMs": 1793691633517
+      },
+      "seqId": 23,
+      "timestampMs": 1793691633520
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_fc5da67f",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691633517,
+        "reasoning": "Inserted Neural Matrix B-Roll at 5.5s with CRT VHS Glitch Shader",
+        "command": {
+          "type": "CLIP_INSERT",
+          "trackId": "track-video-broll",
+          "clip": {
+            "id": "clip_broll_neural_02",
+            "name": "⚡ B-Roll • AI Silicon Supercomputer",
+            "trackId": "track-video-broll",
+            "assetId": "asset_neural_matrix_02",
+            "kind": "video",
+            "timelineRange": {
+              "startTime": {
+                "value": 330,
+                "rate": 60
+              },
+              "duration": {
+                "value": 240,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 240,
+                "rate": 60
+              }
+            },
+            "speedMultiplier": 1.0,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "agentProvenance": {
+              "agentId": "agent_antigravity_master",
+              "agentRole": "asset-hunter",
+              "modelId": "antigravity-gemini",
+              "reasoningSummary": "Inserted Neural Matrix B-Roll for AI infrastructure highlight",
+              "timestampIso": "2026-11-03T07:40:33Z"
+            },
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1.0,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1.0,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [
+              {
+                "id": "sh_2d0fed",
+                "shaderId": "shadertoy.crt-vhs",
+                "name": "Retro CRT Cyber Scanlines",
+                "enabled": true,
+                "category": "glitch-retro",
+                "mix": {
+                  "staticValue": 0.8,
+                  "keyframes": []
+                },
+                "uniforms": {}
+              }
+            ],
+            "colorGrade": {
+              "enabled": true,
+              "exposure": {
+                "staticValue": 0.2,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1.3,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1.2,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": -0.2,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0.1,
+                "keyframes": []
+              },
+              "lift": [
+                0.0,
+                0.0,
+                0.02,
+                0.0
+              ],
+              "gamma": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "gain": [
+                0.95,
+                1.05,
+                1.1,
+                1.0
+              ],
+              "lutIntensity": {
+                "staticValue": 1.0,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0.25,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0.35,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": true,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            }
+          },
+          "rippleShiftSubsequentClips": false
+        }
+      },
+      "seqId": 24,
+      "timestampMs": 1793691633520
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "cutting",
+        "currentTimelineTime": {
+          "value": 180,
+          "rate": 60
+        },
+        "targetTrackId": "track-video-aroll",
+        "liveActionBubble": "✂️ [Antigravity] Cắt dao lam (CLIP_SPLIT) trên dải Hero A-Roll tại 3.0s...",
+        "reasoningStream": "✂️ [Antigravity] Cắt dao lam (CLIP_SPLIT) trên dải Hero A-Roll tại 3.0s...",
+        "updatedAtMs": 1793691635539
+      },
+      "seqId": 25,
+      "timestampMs": 1793691635543
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_bfc81f09",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691635539,
+        "reasoning": "Antigravity executed precision cut at 3.0s boundary for dramatic beat sync.",
+        "command": {
+          "type": "CLIP_SPLIT",
+          "clipId": "clip_aroll_01",
+          "splitAtTimelineTime": {
+            "value": 180,
+            "rate": 60
+          }
+        }
+      },
+      "seqId": 26,
+      "timestampMs": 1793691635543
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "audio-syncing",
+        "currentTimelineTime": {
+          "value": 0,
+          "rate": 60
+        },
+        "targetTrackId": "track-audio-music",
+        "liveActionBubble": "🎵 [Antigravity] Thả Soundtrack 128BPM Cyberpunk Beat vào Track A3 & bật Auto-Ducking -14dB...",
+        "reasoningStream": "🎵 [Antigravity] Thả Soundtrack 128BPM Cyberpunk Beat vào Track A3 & bật Auto-Ducking -14dB...",
+        "updatedAtMs": 1793691637363
+      },
+      "seqId": 27,
+      "timestampMs": 1793691637367
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_466bb93a",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691637363,
+        "reasoning": "Registered asset Cyberpunk Synth Beat into Media Pool",
+        "command": {
+          "type": "MEDIA_POOL_REGISTER_ASSET",
+          "asset": {
+            "id": "asset_bgm_cyber_beat",
+            "name": "🎵 Cyberpunk Synth Beat 128BPM (Pitched WAV)",
+            "kind": "audio",
+            "localFilePath": "/media/viper_beat.mp3",
+            "semanticTags": [
+              "synth",
+              "electronic",
+              "128bpm",
+              "beat",
+              "cyberpunk"
+            ],
+            "aestheticScore": 9.6,
+            "origin": {
+              "provider": "wikimedia",
+              "searchQuery": "Cyberpunk Electronic Beat",
+              "sourceUrl": "https://github.com/mdn/webaudio-examples/raw/main/audio-analyser/viper.mp3"
+            }
+          }
+        }
+      },
+      "seqId": 28,
+      "timestampMs": 1793691637367
+    },
+    {
+      "eventType": "LIVE_ASSET_FLIGHT",
+      "flight": {
+        "eventId": "flight_2d9ec6",
+        "agentId": "agent_antigravity_master",
+        "asset": {
+          "id": "asset_bgm_cyber_beat",
+          "name": "🎵 Cyberpunk Synth Beat 128BPM (Pitched WAV)",
+          "kind": "audio",
+          "localFilePath": "/media/viper_beat.mp3",
+          "semanticTags": [
+            "synth",
+            "electronic",
+            "128bpm",
+            "beat",
+            "cyberpunk"
+          ],
+          "aestheticScore": 9.6,
+          "origin": {
+            "provider": "wikimedia",
+            "searchQuery": "Cyberpunk Electronic Beat",
+            "sourceUrl": "https://github.com/mdn/webaudio-examples/raw/main/audio-analyser/viper.mp3"
+          }
+        },
+        "targetTrackId": "track-audio-music",
+        "targetStartTime": {
+          "value": 0,
+          "rate": 60
+        },
+        "searchQueryUsed": "Cyberpunk Electronic Synth Beat",
+        "vlmMatchScore": 9.8,
+        "timestampMs": 1793691637363
+      },
+      "seqId": 29,
+      "timestampMs": 1793691637367
+    },
+    {
+      "eventType": "TIMELINE_COMMAND",
+      "envelope": {
+        "commandId": "cmd_antigravity_e7925502",
+        "actor": {
+          "kind": "agent",
+          "id": "agent_antigravity_master",
+          "role": "director",
+          "displayName": "🤖 Antigravity AI Director"
+        },
+        "timestampMs": 1793691637363,
+        "reasoning": "Inserted Cyberpunk Beat on A3 with Auto-Ducking active",
+        "command": {
+          "type": "CLIP_INSERT",
+          "trackId": "track-audio-music",
+          "clip": {
+            "id": "clip_bgm_cyber_01",
+            "name": "🎵 Cyberpunk Electronic BGM",
+            "trackId": "track-audio-music",
+            "assetId": "asset_bgm_cyber_beat",
+            "kind": "audio-music",
+            "timelineRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 720,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 720,
+                "rate": 60
+              }
+            },
+            "speedMultiplier": 1.0,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "agentProvenance": {
+              "agentId": "agent_antigravity_master",
+              "agentRole": "sound-designer",
+              "modelId": "antigravity-gemini",
+              "reasoningSummary": "Inserted 128BPM Cyberpunk Beat synced to narration",
+              "timestampIso": "2026-11-03T07:40:37Z"
+            },
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [],
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": -2.5,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": false,
+              "fadeInDuration": {
+                "value": 30,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 60,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "music-target",
+              "duckingAmountDb": -14.0
+            }
+          },
+          "rippleShiftSubsequentClips": false
+        }
+      },
+      "seqId": 30,
+      "timestampMs": 1793691637367
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "rendering-vfx",
+        "currentTimelineTime": {
+          "value": 450,
+          "rate": 60
+        },
+        "targetTrackId": "track-stage-1",
+        "liveActionBubble": "🔍 [Antigravity] VLM Critic kiểm duyệt: Pacing 9.6/10, Dynamic Captions chuẩn xác, Zero Black Frames!",
+        "reasoningStream": "🔍 [Antigravity] VLM Critic kiểm duyệt: Pacing 9.6/10, Dynamic Captions chuẩn xác, Zero Black Frames!",
+        "updatedAtMs": 1793691639388
+      },
+      "seqId": 31,
+      "timestampMs": 1793691639392
+    },
+    {
+      "eventType": "CRITIC_REPORT",
+      "report": {
+        "overallScore": 9.5,
+        "pacingScore": 9.6,
+        "aestheticScore": 9.4,
+        "captionSyncScore": 9.7,
+        "identifiedIssues": [],
+        "recommendedFixes": [],
+        "summary": "Master Cut hoàn hảo: Move-sets khớp nhịp lời thoại, B-roll 3D zoom mượt mà, màu DaVinci tương phản cao, âm nhạc Auto-Ducking chuẩn -14dB.",
+        "reviewedAtIso": "2026-11-03T07:40:39Z"
+      },
+      "seqId": 32,
+      "timestampMs": 1793691639392
+    },
+    {
+      "eventType": "AGENT_GHOST_CURSOR",
+      "cursor": {
+        "agentId": "agent_antigravity_master",
+        "role": "director",
+        "displayName": "🤖 Antigravity AI Director",
+        "colorHex": "#06B6D4",
+        "provider": "antigravity-live-bridge",
+        "status": "idle",
+        "currentTimelineTime": {
+          "value": 0,
+          "rate": 60
+        },
+        "targetTrackId": "track-stage-1",
+        "liveActionBubble": "✅ [Antigravity] Bản Master đã dựng xong! Mời bạn duyệt & bấm Play để trải nghiệm!",
+        "reasoningStream": "✅ [Antigravity] Bản Master đã dựng xong! Mời bạn duyệt & bấm Play để trải nghiệm!",
+        "updatedAtMs": 1793691641214
+      },
+      "seqId": 33,
+      "timestampMs": 1793691641218
     }
   ]
 }
