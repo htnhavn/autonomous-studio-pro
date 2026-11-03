@@ -4,7 +4,7 @@
  * SAM 2.1 Text-Behind-Subject rendering, and Code-as-Motion overlay.
  */
 
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useStudioStore } from '../../store/useStudioStore';
 import { MotionCodeRenderer } from './MotionCodeRenderer';
 import { StickmanStageRenderer } from '../stage-studio/StickmanStageRenderer';
@@ -28,6 +28,7 @@ import {
 export const ProgramMonitor: React.FC = () => {
   const project = useStudioStore((s) => s.project);
   const playheadTime = useStudioStore((s) => s.playheadTime);
+  const isPlaying = useStudioStore((s) => s.isPlaying);
   const selectedClipIds = useStudioStore((s) => s.selectedClipIds);
   const dispatchCommand = useStudioStore((s) => s.dispatchCommand);
 
@@ -36,6 +37,8 @@ export const ProgramMonitor: React.FC = () => {
   const [dragStartPos, setDragStartPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const videoElementRef = useRef<HTMLVideoElement | null>(null);
+
   const currentSec = toSeconds(playheadTime);
   const currentFrame = toFrames(playheadTime, project.settings.fps);
 
@@ -63,6 +66,25 @@ export const ProgramMonitor: React.FC = () => {
   const activeStageClip = activeClips.find(
     ({ clip, track }) => clip.kind === 'stage-puppet' || track.kind === 'stage-puppet'
   )?.clip;
+
+  // Synchronize native video element playback and current time to master playhead
+  useEffect(() => {
+    if (!videoElementRef.current || !activeVideoClip) return;
+    const clipStartSec = activeVideoClip.timelineRange.startTime.value / activeVideoClip.timelineRange.startTime.rate;
+    const sourceStartSec = activeVideoClip.sourceRange.startTime.value / activeVideoClip.sourceRange.startTime.rate;
+    const currentTimelineSec = playheadTime.value / playheadTime.rate;
+    const localSec = Math.max(0, currentTimelineSec - clipStartSec + sourceStartSec);
+
+    const video = videoElementRef.current;
+    if (Math.abs(video.currentTime - localSec) > 0.15) {
+      video.currentTime = localSec;
+    }
+    if (isPlaying && video.paused) {
+      video.play().catch(() => {});
+    } else if (!isPlaying && !video.paused) {
+      video.pause();
+    }
+  }, [playheadTime.value, isPlaying, activeVideoClip]);
 
   let stageClipProgress = 0;
   let stageClipTimeSec = 0;
@@ -168,7 +190,11 @@ export const ProgramMonitor: React.FC = () => {
           </button>
         </div>
 
-        <button className="p-1 rounded hover:bg-zinc-800 text-zinc-400" title="Fullscreen Monitor">
+        <button
+          onClick={() => containerRef.current?.requestFullscreen?.()}
+          className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
+          title="Fullscreen Monitor"
+        >
           <Maximize2 className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -206,10 +232,8 @@ export const ProgramMonitor: React.FC = () => {
                   activeVideoAsset.localFilePath.startsWith('http')) ? (
                   activeVideoAsset.kind === 'video' ? (
                     <video
+                      ref={videoElementRef}
                       src={activeVideoAsset.localFilePath}
-                      autoPlay
-                      loop
-                      muted
                       playsInline
                       className="w-full h-full object-cover"
                       style={{

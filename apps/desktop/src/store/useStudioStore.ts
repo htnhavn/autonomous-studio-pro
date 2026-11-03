@@ -639,21 +639,128 @@ export function applyTimelineCommand(
         stageScene: sc.stageScene,
       }));
 
-      const updatedTracks = project.tracks.map((track) => {
-        if (track.id !== 'track-stage-1') return track;
+      const generatedCaptionClips: TimelineClip[] = compiled.scenes.map((sc, idx) => {
+        const text = sc.stageScene.actors[0]?.speechBubbleText || `Scene ${idx + 1}`;
+        const words = text.split(/\s+/).filter(Boolean);
+        const wDurSec = sc.durationSec / Math.max(1, words.length);
+        const tokens = words.map((w, wIdx) => ({
+          id: `w_det_${idx}_${wIdx}`,
+          word: w,
+          startOffset: fromSeconds(wIdx * wDurSec, fps),
+          endOffset: fromSeconds((wIdx + 1) * wDurSec, fps),
+          confidence: 1.0,
+          isKeywordEmphasized: w.length > 5,
+        }));
+
         return {
-          ...track,
-          clips: cmd.replaceExistingStageTrack
-            ? generatedStageClips
-            : [...track.clips, ...generatedStageClips],
+          id: `clip_caption_det_${Date.now()}_${idx}`,
+          name: `💬 #${idx + 1}: ${text.substring(0, 25)}...`,
+          trackId: 'track-caption-1',
+          kind: 'caption' as const,
+          timelineRange: {
+            startTime: fromSeconds(sc.startTimeSec, fps),
+            duration: fromSeconds(sc.durationSec, fps),
+          },
+          sourceRange: {
+            startTime: fromSeconds(0, fps),
+            duration: fromSeconds(sc.durationSec, fps),
+          },
+          speedMultiplier: 1.0,
+          blendMode: 'normal' as const,
+          enabled: true,
+          lockedByUser: false,
+          transform: {
+            positionX: { staticValue: 0, keyframes: [] },
+            positionY: { staticValue: 0.35, keyframes: [] },
+            positionZ: { staticValue: 0, keyframes: [] },
+            scaleX: { staticValue: 1, keyframes: [] },
+            scaleY: { staticValue: 1, keyframes: [] },
+            rotationX: { staticValue: 0, keyframes: [] },
+            rotationY: { staticValue: 0, keyframes: [] },
+            rotationZ: { staticValue: 0, keyframes: [] },
+            anchorX: { staticValue: 0.5, keyframes: [] },
+            anchorY: { staticValue: 0.5, keyframes: [] },
+            opacity: { staticValue: 1, keyframes: [] },
+          },
+          shaders: [],
+          colorGrade: {
+            enabled: false,
+            exposure: { staticValue: 0, keyframes: [] },
+            contrast: { staticValue: 1, keyframes: [] },
+            saturation: { staticValue: 1, keyframes: [] },
+            temperature: { staticValue: 0, keyframes: [] },
+            tint: { staticValue: 0, keyframes: [] },
+            lift: [0, 0, 0, 0] as [number, number, number, number],
+            gamma: [0, 0, 0, 0] as [number, number, number, number],
+            gain: [0, 0, 0, 0] as [number, number, number, number],
+            lutIntensity: { staticValue: 1, keyframes: [] },
+            filmGrainIntensity: { staticValue: 0, keyframes: [] },
+            halationIntensity: { staticValue: 0, keyframes: [] },
+          },
+          aiVfx: {},
+          audio: {
+            volumeDb: { staticValue: 0, keyframes: [] },
+            pan: { staticValue: 0, keyframes: [] },
+            mute: true,
+            fadeInDuration: fromSeconds(0, fps),
+            fadeOutDuration: fromSeconds(0, fps),
+            aiDenoiseEnabled: false,
+            aiVocalIsolationEnabled: false,
+            duckingRole: 'none' as const,
+            duckingAmountDb: 0,
+          },
+          dynamicCaptions: {
+            stylePresetId: 'hormozi-punch' as const,
+            fontFamily: 'Montserrat, sans-serif',
+            fontSizePx: 48,
+            primaryColorHex: '#FFFFFF',
+            activeWordColorHex: '#FBBF24',
+            strokeColorHex: '#000000',
+            strokeWidthPx: 8,
+            maxWordsPerLine: 4,
+            placeBehindSubjectIfMasked: false,
+            words: tokens,
+          },
         };
       });
+
+      const updatedTracks = project.tracks.map((track) => {
+        if (track.id === 'track-stage-1') {
+          return {
+            ...track,
+            clips: cmd.replaceExistingStageTrack
+              ? generatedStageClips
+              : [...track.clips, ...generatedStageClips],
+          };
+        }
+        if (track.id === 'track-caption-1') {
+          return {
+            ...track,
+            clips: cmd.replaceExistingStageTrack
+              ? generatedCaptionClips
+              : [...track.clips, ...generatedCaptionClips],
+          };
+        }
+        return track;
+      });
+
+      const sceneCutMarkers = compiled.scenes.map((sc, idx) => ({
+        id: `marker_sc_${idx + 1}`,
+        time: fromSeconds(sc.startTimeSec, fps),
+        strength: 1.0,
+        isDownbeat: true,
+        label: `Scene #${idx + 1}`,
+      }));
 
       return {
         nextProject: {
           ...project,
           updatedAtIso: new Date().toISOString(),
           tracks: updatedTracks,
+          beatGrid: {
+            ...project.beatGrid,
+            markers: [...project.beatGrid.markers, ...sceneCutMarkers],
+          },
         },
       };
     }

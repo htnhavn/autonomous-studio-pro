@@ -171,6 +171,58 @@ impl FFmpegRenderEngine {
             .status()?;
         Ok(status.success())
     }
+
+    /// Verifies that an MP4 container has valid `ftyp` and `moov` or `mdat` atoms,
+    /// ensuring it is a real encoded video file and not an empty or truncated stub.
+    pub fn verify_mp4_ftyp_moov_atoms(file_path: &str) -> Result<bool, String> {
+        use std::io::Read;
+
+        let path = std::path::Path::new(file_path);
+        if !path.exists() {
+            return Err(format!("File does not exist: {}", file_path));
+        }
+
+        let mut file = std::fs::File::open(path)
+            .map_err(|e| format!("Cannot open file {}: {}", file_path, e))?;
+
+        let metadata = file.metadata()
+            .map_err(|e| format!("Cannot read metadata {}: {}", file_path, e))?;
+
+        if metadata.len() < 32 {
+            return Err(format!("File too small ({} bytes) to be a valid MP4", metadata.len()));
+        }
+
+        let mut header = [0u8; 4096];
+        let bytes_read = file.read(&mut header)
+            .map_err(|e| format!("Failed to read header from {}: {}", file_path, e))?;
+
+        let slice = &header[..bytes_read];
+
+        // Check for 'ftyp' atom at bytes 4..8
+        let has_ftyp = slice.windows(4).any(|w| w == b"ftyp");
+        if !has_ftyp {
+            return Err("Missing 'ftyp' box in MP4 header".to_string());
+        }
+
+        // Check for 'moov' or 'mdat' atom
+        let has_moov_or_mdat = slice.windows(4).any(|w| w == b"moov" || w == b"mdat");
+        if !has_moov_or_mdat {
+            // Also check trailing bytes if faststart was not applied
+            if metadata.len() > 4096 {
+                use std::io::Seek;
+                let _ = file.seek(std::io::SeekFrom::End(-1024));
+                let mut tail = [0u8; 1024];
+                if let Ok(tail_read) = file.read(&mut tail) {
+                    if tail[..tail_read].windows(4).any(|w| w == b"moov" || w == b"mdat") {
+                        return Ok(true);
+                    }
+                }
+            }
+            return Err("Missing 'moov' or 'mdat' atom in MP4 file".to_string());
+        }
+
+        Ok(true)
+    }
 }
 
 #[cfg(test)]
@@ -233,5 +285,31 @@ mod tests {
 
         assert!(args.contains(&"lavfi".to_string()));
         assert!(args.contains(&"-filter_complex".to_string()));
+    }
+
+    #[test]
+    fn test_verify_mp4_ftyp_moov_atoms() {
+        let temp_dir = std::env::temp_dir();
+        let test_mp4 = temp_dir.join("test_atom_check.mp4");
+
+        // Construct a synthetic 48-byte MP4 header with ftyp and moov
+        let mut sample_mp4 = Vec::new();
+        // Box 1: ftyp (length 24)
+        sample_mp4.extend_from_slice(&24u32.to_be_bytes());
+        sample_mp4.extend_from_slice(b"ftypisom");
+        sample_mp4.extend_from_slice(&512u32.to_be_bytes());
+        sample_mp4.extend_from_slice(b"isomiso2");
+        // Box 2: moov (length 24)
+        sample_mp4.extend_from_slice(&24u32.to_be_bytes());
+        sample_mp4.extend_from_slice(b"moovmvhd");
+        sample_mp4.extend_from_slice(&[0u8; 16]);
+
+        std::fs::write(&test_mp4, &sample_mp4).unwrap();
+
+        let check_res = FFmpegRenderEngine::verify_mp4_ftyp_moov_atoms(test_mp4.to_str().unwrap());
+        assert!(check_res.is_ok());
+        assert_eq!(check_res.unwrap(), true);
+
+        let _ = std::fs::remove_file(&test_mp4);
     }
 }

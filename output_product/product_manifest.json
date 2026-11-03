@@ -1,0 +1,49 @@
+{
+  "generatedAtIso": "2026-11-03T06:31:16Z",
+  "elapsedSeconds": 92.0,
+  "products": [
+    {
+      "filename": "voiceover_and_beats.wav",
+      "bytes": 288044,
+      "sha256": "8559ebcebd5be4d1d43295ac09910447075f2702e8ce1d2013ee3bfa6fa84e25",
+      "detectedSilences": [
+        [
+          2.0,
+          2.8
+        ],
+        [
+          5.0,
+          5.8
+        ]
+      ],
+      "bpm": 120.0
+    },
+    {
+      "filename": "macro_crisis_2026.vproj.json",
+      "bytes": 72596,
+      "sha256": "5bee76b99b8af886e0257113065a17382a4785e50b7c2d46fe0c1b457790ad7d",
+      "format": "autonomous-studio.vproj"
+    },
+    {
+      "filename": "macro_crisis_2026.otio",
+      "bytes": 11809,
+      "sha256": "572ffedf1aacf2f8f05d93c3568981abb5ddd9445994f91f31efead5bfb39547",
+      "schema": "Timeline.1"
+    },
+    {
+      "filename": "storyboard_contact_sheet.bmp",
+      "bytes": 3686454,
+      "sha256": "ed888de5ca7d9fca9a680b89209b447b905beb8bf720139864f2acd69d543b1e",
+      "format": "BMP"
+    },
+    {
+      "filename": "macro_crisis_2026_master.mp4",
+      "bytes": 2238343,
+      "sha256": "d81f6b94159a7e0431b06989435ce642d9c1ec3bd13ab0f68807a54d0ca04a1d",
+      "atomsVerified": [
+        "ftyp",
+        "moov"
+      ]
+    }
+  ]
+}

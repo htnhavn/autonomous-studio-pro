@@ -41,8 +41,15 @@ import {
   createBatchProductionDag,
   stepBatchProductionDag,
   invalidateSceneInBatchDag,
+  exportProjectToOtioDocument,
+  exportProjectToMotionCanvasSpec,
+  exportProjectToOpenToonzExposureSheet,
+  buildIsolatedBlender3DWorkerJob,
+  importOtioDocumentToGatewayCommands,
 } from '../packages/core-schema/src';
 import { createDefaultStudioProject } from '../apps/desktop/src/store/useStudioStore';
+import * as fs from 'fs';
+import * as path from 'path';
 
 function assert(condition: boolean, message: string): void {
   if (!condition) {
@@ -127,6 +134,172 @@ export function runAllArchitectureTests(): readonly TestResultRecord[] {
       'Pointing action must interpolate rightUpperArmDeg between 0.0 and 0.5'
     );
     return `Verified all 12 reusable character actions (${actionKeys.join(', ')}) and skeletal interpolation.`;
+  });
+
+  // --------------------------------------------------------------------------
+  // TEST 4: Industrial Interchange Adapters (OTIO, Motion Canvas, OpenToonz, Blender 3D)
+  // --------------------------------------------------------------------------
+  record('T04', 'Industrial Interchange Adapters Verification', () => {
+    const baseProject = createDefaultStudioProject('OTIO & Interchange Test');
+    const assetRegistry = createDefaultAssetRegistry();
+
+    // Add a sample clip to video track so OTIO export produces Clip items
+    const sampleClip = {
+      id: 'clip_otio_test_1',
+      name: 'Sample Test Clip',
+      trackId: 'track-video-aroll',
+      kind: 'video' as const,
+      timelineRange: {
+        startTime: { value: 0, rate: 60 },
+        duration: { value: 180, rate: 60 },
+      },
+      sourceRange: {
+        startTime: { value: 0, rate: 60 },
+        duration: { value: 180, rate: 60 },
+      },
+      playbackSpeed: 1,
+      blendMode: 'normal' as const,
+      transform: {
+        position: { staticValue: [0.5, 0.5] as [number, number], keyframes: [] },
+        scale: { staticValue: [1, 1] as [number, number], keyframes: [] },
+        rotationDeg: { staticValue: 0, keyframes: [] },
+        opacity: { staticValue: 1, keyframes: [] },
+      },
+      colorGrade: {
+        enabled: false,
+        exposure: { staticValue: 0, keyframes: [] },
+        contrast: { staticValue: 1, keyframes: [] },
+        saturation: { staticValue: 1, keyframes: [] },
+        temperature: { staticValue: 0, keyframes: [] },
+        tint: { staticValue: 0, keyframes: [] },
+        lift: [0, 0, 0, 0] as [number, number, number, number],
+        gamma: [0, 0, 0, 0] as [number, number, number, number],
+        gain: [0, 0, 0, 0] as [number, number, number, number],
+        lutIntensity: { staticValue: 1, keyframes: [] },
+        filmGrainIntensity: { staticValue: 0, keyframes: [] },
+        halationIntensity: { staticValue: 0, keyframes: [] },
+      },
+      aiVfx: {},
+      audio: {
+        volumeDb: { staticValue: 0, keyframes: [] },
+        pan: { staticValue: 0, keyframes: [] },
+        mute: false,
+        fadeInDuration: { value: 0, rate: 60 },
+        fadeOutDuration: { value: 0, rate: 60 },
+        aiDenoiseEnabled: false,
+        aiVocalIsolationEnabled: false,
+        duckingRole: 'none' as const,
+        duckingAmountDb: 0,
+      },
+    };
+    const project = {
+      ...baseProject,
+      tracks: baseProject.tracks.map((t) =>
+        t.id === 'track-video-aroll' ? { ...t, clips: [sampleClip] } : t
+      ),
+    };
+
+    // 1. Export OpenTimelineIO Document
+    const otioDoc = exportProjectToOtioDocument(project, assetRegistry);
+    assert(otioDoc.OTIO_SCHEMA === 'Timeline.1', 'OTIO_SCHEMA must be Timeline.1');
+    assert(otioDoc.tracks?.children?.length > 0, 'OTIO tracks must not be empty');
+    assert(otioDoc.metadata?.generator === 'Autonomous Studio Pro', 'OTIO generator metadata mismatch');
+
+    // 2. Round-trip Import OTIO to Gateway Commands
+    const importedCommands = importOtioDocumentToGatewayCommands(otioDoc);
+    assert(Array.isArray(importedCommands), 'Imported OTIO commands must be an array');
+    assert(importedCommands.length > 0, 'Should import at least 1 clip command from default project');
+    assert(importedCommands[0].command.type === 'InsertClip', 'Imported command must be InsertClip');
+
+    // 3. Export Motion Canvas Procedural Spec
+    const mcSpec = exportProjectToMotionCanvasSpec(project);
+    assert(mcSpec.schema === 'autonomous-studio.motion-canvas-adapter.v1', 'Motion Canvas schema mismatch');
+    assert(Array.isArray(mcSpec.scenes), 'Motion Canvas scenes must be an array');
+
+    // 4. Export OpenToonz Exposure Sheet (XDTS)
+    const xdtsDoc = exportProjectToOpenToonzExposureSheet(project);
+    assert(
+      xdtsDoc.header.format === 'OpenToonz-XDTS-Adapter' && xdtsDoc.header.version === '1.0',
+      'OpenToonz XDTS header mismatch'
+    );
+    assert(Array.isArray(xdtsDoc.levels), 'OpenToonz levels must be an array');
+
+    // 5. Build Isolated Blender 3D Worker Job
+    const blenderJob = buildIsolatedBlender3DWorkerJob('scene_cosmic_3d_01', {
+      environmentHdri: 'builtin://hdri/deep_space_nebula_8k.exr',
+      actors3D: [
+        {
+          characterId: 'char_astronaut_01',
+          meshGltfUri: 'builtin://models/astronaut.glb',
+          actionClipId: 'zero_g_float',
+          positionXYZ: [0, 0, 0],
+          rotationEulerDeg: [0, 15, 0],
+          scaleXYZ: [1, 1, 1],
+        },
+      ],
+      cameraRig: 'orbital-3d-parallax-float',
+      lights: [
+        {
+          lightId: 'key_star',
+          kind: 'key-area',
+          positionXYZ: [2, 3, 2],
+          colorHex: '#FFF4E0',
+          intensityWatts: 650,
+        },
+      ],
+    });
+    assert(blenderJob.workerKind === 'blender-headless-3d-renderer', 'Blender workerKind mismatch');
+    assert(blenderJob.cliInvocationPreview.includes('blender -b'), 'Blender CLI invocation preview mismatch');
+
+    return `Verified OpenTimelineIO v0.15 (${importedCommands.length} imported clips), Motion Canvas, OpenToonz XDTS, and Blender 3D Worker Job.`;
+  });
+
+  // --------------------------------------------------------------------------
+  // TEST 5: Real Physical Output Product Verification (output_product/)
+  // --------------------------------------------------------------------------
+  record('T05', 'Real Physical Output Product Verification (output_product/)', () => {
+    const outDir = path.resolve(process.cwd(), 'output_product');
+    const wavFile = path.join(outDir, 'voiceover_and_beats.wav');
+    const vprojFile = path.join(outDir, 'macro_crisis_2026.vproj.json');
+    const otioFile = path.join(outDir, 'macro_crisis_2026.otio');
+    const bmpFile = path.join(outDir, 'storyboard_contact_sheet.bmp');
+    const mp4File = path.join(outDir, 'macro_crisis_2026_master.mp4');
+    const manifestFile = path.join(outDir, 'product_manifest.json');
+
+    assert(fs.existsSync(wavFile), 'Missing output_product/voiceover_and_beats.wav');
+    const wavStat = fs.statSync(wavFile);
+    assert(wavStat.size > 200000, `WAV file too small: ${wavStat.size} bytes`);
+    const wavHead = fs.readFileSync(wavFile, { flag: 'r' }).subarray(0, 12);
+    assert(wavHead.toString('ascii', 0, 4) === 'RIFF', 'WAV missing RIFF header');
+    assert(wavHead.toString('ascii', 8, 12) === 'WAVE', 'WAV missing WAVE header');
+
+    assert(fs.existsSync(vprojFile), 'Missing output_product/macro_crisis_2026.vproj.json');
+    const vprojData = JSON.parse(fs.readFileSync(vprojFile, 'utf-8'));
+    assert(vprojData.packageFormat === 'autonomous-studio.vproj', 'Invalid .vproj packageFormat');
+    assert(vprojData.qaReport.passedAllErrorGates === true, 'vproj QA report has errors');
+
+    assert(fs.existsSync(otioFile), 'Missing output_product/macro_crisis_2026.otio');
+    const otioData = JSON.parse(fs.readFileSync(otioFile, 'utf-8'));
+    assert(otioData.OTIO_SCHEMA === 'Timeline.1', 'Invalid OTIO schema');
+
+    assert(fs.existsSync(bmpFile), 'Missing output_product/storyboard_contact_sheet.bmp');
+    const bmpStat = fs.statSync(bmpFile);
+    assert(bmpStat.size > 1000000, `BMP file too small: ${bmpStat.size} bytes`);
+    const bmpHead = fs.readFileSync(bmpFile, { flag: 'r' }).subarray(0, 2);
+    assert(bmpHead.toString('ascii') === 'BM', 'BMP missing BM magic bytes');
+
+    assert(fs.existsSync(mp4File), 'Missing output_product/macro_crisis_2026_master.mp4');
+    const mp4Stat = fs.statSync(mp4File);
+    assert(mp4Stat.size > 50000, `MP4 file too small: ${mp4Stat.size} bytes`);
+    const mp4Buf = fs.readFileSync(mp4File);
+    assert(mp4Buf.includes(Buffer.from('ftyp')), 'MP4 missing ftyp atom');
+    assert(mp4Buf.includes(Buffer.from('moov')) || mp4Buf.includes(Buffer.from('mdat')), 'MP4 missing moov/mdat atom');
+
+    assert(fs.existsSync(manifestFile), 'Missing output_product/product_manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf-8'));
+    assert(Array.isArray(manifest.products) && manifest.products.length === 5, 'Manifest must list 5 products');
+
+    return `Verified all 5 real output products on disk: WAV (${wavStat.size.toLocaleString()}B), .vproj (${vprojData.packageFormat}), .otio (${otioData.OTIO_SCHEMA}), BMP (${bmpStat.size.toLocaleString()}B), MP4 (${mp4Stat.size.toLocaleString()}B with ftyp/moov/mdat).`;
   });
 
   // --------------------------------------------------------------------------

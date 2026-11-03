@@ -22,7 +22,70 @@ import {
   Upload,
 } from 'lucide-react';
 import { MediaAsset, TimelineClip } from '../../../../../packages/core-schema/src/timeline';
-import { fromSeconds } from '../../../../../packages/core-schema/src/rational-time';
+import { fromSeconds, toSeconds } from '../../../../../packages/core-schema/src/rational-time';
+
+async function probeMediaFileMetadata(file: File): Promise<{
+  durationSec: number;
+  width?: number;
+  height?: number;
+  sha256Hex: string;
+}> {
+  let sha256Hex = '';
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', arrayBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    sha256Hex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('');
+  } catch {
+    sha256Hex = `hash_${Date.now()}_${file.size}`;
+  }
+
+  if (file.type.startsWith('video/')) {
+    return new Promise((resolve) => {
+      const v = document.createElement('video');
+      v.preload = 'metadata';
+      v.onloadedmetadata = () => {
+        resolve({
+          durationSec: v.duration && !isNaN(v.duration) && isFinite(v.duration) ? v.duration : 4.0,
+          width: v.videoWidth || 1920,
+          height: v.videoHeight || 1080,
+          sha256Hex,
+        });
+      };
+      v.onerror = () => resolve({ durationSec: 4.0, width: 1920, height: 1080, sha256Hex });
+      v.src = URL.createObjectURL(file);
+    });
+  } else if (file.type.startsWith('audio/')) {
+    return new Promise((resolve) => {
+      const a = document.createElement('audio');
+      a.preload = 'metadata';
+      a.onloadedmetadata = () => {
+        resolve({
+          durationSec: a.duration && !isNaN(a.duration) && isFinite(a.duration) ? a.duration : 4.0,
+          sha256Hex,
+        });
+      };
+      a.onerror = () => resolve({ durationSec: 4.0, sha256Hex });
+      a.src = URL.createObjectURL(file);
+    });
+  } else if (file.type.startsWith('image/')) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        resolve({
+          durationSec: 4.0,
+          width: img.naturalWidth || 1920,
+          height: img.naturalHeight || 1080,
+          sha256Hex,
+        });
+      };
+      img.onerror = () => resolve({ durationSec: 4.0, width: 1920, height: 1080, sha256Hex });
+      img.src = URL.createObjectURL(file);
+    });
+  }
+
+  return { durationSec: 4.0, sha256Hex };
+}
 
 function buildDefaultTimelineClip(
   asset: MediaAsset,
@@ -113,7 +176,8 @@ export const MediaPoolPanel: React.FC = () => {
 
     const targetTrackId =
       asset.kind === 'audio' ? 'track-audio-music' : 'track-video-broll';
-    const newClip = buildDefaultTimelineClip(asset, targetTrackId, playheadTime, 4.0, fps);
+    const clipDurationSec = asset.duration ? toSeconds(asset.duration) : 4.0;
+    const newClip = buildDefaultTimelineClip(asset, targetTrackId, playheadTime, clipDurationSec, fps);
 
     dispatchCommand({
       commandId: `cmd_insert_asset_${Date.now()}`,
@@ -128,13 +192,15 @@ export const MediaPoolPanel: React.FC = () => {
     });
   };
 
-  // 2. Import Local Video / Image / Audio files from user's PC
-  const handleLocalFileImport = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 2. Import Local Video / Image / Audio files from user's PC with real duration/dimensions/SHA-256
+  const handleLocalFileImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
 
-    Array.from(files).forEach((file, idx) => {
+    for (let idx = 0; idx < files.length; idx++) {
+      const file = files[idx];
       const objectUrl = URL.createObjectURL(file);
+      const meta = await probeMediaFileMetadata(file);
       const kind: MediaAsset['kind'] = file.type.startsWith('audio/')
         ? 'audio'
         : file.type.startsWith('image/')
@@ -146,7 +212,10 @@ export const MediaPoolPanel: React.FC = () => {
         name: file.name,
         kind,
         localFilePath: objectUrl,
-        semanticTags: ['local-import', kind],
+        duration: fromSeconds(meta.durationSec, fps),
+        width: meta.width,
+        height: meta.height,
+        semanticTags: ['local-import', kind, meta.sha256Hex.substring(0, 8)],
         aestheticScore: 9.5,
         origin: {
           provider: 'local-disk',
@@ -163,7 +232,7 @@ export const MediaPoolPanel: React.FC = () => {
           asset: newAsset,
         },
       });
-    });
+    }
 
     e.target.value = '';
   };

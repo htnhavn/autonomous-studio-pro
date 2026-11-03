@@ -14,8 +14,8 @@
  *  - Audit history with origin metadata (`user`, `ai-live`, `batch-job`, `worker`)
  */
 
-import { RationalTime, addTime, subTime, compareTime, fromSeconds } from './rational-time';
-import { StudioProject, Track, Clip, ChoreographedStageScene } from './timeline';
+import { RationalTime, addTime, subTime, compareTime, fromSeconds, toSeconds, createRationalTime } from './rational-time';
+import { StudioProject, Track, Clip, ChoreographedStageScene, TimelineClip, WordTimestampToken } from './timeline';
 import { AssetRegistryEntry } from './asset-registry';
 import { REUSABLE_CHARACTER_ACTIONS, ReusableCharacterActionId } from './character-library';
 import { VideoDSLSpecification, validateVideoDsl } from './video-dsl';
@@ -354,9 +354,14 @@ export function executeGatewayCommand(
       nextProject = {
         ...nextProject,
         updatedAtIso: new Date().toISOString(),
-        tracks: nextProject.tracks.map((t) =>
-          t.id === cmd.trackId ? { ...t, clips: [...t.clips, cmd.clip] } : t
-        ),
+        tracks: nextProject.tracks.map((t) => {
+          if (t.id !== cmd.trackId) return t;
+          const existingIdx = t.clips.findIndex((c) => c.id === cmd.clip.id);
+          const nextClips = existingIdx >= 0
+            ? t.clips.map((c, i) => (i === existingIdx ? cmd.clip : c))
+            : [...t.clips, cmd.clip];
+          return { ...t, clips: nextClips };
+        }),
       };
       break;
     }
@@ -862,6 +867,113 @@ export function compileVideoDslToGatewayCommands(
         clip: stageClip,
       },
     });
+
+    // Generate synchronous word-level caption clip on track-caption-1
+    const scriptWords = scene.narrationScript.trim().split(/\s+/).filter(Boolean);
+    if (scriptWords.length > 0) {
+      const sceneDurSec = toSeconds(scene.duration);
+      const wordDurSec = sceneDurSec / scriptWords.length;
+      const tokens: WordTimestampToken[] = scriptWords.map((word, wIdx) => {
+        const startSec = wIdx * wordDurSec;
+        const endSec = (wIdx + 1) * wordDurSec;
+        const isEmphasized =
+          word.length > 5 ||
+          ['lãi', 'suất', 'khủng', 'hoảng', 'fed', 'dollar', 'vũ', 'trụ', 'sụp', 'đổ'].some(k =>
+            word.toLowerCase().includes(k)
+          );
+        return {
+          id: `word_${scene.sceneId}_${wIdx + 1}`,
+          word,
+          startOffset: fromSeconds(startSec, dsl.format.fps),
+          endOffset: fromSeconds(endSec, dsl.format.fps),
+          confidence: 0.98,
+          isKeywordEmphasized: isEmphasized,
+          emphasisColorHex: isEmphasized ? '#F59E0B' : undefined,
+        };
+      });
+
+      const captionClip: TimelineClip = {
+        id: `clip_caption_${scene.sceneId}`,
+        name: `Cap: ${scene.narrationScript.substring(0, 30)}...`,
+        trackId: 'track-caption-1',
+        kind: 'caption',
+        timelineRange: {
+          startTime: scene.startTime,
+          duration: scene.duration,
+        },
+        sourceRange: {
+          startTime: createRationalTime(0, dsl.format.fps),
+          duration: scene.duration,
+        },
+        speedMultiplier: 1.0,
+        blendMode: 'normal',
+        enabled: true,
+        lockedByUser: false,
+        transform: {
+          positionX: { staticValue: 0, keyframes: [] },
+          positionY: { staticValue: 0.35, keyframes: [] },
+          positionZ: { staticValue: 0, keyframes: [] },
+          scaleX: { staticValue: 1, keyframes: [] },
+          scaleY: { staticValue: 1, keyframes: [] },
+          rotationX: { staticValue: 0, keyframes: [] },
+          rotationY: { staticValue: 0, keyframes: [] },
+          rotationZ: { staticValue: 0, keyframes: [] },
+          anchorX: { staticValue: 0.5, keyframes: [] },
+          anchorY: { staticValue: 0.5, keyframes: [] },
+          opacity: { staticValue: 1, keyframes: [] },
+        },
+        shaders: [],
+        colorGrade: {
+          enabled: false,
+          exposure: { staticValue: 0, keyframes: [] },
+          contrast: { staticValue: 1, keyframes: [] },
+          saturation: { staticValue: 1, keyframes: [] },
+          temperature: { staticValue: 0, keyframes: [] },
+          tint: { staticValue: 0, keyframes: [] },
+          lift: [0, 0, 0, 0],
+          gamma: [0, 0, 0, 0],
+          gain: [0, 0, 0, 0],
+          lutIntensity: { staticValue: 1, keyframes: [] },
+          filmGrainIntensity: { staticValue: 0, keyframes: [] },
+          halationIntensity: { staticValue: 0, keyframes: [] },
+        },
+        aiVfx: {},
+        audio: {
+          volumeDb: { staticValue: 0, keyframes: [] },
+          pan: { staticValue: 0, keyframes: [] },
+          mute: false,
+          fadeInDuration: { value: 0, rate: dsl.format.fps },
+          fadeOutDuration: { value: 0, rate: dsl.format.fps },
+          aiDenoiseEnabled: false,
+          aiVocalIsolationEnabled: false,
+          duckingRole: 'none',
+          duckingAmountDb: 0,
+        },
+        captionData: {
+          stylePresetId: 'hormozi-punch',
+          fontFamily: 'Montserrat, sans-serif',
+          fontSizePx: 48,
+          primaryColorHex: '#FFFFFF',
+          activeWordColorHex: '#FBBF24',
+          strokeColorHex: '#000000',
+          strokeWidthPx: 8,
+          maxWordsPerLine: 4,
+          placeBehindSubjectIfMasked: false,
+          words: tokens,
+        },
+      };
+
+      envelopes.push({
+        commandId: `cmd_insert_caption_${scene.sceneId}`,
+        origin,
+        timestampMs: Date.now(),
+        command: {
+          type: 'InsertClip',
+          trackId: 'track-caption-1',
+          clip: captionClip,
+        },
+      });
+    }
   }
 
   return envelopes;

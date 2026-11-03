@@ -7,3 +7,5 @@ export * from './video-dsl';
 export * from './command-gateway';
 export * from './vproj-package';
 export * from './batch-dag';
+export * from './interchange-adapters';
+

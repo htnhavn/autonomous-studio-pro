@@ -5,10 +5,11 @@
  * Inspector, Multi-Track Timeline, Live AI HUD, 60fps Playback Engine, and 4K NVENC Export.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MediaPoolPanel } from '../media-pool/MediaPoolPanel';
 import { TranscriptEditorPanel } from '../timeline/TranscriptEditorPanel';
 import { StagePlaybookPanel } from '../stage-studio/StagePlaybookPanel';
+import { AutonomousProductionHubPanel } from '../production-hub/AutonomousProductionHubPanel';
 import { ProgramMonitor } from '../monitor/ProgramMonitor';
 import { ClipInspector } from '../inspector/ClipInspector';
 import { ColorGradingPanel } from '../color-node/ColorGradingPanel';
@@ -20,24 +21,33 @@ import { usePlaybackEngine } from '../../hooks/usePlaybackEngine';
 import { useSidecarSocket } from '../../hooks/useSidecarSocket';
 import { useStudioStore } from '../../store/useStudioStore';
 import {
+  NativeHardwareStatus,
+  probeNativeHardwareCapabilities,
+} from '../../utils/nativeDesktopBridge';
+import {
+  Cpu,
   FolderOpen,
   FileText,
   Sliders,
   Palette,
   Film,
   Sparkles,
-  Download,
   Share2,
-  Tv,
 } from 'lucide-react';
 
 export const StudioWorkspace: React.FC = () => {
-  const [leftTab, setLeftTab] = useState<'stage' | 'media-pool' | 'transcript'>('stage');
-  const [rightTab, setRightTab] = useState<'inspector' | 'color'>('inspector');
+  const [leftTab, setLeftTab] = useState<'ai-hub' | 'stage' | 'media-pool' | 'transcript'>('ai-hub');
+  const [rightTab, setRightTab] = useState<'inspector' | 'color' | 'production-hub'>('inspector');
   const [isExportModalOpen, setIsExportModalOpen] = useState<boolean>(false);
   const [isAgentConnectModalOpen, setIsAgentConnectModalOpen] = useState<boolean>(false);
+  const [hwStatus, setHwStatus] = useState<NativeHardwareStatus | null>(null);
 
   const project = useStudioStore((s) => s.project);
+  const gatewayRevision = useStudioStore((s) => s.gatewayState.revision);
+
+  useEffect(() => {
+    probeNativeHardwareCapabilities().then(setHwStatus);
+  }, []);
 
   // 1. Hook 60fps Playback Engine (Spacebar Play/Pause, rAF clock)
   usePlaybackEngine();
@@ -57,8 +67,8 @@ export const StudioWorkspace: React.FC = () => {
             <span className="font-extrabold tracking-wider bg-gradient-to-r from-blue-400 via-indigo-300 to-amber-300 bg-clip-text text-transparent">
               AUTONOMOUS STUDIO PRO
             </span>
-            <span className="text-[10px] text-zinc-500 font-mono bg-zinc-950 px-1.5 py-0.5 rounded border border-zinc-800">
-              v2.0 NVENC
+            <span className="text-[10px] text-cyan-300 font-mono bg-cyan-950/70 px-1.5 py-0.5 rounded border border-cyan-500/40">
+              {hwStatus?.isNativeTauriApp ? 'NATIVE DESKTOP APP' : 'PRO STUDIO v2.0'} • Rev #{gatewayRevision}
             </span>
           </div>
 
@@ -67,7 +77,8 @@ export const StudioWorkspace: React.FC = () => {
           <div className="flex items-center gap-2 text-zinc-400">
             <span className="text-zinc-200 font-semibold">{project.name}</span>
             <span className="text-[10px] text-zinc-500 font-mono">
-              ({project.settings.width}x{project.settings.height} • {project.settings.fps}fps)
+              ({project.settings.width}x{project.settings.height} • {project.settings.fps}fps •{' '}
+              {hwStatus?.backendApi || 'GPU 60fps'})
             </span>
           </div>
         </div>
@@ -88,7 +99,7 @@ export const StudioWorkspace: React.FC = () => {
                 isConnected ? 'bg-emerald-400' : 'bg-amber-400 animate-pulse'
               }`}
             />
-            <span>{isConnected ? 'Sidecar 8765' : 'Sim Mode'}</span>
+            <span>{isConnected ? 'Sidecar 8765' : 'Local Deterministic Engine'}</span>
           </div>
 
           {/* External Agent Hub Trigger */}
@@ -123,10 +134,21 @@ export const StudioWorkspace: React.FC = () => {
 
       {/* Top Main Workspace (Panels 1, 2, 4) */}
       <div className="flex flex-1 overflow-hidden min-h-0">
-        {/* Left Panel: Stage & Stickman / Media Pool / Transcript */}
-        <div className="w-80 flex flex-col border-r border-[#272c3d] bg-[#12151e] shrink-0">
+        {/* Left Panel: AI Production Hub / Stage & Stickman / Media Pool / Transcript */}
+        <div className="w-88 flex flex-col border-r border-[#272c3d] bg-[#12151e] shrink-0">
           {/* Tab Switcher */}
-          <div className="flex border-b border-[#272c3d] bg-[#161a26] text-xs">
+          <div className="flex border-b border-[#272c3d] bg-[#161a26] text-[11px]">
+            <button
+              onClick={() => setLeftTab('ai-hub')}
+              className={`flex-1 py-2 flex items-center justify-center gap-1 font-bold transition-colors ${
+                leftTab === 'ai-hub'
+                  ? 'border-b-2 border-cyan-400 text-cyan-300 bg-[#12151e]'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <Cpu className="w-3.5 h-3.5" />
+              <span>AI Hub & DSL</span>
+            </button>
             <button
               onClick={() => setLeftTab('stage')}
               className={`flex-1 py-2 flex items-center justify-center gap-1 font-medium transition-colors ${
@@ -136,7 +158,7 @@ export const StudioWorkspace: React.FC = () => {
               }`}
             >
               <Film className="w-3.5 h-3.5" />
-              <span>Stage & Stickman</span>
+              <span>Stage 2.5D</span>
             </button>
             <button
               onClick={() => setLeftTab('media-pool')}
@@ -163,7 +185,9 @@ export const StudioWorkspace: React.FC = () => {
           </div>
 
           <div className="flex-1 overflow-hidden">
-            {leftTab === 'stage' ? (
+            {leftTab === 'ai-hub' ? (
+              <AutonomousProductionHubPanel />
+            ) : leftTab === 'stage' ? (
               <StagePlaybookPanel />
             ) : leftTab === 'media-pool' ? (
               <MediaPoolPanel />
@@ -178,7 +202,7 @@ export const StudioWorkspace: React.FC = () => {
           <ProgramMonitor />
         </div>
 
-        {/* Right Panel: Inspector / Color Grading */}
+        {/* Right Panel: Inspector / Color Grading / AI Context Hub */}
         <div className="w-84 flex flex-col border-l border-[#272c3d] bg-[#12151e] shrink-0">
           {/* Tab Switcher */}
           <div className="flex border-b border-[#272c3d] bg-[#161a26] text-xs">
@@ -204,10 +228,27 @@ export const StudioWorkspace: React.FC = () => {
               <Palette className="w-3.5 h-3.5" />
               <span>Color Wheels</span>
             </button>
+            <button
+              onClick={() => setRightTab('production-hub')}
+              className={`flex-1 py-2 flex items-center justify-center gap-1.5 font-medium transition-colors ${
+                rightTab === 'production-hub'
+                  ? 'border-b-2 border-emerald-500 text-emerald-400 bg-[#12151e]'
+                  : 'text-zinc-400 hover:text-zinc-200'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>.vproj / OTIO</span>
+            </button>
           </div>
 
           <div className="flex-1 overflow-hidden">
-            {rightTab === 'inspector' ? <ClipInspector /> : <ColorGradingPanel />}
+            {rightTab === 'inspector' ? (
+              <ClipInspector />
+            ) : rightTab === 'color' ? (
+              <ColorGradingPanel />
+            ) : (
+              <AutonomousProductionHubPanel />
+            )}
           </div>
         </div>
       </div>

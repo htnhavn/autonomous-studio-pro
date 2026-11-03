@@ -1,0 +1,384 @@
+{
+  "OTIO_SCHEMA": "Timeline.1",
+  "name": "Macro Crisis 2026: The Liquidity Squeeze",
+  "global_start_time": {
+    "OTIO_SCHEMA": "RationalTime.1",
+    "value": 0,
+    "rate": 60
+  },
+  "tracks": {
+    "OTIO_SCHEMA": "Stack.1",
+    "name": "Master Sequence Stack",
+    "children": [
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "C1 • Dynamic Captions (Hormozi/CapCut)",
+        "kind": "Video",
+        "children": [
+          {
+            "OTIO_SCHEMA": "Clip.1",
+            "name": "Cap: Tại sao FED tăng lãi suất lại ...",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "vproj://assets/clip_caption_scene_1",
+              "available_range": {
+                "OTIO_SCHEMA": "TimeRange.1",
+                "start_time": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 0,
+                  "rate": 60
+                },
+                "duration": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 274,
+                  "rate": 60
+                }
+              },
+              "metadata": {
+                "clipId": "clip_caption_scene_1",
+                "clipKind": "caption",
+                "assetId": null
+              }
+            },
+            "metadata": {
+              "autonomousStudio": {
+                "clipId": "clip_caption_scene_1",
+                "kind": "caption",
+                "stageSceneId": null,
+                "colorGradeEnabled": false
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Clip.1",
+            "name": "Cap: Dòng tiền khổng lồ đang rút kh...",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 319,
+                "rate": 60
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "vproj://assets/clip_caption_scene_2",
+              "available_range": {
+                "OTIO_SCHEMA": "TimeRange.1",
+                "start_time": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 0,
+                  "rate": 60
+                },
+                "duration": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 319,
+                  "rate": 60
+                }
+              },
+              "metadata": {
+                "clipId": "clip_caption_scene_2",
+                "clipKind": "caption",
+                "assetId": null
+              }
+            },
+            "metadata": {
+              "autonomousStudio": {
+                "clipId": "clip_caption_scene_2",
+                "kind": "caption",
+                "stageSceneId": null,
+                "colorGradeEnabled": false
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Clip.1",
+            "name": "Cap: Nhưng cơ hội lớn luôn mở ra ch...",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "vproj://assets/clip_caption_scene_3",
+              "available_range": {
+                "OTIO_SCHEMA": "TimeRange.1",
+                "start_time": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 0,
+                  "rate": 60
+                },
+                "duration": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 274,
+                  "rate": 60
+                }
+              },
+              "metadata": {
+                "clipId": "clip_caption_scene_3",
+                "clipKind": "caption",
+                "assetId": null
+              }
+            },
+            "metadata": {
+              "autonomousStudio": {
+                "clipId": "clip_caption_scene_3",
+                "kind": "caption",
+                "stageSceneId": null,
+                "colorGradeEnabled": false
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "trackId": "track-caption-1",
+          "studioKind": "caption"
+        }
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "M1 • Code-as-Motion (Motifs / Remotion)",
+        "kind": "Video",
+        "children": [],
+        "metadata": {
+          "trackId": "track-motion-1",
+          "studioKind": "motion-code"
+        }
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "S1 • Stage & Stickman Puppet (Move-Set / Zero-AI)",
+        "kind": "Video",
+        "children": [
+          {
+            "OTIO_SCHEMA": "Clip.1",
+            "name": "🎬 Scene 1",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "builtin://backdrops/econ-chalkboard-grid",
+              "available_range": {
+                "OTIO_SCHEMA": "TimeRange.1",
+                "start_time": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 0,
+                  "rate": 60
+                },
+                "duration": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 274,
+                  "rate": 60
+                }
+              },
+              "metadata": {
+                "clipId": "clip_scene_1",
+                "clipKind": "stage-puppet",
+                "assetId": "preasset.bg.econ-chalkboard-grid"
+              }
+            },
+            "metadata": {
+              "autonomousStudio": {
+                "clipId": "clip_scene_1",
+                "kind": "stage-puppet",
+                "stageSceneId": "scene_1",
+                "colorGradeEnabled": false
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Clip.1",
+            "name": "🎬 Scene 2",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 319,
+                "rate": 60
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "builtin://backdrops/econ-chalkboard-grid",
+              "available_range": {
+                "OTIO_SCHEMA": "TimeRange.1",
+                "start_time": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 0,
+                  "rate": 60
+                },
+                "duration": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 319,
+                  "rate": 60
+                }
+              },
+              "metadata": {
+                "clipId": "clip_scene_2",
+                "clipKind": "stage-puppet",
+                "assetId": "preasset.bg.econ-chalkboard-grid"
+              }
+            },
+            "metadata": {
+              "autonomousStudio": {
+                "clipId": "clip_scene_2",
+                "kind": "stage-puppet",
+                "stageSceneId": "scene_2",
+                "colorGradeEnabled": false
+              }
+            }
+          },
+          {
+            "OTIO_SCHEMA": "Clip.1",
+            "name": "🎬 Scene 3",
+            "source_range": {
+              "OTIO_SCHEMA": "TimeRange.1",
+              "start_time": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "OTIO_SCHEMA": "RationalTime.1",
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "media_reference": {
+              "OTIO_SCHEMA": "ExternalReference.1",
+              "target_url": "builtin://backdrops/econ-chalkboard-grid",
+              "available_range": {
+                "OTIO_SCHEMA": "TimeRange.1",
+                "start_time": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 0,
+                  "rate": 60
+                },
+                "duration": {
+                  "OTIO_SCHEMA": "RationalTime.1",
+                  "value": 274,
+                  "rate": 60
+                }
+              },
+              "metadata": {
+                "clipId": "clip_scene_3",
+                "clipKind": "stage-puppet",
+                "assetId": "preasset.bg.econ-chalkboard-grid"
+              }
+            },
+            "metadata": {
+              "autonomousStudio": {
+                "clipId": "clip_scene_3",
+                "kind": "stage-puppet",
+                "stageSceneId": "scene_3",
+                "colorGradeEnabled": false
+              }
+            }
+          }
+        ],
+        "metadata": {
+          "trackId": "track-stage-1",
+          "studioKind": "stage-puppet"
+        }
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "V2 • AI B-Roll & 3D Depth Parallax",
+        "kind": "Video",
+        "children": [],
+        "metadata": {
+          "trackId": "track-video-broll",
+          "studioKind": "video"
+        }
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "V1 • Primary A-Roll / Story Spine",
+        "kind": "Video",
+        "children": [],
+        "metadata": {
+          "trackId": "track-video-aroll",
+          "studioKind": "video"
+        }
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "A1 • Dialogue / TTS Voiceover (Ducking Trigger)",
+        "kind": "Audio",
+        "children": [],
+        "metadata": {
+          "trackId": "track-audio-voice",
+          "studioKind": "audio-voice"
+        }
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "A2 • Foley & Whoosh/Hit SFX (MMAudio)",
+        "kind": "Audio",
+        "children": [],
+        "metadata": {
+          "trackId": "track-audio-sfx",
+          "studioKind": "audio-sfx"
+        }
+      },
+      {
+        "OTIO_SCHEMA": "Track.1",
+        "name": "A3 • Beat-Synced BGM (Auto-Ducked -14dB)",
+        "kind": "Audio",
+        "children": [],
+        "metadata": {
+          "trackId": "track-audio-music",
+          "studioKind": "audio-music"
+        }
+      }
+    ]
+  },
+  "metadata": {
+    "generator": "Autonomous Studio Pro",
+    "projectId": "proj_1793687387343",
+    "exportedAtIso": "2026-11-03T06:29:47.363Z"
+  }
+}

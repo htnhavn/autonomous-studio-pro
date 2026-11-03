@@ -19,6 +19,7 @@ import {
   BuiltInStageWidgetKind,
   StageBackdropId,
 } from '../../../../../packages/stage-engine/src';
+import { REUSABLE_CHARACTER_ACTIONS } from '../../../../../packages/core-schema/src';
 import {
   ProductionAutonomyTier,
   STUDIO_AI_PLAYBOOKS,
@@ -289,11 +290,20 @@ export const StagePlaybookPanel: React.FC = () => {
                   }}
                   className="w-full bg-zinc-900 border border-zinc-700 rounded px-2 py-1.5 text-xs text-zinc-200 focus:outline-none focus:border-blue-500"
                 >
-                  {MOVE_SET_CATALOG.map((ms) => (
-                    <option key={ms.id} value={ms.id}>
-                      {ms.nameVi} {ms.defaultOverheadEmote ? `(${ms.defaultOverheadEmote})` : ''}
-                    </option>
-                  ))}
+                  <optgroup label="🎭 18 Sân Khấu Move-Sets (Genre Kits)">
+                    {MOVE_SET_CATALOG.map((ms) => (
+                      <option key={ms.id} value={ms.id}>
+                        {ms.nameVi} {ms.defaultOverheadEmote ? `(${ms.defaultOverheadEmote})` : ''}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="⚡ 12 Universal Actions (Character Library)">
+                    {Object.entries(REUSABLE_CHARACTER_ACTIONS).map(([id, act]) => (
+                      <option key={id} value={id}>
+                        {act.name} ({id})
+                      </option>
+                    ))}
+                  </optgroup>
                 </select>
               </div>
             )}

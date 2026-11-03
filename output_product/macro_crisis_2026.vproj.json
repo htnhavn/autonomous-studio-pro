@@ -1,0 +1,2470 @@
+{
+  "packageFormat": "autonomous-studio.vproj",
+  "packageVersion": "1.0.0",
+  "savedAtIso": "2026-11-03T06:29:47.356Z",
+  "revision": 7,
+  "project": {
+    "schemaVersion": "1.0.0",
+    "id": "proj_1793687387343",
+    "name": "Macro Crisis 2026: The Liquidity Squeeze",
+    "createdAtIso": "2026-11-03T06:29:47.343Z",
+    "updatedAtIso": "2026-11-03T06:29:47.351Z",
+    "settings": {
+      "width": 1920,
+      "height": 1080,
+      "fps": 60,
+      "sampleRateHz": 48000,
+      "targetLoudnessLufs": -14,
+      "colorSpace": "Rec.709"
+    },
+    "mediaPool": {},
+    "tracks": [
+      {
+        "id": "track-caption-1",
+        "name": "C1 • Dynamic Captions (Hormozi/CapCut)",
+        "kind": "caption",
+        "order": 50,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 54,
+        "clips": [
+          {
+            "id": "clip_caption_scene_1",
+            "name": "Cap: Tại sao FED tăng lãi suất lại ...",
+            "trackId": "track-caption-1",
+            "kind": "caption",
+            "timelineRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "playbackSpeed": 1,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0.35,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [],
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": false,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            },
+            "dynamicCaptions": {
+              "stylePresetId": "hormozi-punch",
+              "fontFamily": "Montserrat, sans-serif",
+              "fontSizePx": 48,
+              "primaryColorHex": "#FFFFFF",
+              "activeWordColorHex": "#FBBF24",
+              "strokeColorHex": "#000000",
+              "strokeWidthPx": 8,
+              "maxWordsPerLine": 4,
+              "placeBehindSubjectIfMasked": false,
+              "words": [
+                {
+                  "id": "word_scene_1_1",
+                  "word": "Tại",
+                  "startOffset": {
+                    "value": 0,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 23,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_2",
+                  "word": "sao",
+                  "startOffset": {
+                    "value": 23,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 46,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_3",
+                  "word": "FED",
+                  "startOffset": {
+                    "value": 46,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 69,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": true,
+                  "emphasisColorHex": "#F59E0B"
+                },
+                {
+                  "id": "word_scene_1_4",
+                  "word": "tăng",
+                  "startOffset": {
+                    "value": 69,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 91,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_5",
+                  "word": "lãi",
+                  "startOffset": {
+                    "value": 91,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 114,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": true,
+                  "emphasisColorHex": "#F59E0B"
+                },
+                {
+                  "id": "word_scene_1_6",
+                  "word": "suất",
+                  "startOffset": {
+                    "value": 114,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 137,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": true,
+                  "emphasisColorHex": "#F59E0B"
+                },
+                {
+                  "id": "word_scene_1_7",
+                  "word": "lại",
+                  "startOffset": {
+                    "value": 137,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 160,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_8",
+                  "word": "gây",
+                  "startOffset": {
+                    "value": 160,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 183,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_9",
+                  "word": "chấn",
+                  "startOffset": {
+                    "value": 183,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 206,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_10",
+                  "word": "động",
+                  "startOffset": {
+                    "value": 206,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 228,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_11",
+                  "word": "toàn",
+                  "startOffset": {
+                    "value": 228,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 251,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_1_12",
+                  "word": "cầu?",
+                  "startOffset": {
+                    "value": 251,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 274,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                }
+              ]
+            }
+          },
+          {
+            "id": "clip_caption_scene_2",
+            "name": "Cap: Dòng tiền khổng lồ đang rút kh...",
+            "trackId": "track-caption-1",
+            "kind": "caption",
+            "timelineRange": {
+              "startTime": {
+                "value": 274,
+                "rate": 60
+              },
+              "duration": {
+                "value": 319,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 319,
+                "rate": 60
+              }
+            },
+            "playbackSpeed": 1,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0.35,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [],
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": false,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            },
+            "dynamicCaptions": {
+              "stylePresetId": "hormozi-punch",
+              "fontFamily": "Montserrat, sans-serif",
+              "fontSizePx": 48,
+              "primaryColorHex": "#FFFFFF",
+              "activeWordColorHex": "#FBBF24",
+              "strokeColorHex": "#000000",
+              "strokeWidthPx": 8,
+              "maxWordsPerLine": 4,
+              "placeBehindSubjectIfMasked": false,
+              "words": [
+                {
+                  "id": "word_scene_2_1",
+                  "word": "Dòng",
+                  "startOffset": {
+                    "value": 0,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 23,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_2",
+                  "word": "tiền",
+                  "startOffset": {
+                    "value": 23,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 46,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_3",
+                  "word": "khổng",
+                  "startOffset": {
+                    "value": 46,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 68,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_4",
+                  "word": "lồ",
+                  "startOffset": {
+                    "value": 68,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 91,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_5",
+                  "word": "đang",
+                  "startOffset": {
+                    "value": 91,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 114,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_6",
+                  "word": "rút",
+                  "startOffset": {
+                    "value": 114,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 137,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_7",
+                  "word": "khỏi",
+                  "startOffset": {
+                    "value": 137,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 160,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_8",
+                  "word": "thị",
+                  "startOffset": {
+                    "value": 160,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 182,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_9",
+                  "word": "trường",
+                  "startOffset": {
+                    "value": 182,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 205,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": true,
+                  "emphasisColorHex": "#F59E0B"
+                },
+                {
+                  "id": "word_scene_2_10",
+                  "word": "như",
+                  "startOffset": {
+                    "value": 205,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 228,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_11",
+                  "word": "hố",
+                  "startOffset": {
+                    "value": 228,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 251,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_12",
+                  "word": "đen",
+                  "startOffset": {
+                    "value": 251,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 273,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_2_13",
+                  "word": "vũ",
+                  "startOffset": {
+                    "value": 273,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 296,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": true,
+                  "emphasisColorHex": "#F59E0B"
+                },
+                {
+                  "id": "word_scene_2_14",
+                  "word": "trụ.",
+                  "startOffset": {
+                    "value": 296,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 319,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": true,
+                  "emphasisColorHex": "#F59E0B"
+                }
+              ]
+            }
+          },
+          {
+            "id": "clip_caption_scene_3",
+            "name": "Cap: Nhưng cơ hội lớn luôn mở ra ch...",
+            "trackId": "track-caption-1",
+            "kind": "caption",
+            "timelineRange": {
+              "startTime": {
+                "value": 593,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "playbackSpeed": 1,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0.35,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [],
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": false,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            },
+            "dynamicCaptions": {
+              "stylePresetId": "hormozi-punch",
+              "fontFamily": "Montserrat, sans-serif",
+              "fontSizePx": 48,
+              "primaryColorHex": "#FFFFFF",
+              "activeWordColorHex": "#FBBF24",
+              "strokeColorHex": "#000000",
+              "strokeWidthPx": 8,
+              "maxWordsPerLine": 4,
+              "placeBehindSubjectIfMasked": false,
+              "words": [
+                {
+                  "id": "word_scene_3_1",
+                  "word": "Nhưng",
+                  "startOffset": {
+                    "value": 0,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 23,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_2",
+                  "word": "cơ",
+                  "startOffset": {
+                    "value": 23,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 46,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_3",
+                  "word": "hội",
+                  "startOffset": {
+                    "value": 46,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 69,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_4",
+                  "word": "lớn",
+                  "startOffset": {
+                    "value": 69,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 91,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_5",
+                  "word": "luôn",
+                  "startOffset": {
+                    "value": 91,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 114,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_6",
+                  "word": "mở",
+                  "startOffset": {
+                    "value": 114,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 137,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_7",
+                  "word": "ra",
+                  "startOffset": {
+                    "value": 137,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 160,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_8",
+                  "word": "cho",
+                  "startOffset": {
+                    "value": 160,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 183,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_9",
+                  "word": "những",
+                  "startOffset": {
+                    "value": 183,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 206,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_10",
+                  "word": "ai",
+                  "startOffset": {
+                    "value": 206,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 228,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_11",
+                  "word": "sẵn",
+                  "startOffset": {
+                    "value": 228,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 251,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                },
+                {
+                  "id": "word_scene_3_12",
+                  "word": "sàng!",
+                  "startOffset": {
+                    "value": 251,
+                    "rate": 60
+                  },
+                  "endOffset": {
+                    "value": 274,
+                    "rate": 60
+                  },
+                  "confidence": 0.98,
+                  "isKeywordEmphasized": false
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-motion-1",
+        "name": "M1 • Code-as-Motion (Motifs / Remotion)",
+        "kind": "motion-code",
+        "order": 40,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 64,
+        "clips": []
+      },
+      {
+        "id": "track-stage-1",
+        "name": "S1 • Stage & Stickman Puppet (Move-Set / Zero-AI)",
+        "kind": "stage-puppet",
+        "order": 35,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 76,
+        "clips": [
+          {
+            "id": "clip_scene_1",
+            "name": "🎬 Scene 1",
+            "trackId": "track-stage-1",
+            "assetId": "preasset.bg.econ-chalkboard-grid",
+            "kind": "stage-puppet",
+            "timelineRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "speedMultiplier": 1,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [],
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": false,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            },
+            "stageScene": {
+              "sceneId": "scene_1",
+              "genreKit": "economics-stickman",
+              "backdrop": "econ.chalkboard-grid-dark",
+              "atmosphere": "particles.falling-dollar-bills",
+              "cameraRig": "dolly-push-cosmic",
+              "actors": [
+                {
+                  "actorId": "char.stickman-economist",
+                  "displayName": "char.stickman-economist",
+                  "archetype": "economist-suit-tie",
+                  "stageX": 0.28,
+                  "stageY": 0.65,
+                  "scale": 1,
+                  "flipHorizontal": false,
+                  "enterAnimation": "pop-spring",
+                  "moveSet": "point-chart-upper-right",
+                  "expression": "determined",
+                  "prop": "pointer-stick",
+                  "speechBubbleText": "Tại sao FED tăng lãi suất lại gây chấn động toàn"
+                }
+              ],
+              "widgets": [
+                {
+                  "widgetId": "layer_widget_1",
+                  "kind": "econ.supply-demand-curve",
+                  "stageX": 0.68,
+                  "stageY": 0.45,
+                  "scale": 1,
+                  "title": "Beat 1",
+                  "primaryValueLabel": "+24.8%",
+                  "accentColorHex": "#10B981"
+                }
+              ],
+              "headlineBanner": "Scene 1",
+              "transitionOutId": "gl.directionalwipe",
+              "sfxTriggers": []
+            }
+          },
+          {
+            "id": "clip_scene_2",
+            "name": "🎬 Scene 2",
+            "trackId": "track-stage-1",
+            "assetId": "preasset.bg.econ-chalkboard-grid",
+            "kind": "stage-puppet",
+            "timelineRange": {
+              "startTime": {
+                "value": 274,
+                "rate": 60
+              },
+              "duration": {
+                "value": 319,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 319,
+                "rate": 60
+              }
+            },
+            "speedMultiplier": 1,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [],
+            "transitionIn": {
+              "id": "tr_scene_2",
+              "transitionShaderId": "gl.directionalwipe",
+              "duration": {
+                "value": 30,
+                "rate": 60
+              },
+              "easing": "ease-in-out-cubic",
+              "params": {}
+            },
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": false,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            },
+            "stageScene": {
+              "sceneId": "scene_2",
+              "genreKit": "economics-stickman",
+              "backdrop": "econ.chalkboard-grid-dark",
+              "atmosphere": "particles.falling-dollar-bills",
+              "cameraRig": "multiplane-parallax-drift",
+              "actors": [
+                {
+                  "actorId": "char.stickman-economist",
+                  "displayName": "char.stickman-economist",
+                  "archetype": "economist-suit-tie",
+                  "stageX": 0.28,
+                  "stageY": 0.65,
+                  "scale": 1,
+                  "flipHorizontal": false,
+                  "enterAnimation": "pop-spring",
+                  "moveSet": "talk-excited-wide-arms",
+                  "expression": "determined",
+                  "prop": "pointer-stick",
+                  "speechBubbleText": "Dòng tiền khổng lồ đang rút khỏi thị trường như "
+                }
+              ],
+              "widgets": [
+                {
+                  "widgetId": "layer_widget_2",
+                  "kind": "econ.supply-demand-curve",
+                  "stageX": 0.68,
+                  "stageY": 0.45,
+                  "scale": 1,
+                  "title": "Beat 2",
+                  "primaryValueLabel": "+24.8%",
+                  "accentColorHex": "#10B981"
+                }
+              ],
+              "headlineBanner": "Scene 2",
+              "transitionOutId": "gl.directionalwipe",
+              "sfxTriggers": []
+            }
+          },
+          {
+            "id": "clip_scene_3",
+            "name": "🎬 Scene 3",
+            "trackId": "track-stage-1",
+            "assetId": "preasset.bg.econ-chalkboard-grid",
+            "kind": "stage-puppet",
+            "timelineRange": {
+              "startTime": {
+                "value": 593,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "sourceRange": {
+              "startTime": {
+                "value": 0,
+                "rate": 60
+              },
+              "duration": {
+                "value": 274,
+                "rate": 60
+              }
+            },
+            "speedMultiplier": 1,
+            "blendMode": "normal",
+            "enabled": true,
+            "lockedByUser": false,
+            "transform": {
+              "positionX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "positionZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "scaleX": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "scaleY": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "rotationX": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationY": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "rotationZ": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "anchorX": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "anchorY": {
+                "staticValue": 0.5,
+                "keyframes": []
+              },
+              "opacity": {
+                "staticValue": 1,
+                "keyframes": []
+              }
+            },
+            "shaders": [],
+            "transitionIn": {
+              "id": "tr_scene_3",
+              "transitionShaderId": "gl.directionalwipe",
+              "duration": {
+                "value": 30,
+                "rate": 60
+              },
+              "easing": "ease-in-out-cubic",
+              "params": {}
+            },
+            "colorGrade": {
+              "enabled": false,
+              "exposure": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "contrast": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "saturation": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "temperature": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "tint": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "lift": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gamma": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "gain": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "lutIntensity": {
+                "staticValue": 1,
+                "keyframes": []
+              },
+              "filmGrainIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "halationIntensity": {
+                "staticValue": 0,
+                "keyframes": []
+              }
+            },
+            "aiVfx": {},
+            "audio": {
+              "volumeDb": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "pan": {
+                "staticValue": 0,
+                "keyframes": []
+              },
+              "mute": false,
+              "fadeInDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "fadeOutDuration": {
+                "value": 0,
+                "rate": 60
+              },
+              "aiDenoiseEnabled": false,
+              "aiVocalIsolationEnabled": false,
+              "duckingRole": "none",
+              "duckingAmountDb": 0
+            },
+            "stageScene": {
+              "sceneId": "scene_3",
+              "genreKit": "economics-stickman",
+              "backdrop": "econ.chalkboard-grid-dark",
+              "atmosphere": "particles.falling-dollar-bills",
+              "cameraRig": "dolly-push-cosmic",
+              "actors": [
+                {
+                  "actorId": "char.stickman-economist",
+                  "displayName": "char.stickman-economist",
+                  "archetype": "economist-suit-tie",
+                  "stageX": 0.28,
+                  "stageY": 0.65,
+                  "scale": 1,
+                  "flipHorizontal": false,
+                  "enterAnimation": "pop-spring",
+                  "moveSet": "econ-celebrate-stonks",
+                  "expression": "determined",
+                  "prop": "pointer-stick",
+                  "speechBubbleText": "Nhưng cơ hội lớn luôn mở ra cho những ai sẵn sàn"
+                }
+              ],
+              "widgets": [
+                {
+                  "widgetId": "layer_widget_3",
+                  "kind": "econ.supply-demand-curve",
+                  "stageX": 0.68,
+                  "stageY": 0.45,
+                  "scale": 1,
+                  "title": "Beat 3",
+                  "primaryValueLabel": "+24.8%",
+                  "accentColorHex": "#10B981"
+                }
+              ],
+              "headlineBanner": "Scene 3",
+              "transitionOutId": "gl.directionalwipe",
+              "sfxTriggers": []
+            }
+          }
+        ]
+      },
+      {
+        "id": "track-video-broll",
+        "name": "V2 • AI B-Roll & 3D Depth Parallax",
+        "kind": "video",
+        "order": 30,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 76,
+        "clips": []
+      },
+      {
+        "id": "track-video-aroll",
+        "name": "V1 • Primary A-Roll / Story Spine",
+        "kind": "video",
+        "order": 20,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 84,
+        "clips": []
+      },
+      {
+        "id": "track-audio-voice",
+        "name": "A1 • Dialogue / TTS Voiceover (Ducking Trigger)",
+        "kind": "audio-voice",
+        "order": 10,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 64,
+        "clips": []
+      },
+      {
+        "id": "track-audio-sfx",
+        "name": "A2 • Foley & Whoosh/Hit SFX (MMAudio)",
+        "kind": "audio-sfx",
+        "order": 5,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 54,
+        "clips": []
+      },
+      {
+        "id": "track-audio-music",
+        "name": "A3 • Beat-Synced BGM (Auto-Ducked -14dB)",
+        "kind": "audio-music",
+        "order": 1,
+        "muted": false,
+        "solo": false,
+        "lockedByUser": false,
+        "visible": true,
+        "heightPx": 60,
+        "clips": []
+      }
+    ],
+    "beatGrid": {
+      "bpm": 120,
+      "snapToBeats": true,
+      "markers": []
+    },
+    "youtubePackage": {
+      "status": "draft",
+      "selectedTitle": "",
+      "titleAlternatives": [],
+      "descriptionSeo": "",
+      "tags": [],
+      "categoryId": "22",
+      "privacyStatus": "unlisted",
+      "autoChapters": [],
+      "thumbnailVariants": []
+    }
+  },
+  "assetManifest": {
+    "preasset.char.stickman-economist": {
+      "assetId": "preasset.char.stickman-economist",
+      "name": "Stickman Economist (Red Tie)",
+      "category": "character-rig",
+      "mimeType": "application/vnd.studio.character+json",
+      "sourceKind": "built-in-preasset",
+      "localFilePath": "builtin://characters/stickman-economist",
+      "downloadStatus": "ready-local",
+      "sha256Hash": "sha256_builtin_char_stickman_economist_v1",
+      "semanticTags": [
+        "stickman",
+        "economist",
+        "presenter",
+        "finance",
+        "2d-character"
+      ],
+      "visualDescription": "Classic 2D skeletal stickman presenter wearing a red tie with expressive eyes and pointer stick.",
+      "license": {
+        "licenseKind": "first-party-mit",
+        "commercialUseAllowed": true,
+        "attributionRequired": false
+      },
+      "usageReferences": {
+        "sceneIds": [],
+        "clipIds": []
+      },
+      "createdAtIso": "2026-11-03T00:00:00Z"
+    },
+    "preasset.char.stickman-astronaut": {
+      "assetId": "preasset.char.stickman-astronaut",
+      "name": "Stickman Astronaut (Visor Helmet)",
+      "category": "character-rig",
+      "mimeType": "application/vnd.studio.character+json",
+      "sourceKind": "built-in-preasset",
+      "localFilePath": "builtin://characters/stickman-astronaut",
+      "downloadStatus": "ready-local",
+      "sha256Hash": "sha256_builtin_char_stickman_astronaut_v1",
+      "semanticTags": [
+        "stickman",
+        "astronaut",
+        "space",
+        "science",
+        "cosmic",
+        "2d-character"
+      ],
+      "visualDescription": "2D skeletal stickman in a space helmet suitable for zero-gravity cosmic science explainers.",
+      "license": {
+        "licenseKind": "first-party-mit",
+        "commercialUseAllowed": true,
+        "attributionRequired": false
+      },
+      "usageReferences": {
+        "sceneIds": [],
+        "clipIds": []
+      },
+      "createdAtIso": "2026-11-03T00:00:00Z"
+    },
+    "preasset.char.stickman-lore-scholar": {
+      "assetId": "preasset.char.stickman-lore-scholar",
+      "name": "Stickman Lore Scholar & Knight",
+      "category": "character-rig",
+      "mimeType": "application/vnd.studio.character+json",
+      "sourceKind": "built-in-preasset",
+      "localFilePath": "builtin://characters/stickman-lore-scholar",
+      "downloadStatus": "ready-local",
+      "sha256Hash": "sha256_builtin_char_stickman_lore_v1",
+      "semanticTags": [
+        "stickman",
+        "lore",
+        "history",
+        "knight",
+        "scholar",
+        "2d-character"
+      ],
+      "visualDescription": "2D skeletal stickman historian/knight with ancient scroll and glowing sword props.",
+      "license": {
+        "licenseKind": "first-party-mit",
+        "commercialUseAllowed": true,
+        "attributionRequired": false
+      },
+      "usageReferences": {
+        "sceneIds": [],
+        "clipIds": []
+      },
+      "createdAtIso": "2026-11-03T00:00:00Z"
+    },
+    "preasset.bg.econ-chalkboard-grid": {
+      "assetId": "preasset.bg.econ-chalkboard-grid",
+      "name": "Economics Chalkboard & Terminal Grid",
+      "category": "stage-backdrop",
+      "mimeType": "application/vnd.studio.backdrop+json",
+      "sourceKind": "built-in-preasset",
+      "localFilePath": "builtin://backdrops/econ-chalkboard-grid",
+      "downloadStatus": "ready-local",
+      "sha256Hash": "sha256_builtin_bg_econ_chalkboard_v1",
+      "dimensions": {
+        "widthPx": 1920,
+        "heightPx": 1080,
+        "aspectRatioLabel": "16:9"
+      },
+      "semanticTags": [
+        "background",
+        "economics",
+        "chalkboard",
+        "grid",
+        "finance"
+      ],
+      "visualDescription": "Dark slate chalkboard with glowing emerald financial terminal grid lines.",
+      "license": {
+        "licenseKind": "first-party-mit",
+        "commercialUseAllowed": true,
+        "attributionRequired": false
+      },
+      "usageReferences": {
+        "sceneIds": [],
+        "clipIds": []
+      },
+      "createdAtIso": "2026-11-03T00:00:00Z"
+    },
+    "preasset.bg.cosmic-deep-nebula": {
+      "assetId": "preasset.bg.cosmic-deep-nebula",
+      "name": "Deep Space Nebula & Event Horizon",
+      "category": "stage-backdrop",
+      "mimeType": "application/vnd.studio.backdrop+json",
+      "sourceKind": "built-in-preasset",
+      "localFilePath": "builtin://backdrops/cosmic-deep-nebula",
+      "downloadStatus": "ready-local",
+      "sha256Hash": "sha256_builtin_bg_cosmic_nebula_v1",
+      "dimensions": {
+        "widthPx": 1920,
+        "heightPx": 1080,
+        "aspectRatioLabel": "16:9"
+      },
+      "semanticTags": [
+        "background",
+        "space",
+        "nebula",
+        "universe",
+        "black-hole"
+      ],
+      "visualDescription": "Deep space starfield with cyan-violet nebula clouds and gravitational lens ring.",
+      "license": {
+        "licenseKind": "first-party-mit",
+        "commercialUseAllowed": true,
+        "attributionRequired": false
+      },
+      "usageReferences": {
+        "sceneIds": [],
+        "clipIds": []
+      },
+      "createdAtIso": "2026-11-03T00:00:00Z"
+    },
+    "preasset.bg.lore-parchment-map": {
+      "assetId": "preasset.bg.lore-parchment-map",
+      "name": "Ancient Parchment War Map",
+      "category": "stage-backdrop",
+      "mimeType": "application/vnd.studio.backdrop+json",
+      "sourceKind": "built-in-preasset",
+      "localFilePath": "builtin://backdrops/lore-parchment-map",
+      "downloadStatus": "ready-local",
+      "sha256Hash": "sha256_builtin_bg_lore_map_v1",
+      "dimensions": {
+        "widthPx": 1920,
+        "heightPx": 1080,
+        "aspectRatioLabel": "16:9"
+      },
+      "semanticTags": [
+        "background",
+        "lore",
+        "history",
+        "map",
+        "parchment"
+      ],
+      "visualDescription": "Warm weathered parchment map with compass rose and tactical terrain contours.",
+      "license": {
+        "licenseKind": "first-party-mit",
+        "commercialUseAllowed": true,
+        "attributionRequired": false
+      },
+      "usageReferences": {
+        "sceneIds": [],
+        "clipIds": []
+      },
+      "createdAtIso": "2026-11-03T00:00:00Z"
+    },
+    "preasset.sfx.whoosh-transition": {
+      "assetId": "preasset.sfx.whoosh-transition",
+      "name": "Cinematic Whoosh Transition SFX",
+      "category": "audio-sfx",
+      "mimeType": "audio/wav",
+      "sourceKind": "built-in-preasset",
+      "localFilePath": "builtin://sfx/whoosh-transition.wav",
+      "downloadStatus": "ready-local",
+      "sha256Hash": "sha256_builtin_sfx_whoosh_v1",
+      "duration": {
+        "value": 30,
+        "rate": 60
+      },
+      "semanticTags": [
+        "sfx",
+        "whoosh",
+        "transition",
+        "pan"
+      ],
+      "visualDescription": "Clean air whoosh sound effect for whip-pans and slide transitions.",
+      "license": {
+        "licenseKind": "first-party-mit",
+        "commercialUseAllowed": true,
+        "attributionRequired": false
+      },
+      "usageReferences": {
+        "sceneIds": [],
+        "clipIds": []
+      },
+      "createdAtIso": "2026-11-03T00:00:00Z"
+    }
+  },
+  "sceneManifest": {
+    "scene_1": {
+      "sceneId": "scene_1",
+      "clipId": "clip_scene_1",
+      "trackId": "track-stage-1",
+      "title": "🎬 Scene 1",
+      "startTime": {
+        "value": 0,
+        "rate": 60
+      },
+      "endTime": {
+        "value": 274,
+        "rate": 60
+      },
+      "duration": {
+        "value": 274,
+        "rate": 60
+      },
+      "assetIds": [
+        "preasset.bg.econ-chalkboard-grid"
+      ],
+      "characterIds": [
+        "char.stickman-economist"
+      ],
+      "cameraRigId": "dolly-push-cosmic",
+      "layers": [
+        {
+          "layerId": "layer_actor_char.stickman-economist",
+          "kind": "character",
+          "objectId": "char.stickman-economist",
+          "boundsNormalized": {
+            "x": 0.28,
+            "y": 0.65,
+            "width": 0.22,
+            "height": 0.45
+          },
+          "textContent": "Tại sao FED tăng lãi suất lại gây chấn động toàn",
+          "animationPreset": "point-chart-upper-right"
+        },
+        {
+          "layerId": "layer_widget_layer_widget_1",
+          "kind": "widget",
+          "objectId": "layer_widget_1",
+          "boundsNormalized": {
+            "x": 0.68,
+            "y": 0.45,
+            "width": 0.35,
+            "height": 0.4
+          },
+          "textContent": "Beat 1",
+          "animationPreset": "econ.supply-demand-curve"
+        }
+      ],
+      "subtitleTexts": [
+        "Tại sao FED tăng lãi suất lại gây chấn động toàn"
+      ],
+      "visualDescription": "Stage scene (economics-stickman) with backdrop 'econ.chalkboard-grid-dark', camera 'dolly-push-cosmic', 1 character(s), and 1 widget(s)."
+    },
+    "scene_2": {
+      "sceneId": "scene_2",
+      "clipId": "clip_scene_2",
+      "trackId": "track-stage-1",
+      "title": "🎬 Scene 2",
+      "startTime": {
+        "value": 274,
+        "rate": 60
+      },
+      "endTime": {
+        "value": 593,
+        "rate": 60
+      },
+      "duration": {
+        "value": 319,
+        "rate": 60
+      },
+      "assetIds": [
+        "preasset.bg.econ-chalkboard-grid"
+      ],
+      "characterIds": [
+        "char.stickman-economist"
+      ],
+      "cameraRigId": "multiplane-parallax-drift",
+      "layers": [
+        {
+          "layerId": "layer_actor_char.stickman-economist",
+          "kind": "character",
+          "objectId": "char.stickman-economist",
+          "boundsNormalized": {
+            "x": 0.28,
+            "y": 0.65,
+            "width": 0.22,
+            "height": 0.45
+          },
+          "textContent": "Dòng tiền khổng lồ đang rút khỏi thị trường như ",
+          "animationPreset": "talk-excited-wide-arms"
+        },
+        {
+          "layerId": "layer_widget_layer_widget_2",
+          "kind": "widget",
+          "objectId": "layer_widget_2",
+          "boundsNormalized": {
+            "x": 0.68,
+            "y": 0.45,
+            "width": 0.35,
+            "height": 0.4
+          },
+          "textContent": "Beat 2",
+          "animationPreset": "econ.supply-demand-curve"
+        }
+      ],
+      "subtitleTexts": [
+        "Dòng tiền khổng lồ đang rút khỏi thị trường như "
+      ],
+      "visualDescription": "Stage scene (economics-stickman) with backdrop 'econ.chalkboard-grid-dark', camera 'multiplane-parallax-drift', 1 character(s), and 1 widget(s)."
+    },
+    "scene_3": {
+      "sceneId": "scene_3",
+      "clipId": "clip_scene_3",
+      "trackId": "track-stage-1",
+      "title": "🎬 Scene 3",
+      "startTime": {
+        "value": 593,
+        "rate": 60
+      },
+      "endTime": {
+        "value": 867,
+        "rate": 60
+      },
+      "duration": {
+        "value": 274,
+        "rate": 60
+      },
+      "assetIds": [
+        "preasset.bg.econ-chalkboard-grid"
+      ],
+      "characterIds": [
+        "char.stickman-economist"
+      ],
+      "cameraRigId": "dolly-push-cosmic",
+      "layers": [
+        {
+          "layerId": "layer_actor_char.stickman-economist",
+          "kind": "character",
+          "objectId": "char.stickman-economist",
+          "boundsNormalized": {
+            "x": 0.28,
+            "y": 0.65,
+            "width": 0.22,
+            "height": 0.45
+          },
+          "textContent": "Nhưng cơ hội lớn luôn mở ra cho những ai sẵn sàn",
+          "animationPreset": "econ-celebrate-stonks"
+        },
+        {
+          "layerId": "layer_widget_layer_widget_3",
+          "kind": "widget",
+          "objectId": "layer_widget_3",
+          "boundsNormalized": {
+            "x": 0.68,
+            "y": 0.45,
+            "width": 0.35,
+            "height": 0.4
+          },
+          "textContent": "Beat 3",
+          "animationPreset": "econ.supply-demand-curve"
+        }
+      ],
+      "subtitleTexts": [
+        "Nhưng cơ hội lớn luôn mở ra cho những ai sẵn sàn"
+      ],
+      "visualDescription": "Stage scene (economics-stickman) with backdrop 'econ.chalkboard-grid-dark', camera 'dolly-push-cosmic', 1 character(s), and 1 widget(s)."
+    }
+  },
+  "visualIndex": {
+    "scene_1": {
+      "sceneId": "scene_1",
+      "storyboardContactSheetPath": "vproj://visual-index/scene_1/contact_sheet.jpg",
+      "keyframePreviewTimestamps": [
+        {
+          "value": 0,
+          "rate": 60
+        },
+        {
+          "value": 137,
+          "rate": 60
+        },
+        {
+          "value": 274,
+          "rate": 60
+        }
+      ],
+      "layoutSummary": "character:char.stickman-economist@(0.28,0.65) | widget:layer_widget_1@(0.68,0.45)",
+      "dominantColorsHex": [
+        "#0F172A",
+        "#10B981",
+        "#F59E0B"
+      ],
+      "requiresVisualVlmVerification": false
+    },
+    "scene_2": {
+      "sceneId": "scene_2",
+      "storyboardContactSheetPath": "vproj://visual-index/scene_2/contact_sheet.jpg",
+      "keyframePreviewTimestamps": [
+        {
+          "value": 274,
+          "rate": 60
+        },
+        {
+          "value": 433,
+          "rate": 60
+        },
+        {
+          "value": 593,
+          "rate": 60
+        }
+      ],
+      "layoutSummary": "character:char.stickman-economist@(0.28,0.65) | widget:layer_widget_2@(0.68,0.45)",
+      "dominantColorsHex": [
+        "#0F172A",
+        "#10B981",
+        "#F59E0B"
+      ],
+      "requiresVisualVlmVerification": false
+    },
+    "scene_3": {
+      "sceneId": "scene_3",
+      "storyboardContactSheetPath": "vproj://visual-index/scene_3/contact_sheet.jpg",
+      "keyframePreviewTimestamps": [
+        {
+          "value": 593,
+          "rate": 60
+        },
+        {
+          "value": 730,
+          "rate": 60
+        },
+        {
+          "value": 867,
+          "rate": 60
+        }
+      ],
+      "layoutSummary": "character:char.stickman-economist@(0.28,0.65) | widget:layer_widget_3@(0.68,0.45)",
+      "dominantColorsHex": [
+        "#0F172A",
+        "#10B981",
+        "#F59E0B"
+      ],
+      "requiresVisualVlmVerification": false
+    }
+  },
+  "productionSpec": {
+    "schemaVersion": "1.0.0",
+    "specId": "dsl_spec_1793687387343",
+    "createdAtIso": "2026-11-03T06:29:47.343Z",
+    "brief": {
+      "title": "Macro Crisis 2026: The Liquidity Squeeze",
+      "logline": "Compiled via Deterministic Video DSL v1.0",
+      "targetAudience": "General",
+      "genreKit": "economics-stickman",
+      "toneKeywords": [
+        "analytical",
+        "engaging"
+      ]
+    },
+    "format": {
+      "widthPx": 1920,
+      "heightPx": 1080,
+      "fps": 60,
+      "targetDuration": {
+        "value": 867,
+        "rate": 60
+      },
+      "aspectRatio": "16:9"
+    },
+    "assetRequirements": [
+      {
+        "requirementId": "req_bg_default",
+        "category": "stage-backdrop",
+        "preferredAssetId": "preasset.bg.econ-chalkboard-grid",
+        "searchKeywords": [
+          "economics-stickman",
+          "background"
+        ],
+        "fallbackPreAssetId": "preasset.bg.econ-chalkboard-grid",
+        "requiredForSceneIds": [
+          "scene_1",
+          "scene_2",
+          "scene_3"
+        ]
+      }
+    ],
+    "scenes": [
+      {
+        "sceneId": "scene_1",
+        "sceneIndex": 0,
+        "title": "Scene 1",
+        "narrativeRole": "hook",
+        "startTime": {
+          "value": 0,
+          "rate": 60
+        },
+        "duration": {
+          "value": 274,
+          "rate": 60
+        },
+        "narrationScript": "Tại sao FED tăng lãi suất lại gây chấn động toàn cầu?",
+        "backgroundAssetId": "preasset.bg.econ-chalkboard-grid",
+        "cameraRigId": "dolly-push-cosmic",
+        "characters": [
+          {
+            "characterId": "char.stickman-economist",
+            "actionId": "pointing",
+            "expressionId": "focused-analytical",
+            "stagePositionNormalized": {
+              "x": 0.28,
+              "y": 0.65,
+              "scale": 1
+            },
+            "heldProp": "pointer-stick",
+            "dialogueBubbleText": "Tại sao FED tăng lãi suất lại gây chấn động toàn"
+          }
+        ],
+        "compositionLayers": [
+          {
+            "layerId": "layer_widget_1",
+            "layerKind": "stage-widget",
+            "presetOrWidgetId": "econ.supply-demand-curve",
+            "headlineText": "Beat 1"
+          }
+        ],
+        "subtitles": [
+          {
+            "cueId": "sub_1",
+            "text": "Tại sao FED tăng lãi suất lại gây chấn động toàn cầu?",
+            "startOffset": {
+              "value": 0,
+              "rate": 60
+            },
+            "duration": {
+              "value": 274,
+              "rate": 60
+            }
+          }
+        ]
+      },
+      {
+        "sceneId": "scene_2",
+        "sceneIndex": 1,
+        "title": "Scene 2",
+        "narrativeRole": "explanation",
+        "startTime": {
+          "value": 274,
+          "rate": 60
+        },
+        "duration": {
+          "value": 319,
+          "rate": 60
+        },
+        "narrationScript": "Dòng tiền khổng lồ đang rút khỏi thị trường như hố đen vũ trụ.",
+        "backgroundAssetId": "preasset.bg.econ-chalkboard-grid",
+        "cameraRigId": "multiplane-parallax-drift",
+        "characters": [
+          {
+            "characterId": "char.stickman-economist",
+            "actionId": "explaining",
+            "expressionId": "surprised",
+            "stagePositionNormalized": {
+              "x": 0.28,
+              "y": 0.65,
+              "scale": 1
+            },
+            "heldProp": "pointer-stick",
+            "dialogueBubbleText": "Dòng tiền khổng lồ đang rút khỏi thị trường như "
+          }
+        ],
+        "compositionLayers": [
+          {
+            "layerId": "layer_widget_2",
+            "layerKind": "stage-widget",
+            "presetOrWidgetId": "econ.supply-demand-curve",
+            "headlineText": "Beat 2"
+          }
+        ],
+        "transitionInShaderId": "gl.directionalwipe",
+        "transitionDuration": {
+          "value": 30,
+          "rate": 60
+        },
+        "subtitles": [
+          {
+            "cueId": "sub_2",
+            "text": "Dòng tiền khổng lồ đang rút khỏi thị trường như hố đen vũ trụ.",
+            "startOffset": {
+              "value": 0,
+              "rate": 60
+            },
+            "duration": {
+              "value": 319,
+              "rate": 60
+            }
+          }
+        ]
+      },
+      {
+        "sceneId": "scene_3",
+        "sceneIndex": 2,
+        "title": "Scene 3",
+        "narrativeRole": "conclusion-cta",
+        "startTime": {
+          "value": 593,
+          "rate": 60
+        },
+        "duration": {
+          "value": 274,
+          "rate": 60
+        },
+        "narrationScript": "Nhưng cơ hội lớn luôn mở ra cho những ai sẵn sàng!",
+        "backgroundAssetId": "preasset.bg.econ-chalkboard-grid",
+        "cameraRigId": "dolly-push-cosmic",
+        "characters": [
+          {
+            "characterId": "char.stickman-economist",
+            "actionId": "reacting",
+            "expressionId": "surprised",
+            "stagePositionNormalized": {
+              "x": 0.28,
+              "y": 0.65,
+              "scale": 1
+            },
+            "heldProp": "pointer-stick",
+            "dialogueBubbleText": "Nhưng cơ hội lớn luôn mở ra cho những ai sẵn sàn"
+          }
+        ],
+        "compositionLayers": [
+          {
+            "layerId": "layer_widget_3",
+            "layerKind": "stage-widget",
+            "presetOrWidgetId": "econ.supply-demand-curve",
+            "headlineText": "Beat 3"
+          }
+        ],
+        "transitionInShaderId": "gl.directionalwipe",
+        "transitionDuration": {
+          "value": 30,
+          "rate": 60
+        },
+        "subtitles": [
+          {
+            "cueId": "sub_3",
+            "text": "Nhưng cơ hội lớn luôn mở ra cho những ai sẵn sàng!",
+            "startOffset": {
+              "value": 0,
+              "rate": 60
+            },
+            "duration": {
+              "value": 274,
+              "rate": 60
+            }
+          }
+        ]
+      }
+    ],
+    "validationRequirements": {
+      "forbidTimelineGaps": true,
+      "requireAllAssetsResolved": true,
+      "maxSubtitleCharsPerLine": 48,
+      "targetLoudnessLufs": -14
+    }
+  },
+  "qaReport": {
+    "evaluatedAtIso": "2026-11-03T06:29:47.356Z",
+    "passedAllErrorGates": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "issues": []
+  }
+}
