@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import re
 from typing import Any, Dict, List, Optional
+import urllib.parse
 import urllib.request
 
 
@@ -28,6 +29,10 @@ VERIFIED_STOCK_CATALOG = {
     "ancient_map": "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1280&q=80",
     "artificial_intelligence": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=1280&q=80",
     "cyber_technology": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1280&q=80",
+    "chip_die": "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1280&q=80",
+    "silicon_wafer": "https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=1280&q=80",
+    "gpu_server": "https://images.unsplash.com/photo-1591488320449-011701bb6704?w=1280&q=80",
+    "robot_arm": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=1280&q=80",
     # Real MP4 stock footage (Valid H.264/AAC containers)
     "stock_video_ocean": "https://filesamples.com/samples/video/mp4/sample_960x400_ocean_with_audio.mp4",
     "stock_video_nature": "https://www.w3schools.com/html/mov_bbb.mp4",
@@ -45,6 +50,57 @@ class AutonomousAssetHunter:
     def __init__(self, cache_dir: str = "./cache/assets") -> None:
         self.cache_dir = Path(cache_dir).resolve()
         self.cache_dir.mkdir(parents=True, exist_ok=True)
+
+    def _search_wikimedia_image(self, query: str) -> Optional[str]:
+        """Search Wikimedia Commons (no API key) for a real, relevant image URL.
+        Returns None on failure so the caller can fall back to the curated catalog.
+        """
+        import json as _json
+
+        try:
+            params = urllib.parse.urlencode(
+                {
+                    "action": "query",
+                    "format": "json",
+                    "generator": "search",
+                    "gsrsearch": query,
+                    "gsrnamespace": 6,
+                    "gsrlimit": 10,
+                    "prop": "imageinfo",
+                    "iiprop": "url|mime",
+                    "iiurlwidth": 1600,
+                }
+            )
+            url = f"https://commons.wikimedia.org/w/api.php?{params}"
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "AutonomousStudioPro/2.0 (asset-hunter)"}
+            )
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                data = _json.loads(resp.read().decode("utf-8"))
+            pages = (data.get("query") or {}).get("pages") or {}
+            candidates: List[str] = []
+            for page in pages.values():
+                infos = page.get("imageinfo") or []
+                if not infos:
+                    continue
+                info = infos[0]
+                mime = (info.get("mime") or "").lower()
+                thumb = info.get("thumburl") or info.get("url")
+                if not thumb:
+                    continue
+                if not (
+                    mime.startswith("image/jpeg")
+                    or mime.startswith("image/png")
+                    or thumb.lower().endswith((".jpg", ".jpeg", ".png"))
+                ):
+                    continue
+                candidates.append(thumb)
+            if not candidates:
+                return None
+            # Deterministic per-query pick keeps reruns stable while varying across scenes.
+            return candidates[abs(hash(query)) % len(candidates)]
+        except Exception:
+            return None
 
     def _resolve_url_for_query(self, query: str, media_type: str = "image") -> str:
         q_lower = query.lower()
@@ -66,7 +122,16 @@ class AutonomousAssetHunter:
             return VERIFIED_STOCK_CATALOG["universe_cosmic"]
         elif "lore" in q_lower or "map" in q_lower or "ancient" in q_lower or "lịch sử" in q_lower:
             return VERIFIED_STOCK_CATALOG["ancient_map"]
-        elif "ai" in q_lower or "robot" in q_lower or "tech" in q_lower:
+        # Specific tech visuals first (distinct images per concept), then generic.
+        elif "semiconductor" in q_lower or "chip" in q_lower:
+            return VERIFIED_STOCK_CATALOG["chip_die"]
+        elif "wafer" in q_lower or "silicon" in q_lower:
+            return VERIFIED_STOCK_CATALOG["silicon_wafer"]
+        elif "gpu" in q_lower or "supercomputer" in q_lower or "server" in q_lower or "data center" in q_lower:
+            return VERIFIED_STOCK_CATALOG["gpu_server"]
+        elif "robot" in q_lower or "automation" in q_lower:
+            return VERIFIED_STOCK_CATALOG["robot_arm"]
+        elif "ai" in q_lower or "neural" in q_lower or "tech" in q_lower:
             return VERIFIED_STOCK_CATALOG["artificial_intelligence"]
         else:
             return VERIFIED_STOCK_CATALOG["macro_economics"]
@@ -150,8 +215,16 @@ class AutonomousAssetHunter:
         and returns the real verified asset record.
         Zero mock fallbacks.
         """
-        source_url = self._resolve_url_for_query(query, media_type=media_type)
-        asset_name = f"{query.replace(' ', '_')}_{abs(hash(query)) % 10000}"
+        source_url = None
+        if media_type == "image":
+            # Prefer a real web search (unlimited, query-specific) and fall back
+            # to the curated catalog when the network/search is unavailable.
+            source_url = self._search_wikimedia_image(query)
+        if not source_url:
+            source_url = self._resolve_url_for_query(query, media_type=media_type)
+        # Include a short hash of the resolved URL so a changed catalog mapping
+        # produces a fresh download instead of reusing a stale cached file.
+        asset_name = f"{query.replace(' ', '_')}_{abs(hash(query)) % 10000}_{abs(hash(source_url)) % 1000}"
         return await self.download_real_asset(
             source_url=source_url,
             asset_name=asset_name,

@@ -1,0 +1,48 @@
+{
+  "jobId": "job_10af2a51",
+  "createdAtMs": 1793790028346,
+  "prompt": "Thị trường, wafer và hố đen",
+  "title": "Real Search Test",
+  "genreKit": "economics-stickman",
+  "targetDurationSec": 6.0,
+  "fullScript": "Phố Wall chấn động. Wafer khan hiếm. Hố đen nuốt ánh sáng.",
+  "scenes": [
+    {
+      "sceneId": "scene_1",
+      "startSec": 0.0,
+      "durationSec": 2.0,
+      "dialogue": "Phố Wall chấn động.",
+      "cameraChoreography": "slow-push-in-dramatic",
+      "stageActorAction": "point-chart-upper-right",
+      "searchQuery": "Wall Street stock market"
+    },
+    {
+      "sceneId": "scene_2",
+      "startSec": 2.0,
+      "durationSec": 2.0,
+      "dialogue": "Wafer khan hiếm.",
+      "cameraChoreography": "whip-pan-to-chart-right",
+      "stageActorAction": "econ-panic-head-grab",
+      "searchQuery": "silicon wafer"
+    },
+    {
+      "sceneId": "scene_3",
+      "startSec": 4.0,
+      "durationSec": 2.0,
+      "dialogue": "Hố đen nuốt ánh sáng.",
+      "cameraChoreography": "orbital-3d-parallax-float",
+      "stageActorAction": "econ-panic-head-grab",
+      "searchQuery": "black hole event horizon"
+    }
+  ],
+  "stages": [
+    "stage_compile",
+    "audio_analysis",
+    "asset_hunt",
+    "vfx_grading",
+    "audio_mix",
+    "render_master",
+    "vlm_qa",
+    "youtube_package"
+  ]
+}

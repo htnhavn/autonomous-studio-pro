@@ -1,4 +1,25 @@
 {
+  "python.analysis.exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "references/**",
+    ".venv/**",
+    "cache/**",
+    "output_product/**",
+    "apps/desktop/**",
+    "dist/**"
+  ],
+  "python.analysis.ignore": [
+    "references/**"
+  ],
+  "files.watcherExclude": {
+    "**/references/**": true,
+    "**/node_modules/**": true,
+    "**/.venv/**": true,
+    "**/cache/**": true,
+    "**/output_product/**": true,
+    "**/dist/**": true
+  },
   "git.ignoredRepositories": [
     "references",
     "references/artcraft",
@@ -17,4 +38,3 @@
     "references/olive"
   ]
 }
-

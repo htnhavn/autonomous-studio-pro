@@ -15,6 +15,7 @@ Dual-Transport Architecture:
 from __future__ import annotations
 
 import argparse
+import asyncio
 import json
 import sys
 import time
@@ -25,7 +26,13 @@ from pathlib import Path
 from typing import Any, Dict, List
 
 ROOT = Path(__file__).resolve().parent.parent
+
+# Make the AI sidecar pipelines importable exactly once at module load.
+_SIDECAR_DIR = ROOT / "services" / "ai-sidecar"
+if _SIDECAR_DIR.is_dir() and str(_SIDECAR_DIR) not in sys.path:
+    sys.path.insert(0, str(_SIDECAR_DIR))
 BRIDGE_JSON_PATH = ROOT / "apps" / "desktop" / "public" / "live-agent-bridge.json"
+DIST_BRIDGE_JSON_PATH = ROOT / "apps" / "desktop" / "dist" / "live-agent-bridge.json"
 SIDECAR_HTTP_URL = "http://127.0.0.1:8765"
 
 
@@ -77,10 +84,13 @@ def emit_bridge_events(
         },
         "events": stamped_events,
     }
-    BRIDGE_JSON_PATH.write_text(
-        json.dumps(next_state, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
+    payload_json = json.dumps(next_state, ensure_ascii=False, indent=2)
+    BRIDGE_JSON_PATH.write_text(payload_json, encoding="utf-8")
+    if DIST_BRIDGE_JSON_PATH.parent.exists():
+        try:
+            DIST_BRIDGE_JSON_PATH.write_text(payload_json, encoding="utf-8")
+        except Exception:
+            pass
     return seq_id
 
 
@@ -222,15 +232,14 @@ def cmd_insert_broll(args: argparse.Namespace) -> int:
     size_bytes = 0
     try:
         from pipelines.asset_hunter import AutonomousAssetHunter
-        hunter = AutonomousAssetHunter(cache_dir=str(ROOT_DIR / "cache" / "assets"))
+        hunter = AutonomousAssetHunter(cache_dir=str(ROOT / "cache" / "assets"))
         resolved_url = args.url if args.url and "unsplash.com/photo-1618005182384" not in args.url else hunter._resolve_url_for_query(args.query, args.kind)
         source_url = resolved_url
-        import asyncio
         download_res = asyncio.run(hunter.download_real_asset(resolved_url, args.query, args.kind))
         local_path = download_res.get("localFilePath", resolved_url)
         size_bytes = download_res.get("sizeBytes", 0)
-    except Exception:
-        pass
+    except Exception as exc:
+        print(f"[warn] Asset download skipped for '{args.query}': {exc}", file=sys.stderr)
 
     asset = {
         "id": asset_id,
@@ -456,7 +465,10 @@ def cmd_context_query(args: argparse.Namespace) -> int:
         compiled_script = "Tại sao FED tăng lãi suất lại gây chấn động? Hãy nhìn vào biểu đồ cung cầu. Cơ hội lớn luôn ẩn sau khủng hoảng!"
 
     import re
-    sentences = [s.strip() for s in re.split(r"(?<=[.!?])\s+", compiled_script) if s.strip()]
+    # Split on sentence-ending punctuation OR newlines; Vietnamese scripts often
+    # use line breaks or lack terminal punctuation, so both must be honoured.
+    raw_parts = re.split(r"(?<=[.!?…])\s+|\n+", compiled_script.strip())
+    sentences = [s.strip() for s in raw_parts if s.strip()]
     scenes = {}
     cursor_sec = 0.0
     for idx, sent in enumerate(sentences):
@@ -587,22 +599,15 @@ def cmd_inspect_feedback(args: argparse.Namespace) -> int:
             })
 
     # 3. Audio & VLM feedback (Real Audio Analysis from output_product/voiceover_and_beats.wav)
-    import asyncio
-    sys.path.insert(0, str(ROOT / "services" / "ai-sidecar"))
     from pipelines.audio_studio import AudioStudioPipeline
 
     audio_pipeline = AudioStudioPipeline()
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
 
     wav_path = ROOT / "output_product" / "voiceover_and_beats.wav"
     if wav_path.exists():
         try:
-            silences = loop.run_until_complete(audio_pipeline.detect_silences_for_rough_cut(str(wav_path)))
-            beat_grid = loop.run_until_complete(audio_pipeline.extract_musical_beat_grid(str(wav_path)))
+            silences = asyncio.run(audio_pipeline.detect_silences_for_rough_cut(str(wav_path)))
+            beat_grid = asyncio.run(audio_pipeline.extract_musical_beat_grid(str(wav_path)))
             audio_feedback = {
                 "sourceWavFile": str(wav_path.relative_to(ROOT)),
                 "fileSizeBytes": wav_path.stat().st_size,
@@ -700,19 +705,11 @@ def cmd_workflow_run(args: argparse.Namespace) -> int:
 
     # Step 1: Asset Hunter Module (Real Download)
     print(f"🔍 [Asset Hunter] Module 1: Searching & downloading verified media for '{broll_query}'...")
-    import sys
-    sys.path.insert(0, str(ROOT / "services" / "ai-sidecar"))
     from pipelines.asset_hunter import AutonomousAssetHunter
-    import asyncio
 
     hunter = AutonomousAssetHunter()
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
 
-    download_res = loop.run_until_complete(hunter.search_free_stock_media(query=broll_query, media_type="image"))
+    download_res = asyncio.run(hunter.search_free_stock_media(query=broll_query, media_type="image"))
     stock_item = download_res
     print(f"✅ [Asset Hunter] Real asset cached at: {download_res['localFilePath']} ({download_res['sizeBytes']} bytes)")
 
@@ -1050,22 +1047,29 @@ def cmd_workflow_run(args: argparse.Namespace) -> int:
 
     # Step 5: Dynamic Caption Module (Word-level Synced Animated Captions)
     print("💬 [Dynamic Caption] Module 4: Aligning word tokens & applying CapCut Neon Glow...")
+    raw_words = script.split()
+    w_dur = audio_dur_sec / max(1, len(raw_words))
+    fallback_tokens = [
+        {
+            "id": f"token_{i}",
+            "word": w,
+            "startOffset": {"value": int(round(i * w_dur * 60)), "rate": 60},
+            "endOffset": {"value": int(round(min(audio_dur_sec, (i + 1) * w_dur) * 60)), "rate": 60},
+            "confidence": 0.99,
+            "isKeywordEmphasized": len(w) >= 4 or i in [2, 3, 5, 8],
+        }
+        for i, w in enumerate(raw_words)
+    ]
     if wav_path.exists():
-        tokens = loop.run_until_complete(audio_pipeline.transcribe_word_timestamps(audio_path=str(wav_path), script_text=script, fps=60))
+        try:
+            tokens = asyncio.run(
+                audio_pipeline.transcribe_word_timestamps(audio_path=str(wav_path), script_text=script, fps=60)
+            )
+        except Exception as exc:
+            print(f"[warn] Word transcription failed ({exc}); using evenly-spaced fallback tokens.", file=sys.stderr)
+            tokens = fallback_tokens
     else:
-        raw_words = script.split()
-        w_dur = audio_dur_sec / max(1, len(raw_words))
-        tokens = [
-            {
-                "id": f"token_{i}",
-                "word": w,
-                "startOffset": {"value": int(round(i * w_dur * 60)), "rate": 60},
-                "endOffset": {"value": int(round(min(audio_dur_sec, (i + 1) * w_dur) * 60)), "rate": 60},
-                "confidence": 0.99,
-                "isKeywordEmphasized": len(w) >= 4 or i in [2, 3, 5, 8],
-            }
-            for i, w in enumerate(raw_words)
-        ]
+        tokens = fallback_tokens
 
     caption_clip_id = f"clip_caption_{uuid.uuid4().hex[:6]}"
     caption_events = [

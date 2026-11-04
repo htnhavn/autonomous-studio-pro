@@ -18,7 +18,7 @@ import {
   fromSeconds,
   compareTime,
 } from '../../../../../packages/core-schema/src/rational-time';
-import { TimelineClip, TimelineTrack } from '../../../../../packages/core-schema/src/timeline';
+import { TimelineClip, TimelineTrack, createBaseTimelineClip } from '../../../../../packages/core-schema/src/timeline';
 import {
   Play,
   Pause,
@@ -103,72 +103,77 @@ export const MultiTrackTimeline: React.FC = () => {
     };
   }, [isRulerDragging, scrubAtEvent]);
 
-  // 2. Interactive Clip Move & Trim Dragging
+  // 2. Interactive Clip Move & Trim Dragging (Single commit on mouseup to prevent undo flooding)
   useEffect(() => {
     if (!dragState) return;
 
+    let latestDeltaSec = 0;
+
     const onMouseMove = (e: MouseEvent) => {
       const deltaPx = e.clientX - dragState.initialClientX;
-      const deltaSec = deltaPx / pixelsPerSecond;
-
-      if (dragState.type === 'move') {
-        const newStartSec = Math.max(0, dragState.initialStartSec + deltaSec);
-        dispatchCommand({
-          commandId: `cmd_move_${Date.now()}`,
-          actor: { kind: 'user', id: 'user_local', displayName: 'User' },
-          timestampMs: Date.now(),
-          command: {
-            type: 'CLIP_MOVE',
-            clipId: dragState.clip.id,
-            targetTrackId: dragState.trackId,
-            newStartTime: fromSeconds(newStartSec, displayFps),
-          },
-        });
-      } else if (dragState.type === 'trim-start') {
-        const newStartSec = Math.max(0, dragState.initialStartSec + deltaSec);
-        const newDurSec = Math.max(0.2, dragState.initialDurSec - deltaSec);
-        dispatchCommand({
-          commandId: `cmd_trim_${Date.now()}`,
-          actor: { kind: 'user', id: 'user_local', displayName: 'User' },
-          timestampMs: Date.now(),
-          command: {
-            type: 'CLIP_TRIM',
-            clipId: dragState.clip.id,
-            newTimelineRange: {
-              startTime: fromSeconds(newStartSec, displayFps),
-              duration: fromSeconds(newDurSec, displayFps),
-            },
-            newSourceRange: {
-              startTime: fromSeconds(newStartSec, displayFps),
-              duration: fromSeconds(newDurSec, displayFps),
-            },
-            ripple: false,
-          },
-        });
-      } else if (dragState.type === 'trim-end') {
-        const newDurSec = Math.max(0.2, dragState.initialDurSec + deltaSec);
-        dispatchCommand({
-          commandId: `cmd_trim_${Date.now()}`,
-          actor: { kind: 'user', id: 'user_local', displayName: 'User' },
-          timestampMs: Date.now(),
-          command: {
-            type: 'CLIP_TRIM',
-            clipId: dragState.clip.id,
-            newTimelineRange: {
-              startTime: dragState.clip.timelineRange.startTime,
-              duration: fromSeconds(newDurSec, displayFps),
-            },
-            newSourceRange: {
-              startTime: dragState.clip.sourceRange.startTime,
-              duration: fromSeconds(newDurSec, displayFps),
-            },
-            ripple: false,
-          },
-        });
-      }
+      latestDeltaSec = deltaPx / pixelsPerSecond;
     };
 
-    const onMouseUp = () => setDragState(null);
+    const onMouseUp = () => {
+      if (Math.abs(latestDeltaSec) > 0.02) {
+        if (dragState.type === 'move') {
+          const newStartSec = Math.max(0, dragState.initialStartSec + latestDeltaSec);
+          dispatchCommand({
+            commandId: `cmd_move_${Date.now()}`,
+            actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+            timestampMs: Date.now(),
+            command: {
+              type: 'CLIP_MOVE',
+              clipId: dragState.clip.id,
+              targetTrackId: dragState.trackId,
+              newStartTime: fromSeconds(newStartSec, displayFps),
+            },
+          });
+        } else if (dragState.type === 'trim-start') {
+          const newStartSec = Math.max(0, dragState.initialStartSec + latestDeltaSec);
+          const newDurSec = Math.max(0.2, dragState.initialDurSec - latestDeltaSec);
+          dispatchCommand({
+            commandId: `cmd_trim_${Date.now()}`,
+            actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+            timestampMs: Date.now(),
+            command: {
+              type: 'CLIP_TRIM',
+              clipId: dragState.clip.id,
+              newTimelineRange: {
+                startTime: fromSeconds(newStartSec, displayFps),
+                duration: fromSeconds(newDurSec, displayFps),
+              },
+              newSourceRange: {
+                startTime: fromSeconds(newStartSec, displayFps),
+                duration: fromSeconds(newDurSec, displayFps),
+              },
+              ripple: false,
+            },
+          });
+        } else if (dragState.type === 'trim-end') {
+          const newDurSec = Math.max(0.2, dragState.initialDurSec + latestDeltaSec);
+          dispatchCommand({
+            commandId: `cmd_trim_${Date.now()}`,
+            actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+            timestampMs: Date.now(),
+            command: {
+              type: 'CLIP_TRIM',
+              clipId: dragState.clip.id,
+              newTimelineRange: {
+                startTime: dragState.clip.timelineRange.startTime,
+                duration: fromSeconds(newDurSec, displayFps),
+              },
+              newSourceRange: {
+                startTime: dragState.clip.sourceRange.startTime,
+                duration: fromSeconds(newDurSec, displayFps),
+              },
+              ripple: false,
+            },
+          });
+        }
+      }
+      setDragState(null);
+    };
 
     window.addEventListener('mousemove', onMouseMove);
     window.addEventListener('mouseup', onMouseUp);
@@ -224,10 +229,23 @@ export const MultiTrackTimeline: React.FC = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedClipIds, playheadTime, undo, redo]);
 
-  // Split selected clip at playhead
+  // Split clip at playhead (selected clip or clip under playhead)
   const handleSplitAtPlayhead = () => {
-    if (selectedClipIds.length === 0) return;
-    const targetClipId = selectedClipIds[0];
+    let targetClipId: string | undefined = selectedClipIds[0];
+
+    if (!targetClipId) {
+      const clipUnderPlayhead = project.tracks
+        .filter((t) => !t.lockedByUser && t.kind !== 'audio-music')
+        .flatMap((t) => t.clips)
+        .find((c) => {
+          const start = toSeconds(c.timelineRange.startTime);
+          const end = start + toSeconds(c.timelineRange.duration);
+          return playheadSec > start && playheadSec < end;
+        });
+      targetClipId = clipUnderPlayhead?.id;
+    }
+
+    if (!targetClipId) return;
 
     dispatchCommand({
       commandId: `cmd_split_${Date.now()}`,
@@ -241,10 +259,23 @@ export const MultiTrackTimeline: React.FC = () => {
     });
   };
 
-  // Delete selected clip
+  // Delete selected clip or clip under playhead
   const handleDeleteSelected = () => {
-    if (selectedClipIds.length === 0) return;
-    const targetClipId = selectedClipIds[0];
+    let targetClipId: string | undefined = selectedClipIds[0];
+
+    if (!targetClipId) {
+      const clipUnderPlayhead = project.tracks
+        .filter((t) => !t.lockedByUser)
+        .flatMap((t) => t.clips)
+        .find((c) => {
+          const start = toSeconds(c.timelineRange.startTime);
+          const end = start + toSeconds(c.timelineRange.duration);
+          return playheadSec >= start && playheadSec <= end;
+        });
+      targetClipId = clipUnderPlayhead?.id;
+    }
+
+    if (!targetClipId) return;
 
     dispatchCommand({
       commandId: `cmd_del_${Date.now()}`,
@@ -253,7 +284,7 @@ export const MultiTrackTimeline: React.FC = () => {
       command: {
         type: 'CLIP_DELETE',
         clipId: targetClipId,
-        rippleGapClose: true,
+        rippleGapClose: false,
       },
     });
     clearSelection();
@@ -284,6 +315,8 @@ export const MultiTrackTimeline: React.FC = () => {
         return 'border-amber-500/40 bg-amber-950/20 text-amber-300';
       case 'motion-code':
         return 'border-pink-500/40 bg-pink-950/20 text-pink-300';
+      case 'transition':
+        return 'border-cyan-500/60 bg-cyan-950/40 text-cyan-200 ring-1 ring-cyan-500/30';
       case 'video':
         return 'border-blue-500/40 bg-blue-950/20 text-blue-300';
       case 'audio-voice':
@@ -612,11 +645,11 @@ export const MultiTrackTimeline: React.FC = () => {
             {project.tracks.map((track) => (
               <div
                 key={track.id}
-                className="flex items-center justify-between px-3 border-b border-[#222738] bg-[#141722] hover:bg-[#191d2b] transition-colors"
-                style={{ height: track.heightPx }}
+                className="flex items-center justify-between px-2.5 border-b border-[#222738] bg-[#141722] hover:bg-[#191d2b] transition-colors"
+                style={{ height: Math.min(36, track.heightPx || 36) }}
               >
-                <div className="flex items-center gap-2 truncate">
-                  <span className="text-xs font-medium text-zinc-200 truncate">{track.name}</span>
+                <div className="flex items-center gap-1.5 truncate">
+                  <span className="text-[11px] font-medium text-zinc-200 truncate">{track.name}</span>
                 </div>
 
                 <div className="flex items-center gap-1 text-zinc-400">
@@ -717,10 +750,54 @@ export const MultiTrackTimeline: React.FC = () => {
               {project.tracks.map((track) => (
                 <div
                   key={track.id}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'copy';
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    try {
+                      const raw = e.dataTransfer.getData('application/json');
+                      if (raw) {
+                        const data = JSON.parse(raw);
+                        if (data.type === 'ASSET' && data.asset) {
+                          const rect = e.currentTarget.getBoundingClientRect();
+                          const dropX = e.clientX - rect.left + timelineScrollLeft;
+                          const dropSec = Math.max(0, dropX / pixelsPerSecond);
+
+                          dispatchCommand({
+                            commandId: `cmd_drop_${Date.now()}`,
+                            actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+                            timestampMs: Date.now(),
+                            command: {
+                              type: 'CLIP_INSERT',
+                              trackId: track.id,
+                              clip: {
+                                ...createBaseTimelineClip({
+                                  id: `clip_${data.asset.id}_${Date.now().toString(36)}`,
+                                  name: `${data.asset.kind === 'meme' ? '🤡' : data.asset.kind === 'image' ? '🖼️' : '🎬'} ${data.asset.name}`,
+                                  trackId: track.id,
+                                  kind: track.kind === 'audio-voice' || track.kind === 'audio-sfx' || track.kind === 'audio-music' ? track.kind : 'video',
+                                  startSec: dropSec,
+                                  durSec: data.asset.durationSec || 3.5,
+                                }),
+                                assetId: data.asset.id,
+                                ...(data.asset.thumbnailUrl ? { thumbnailUrl: data.asset.thumbnailUrl } : {}),
+                              } as any,
+                              rippleShiftSubsequentClips: false,
+                            },
+                          });
+                        }
+                      }
+                    } catch {
+                      // ignore
+                    }
+                  }}
                   className={`relative border-b border-[#1c2130] bg-[#0f1118]/60 hover:bg-[#121520]/80 transition-colors ${
                     !track.visible ? 'opacity-30' : ''
                   }`}
-                  style={{ height: track.heightPx }}
+                  style={{ height: Math.min(36, track.heightPx || 36) }}
                   onClick={() => clearSelection()}
                 >
                   {/* Clip Items */}
@@ -744,6 +821,43 @@ export const MultiTrackTimeline: React.FC = () => {
                             initialStartSec: startSec,
                             initialDurSec: durSec,
                           });
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = 'copy';
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          try {
+                            const raw = e.dataTransfer.getData('application/json');
+                            if (raw) {
+                              const data = JSON.parse(raw);
+                              if (data.type === 'EFFECT' && data.shaderId) {
+                                dispatchCommand({
+                                  commandId: `cmd_shader_${Date.now()}`,
+                                  actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+                                  timestampMs: Date.now(),
+                                  command: {
+                                    type: 'CLIP_APPLY_SHADER',
+                                    clipId: clip.id,
+                                    shader: {
+                                      id: `sh_${data.effectId || 'fx'}_${Date.now()}`,
+                                      shaderId: data.shaderId,
+                                      name: data.name || 'Effect',
+                                      category: 'stylize',
+                                      enabled: true,
+                                      uniforms: {
+                                        intensity: { staticValue: 1.0, keyframes: [] },
+                                      },
+                                    },
+                                  },
+                                });
+                              }
+                            }
+                          } catch {
+                            // ignore
+                          }
                         }}
                         className={`group absolute top-1 bottom-1 rounded border px-2 py-1 flex items-center justify-between cursor-move text-xs shadow-md transition-all overflow-hidden ${
                           isSelected

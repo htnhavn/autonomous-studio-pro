@@ -37,6 +37,7 @@ class EmbeddedMCPServer:
         self._tool_handlers["youtube.generate_package_and_publish"] = self._handle_youtube_publish
         self._tool_handlers["stage.compile_deterministic_draft"] = self._handle_stage_compile_draft
         self._tool_handlers["stage.compose_choreographed_scene"] = self._handle_stage_compose_scene
+        self._tool_handlers["color.apply_davinci_grade"] = self._handle_color_grade
 
     async def execute_tool(self, name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
         handler = self._tool_handlers.get(name)
@@ -227,5 +228,33 @@ class EmbeddedMCPServer:
             stage_scene=stage_scene,
             reasoning=reasoning,
         )
+
+    async def _handle_color_grade(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        clip_id = args["clipId"]
+        grade: Dict[str, Any] = {"enabled": True}
+        for key in (
+            "exposure",
+            "contrast",
+            "saturation",
+            "temperature",
+            "tint",
+            "halationIntensity",
+            "filmGrainIntensity",
+        ):
+            if key in args:
+                grade[key] = {"staticValue": float(args[key]), "keyframes": []}
+        await self.orchestrator.emit_ghost_cursor(
+            role="vfx-motion",
+            timeline_sec=0.0,
+            status="rendering-vfx",
+            action_bubble=f"🎨 Áp màu DaVinci cho '{clip_id}'...",
+            target_clip_id=clip_id,
+        )
+        await self.orchestrator.emit_timeline_command(
+            role="vfx-motion",
+            command={"type": "CLIP_SET_COLOR_GRADE", "clipId": clip_id, "colorGrade": grade},
+            reasoning="Applied DaVinci Color Grade via MCP",
+        )
+        return {"success": True, "clipId": clip_id, "colorGrade": grade}
 
 

@@ -411,7 +411,7 @@ export const MediaPoolPanel: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between text-[10px] text-zinc-500">
-                  <span className="uppercase font-mono">{asset.origin.provider}</span>
+                  <span className="uppercase font-mono">{asset.origin?.provider || 'local'}</span>
                   {asset.aestheticScore && (
                     <span className="text-blue-400 font-bold flex items-center gap-0.5">
                       <Sparkles className="w-2.5 h-2.5" />

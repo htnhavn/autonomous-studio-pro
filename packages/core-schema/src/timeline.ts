@@ -5,13 +5,14 @@
  * CapCut Pro (One-click Presets, Dynamic Word Captions, Text-Behind-Subject), and WeftCut/Remotion (Code-as-Motion).
  */
 
-import { RationalTime, TimeRange } from './rational-time';
+import { RationalTime, TimeRange, fromSeconds } from './rational-time';
 import { ChoreographedStageScene } from '../../stage-engine/src/genre-kits';
 
 export type TrackKind =
   | 'video'             // Primary A-Roll, B-Roll, Image, or Screen Capture tracks
   | 'stage-puppet'      // Zero-AI / Hybrid Pre-built 2D Puppet, Stickman, Camera Rig & Genre Stage track
   | 'motion-code'       // Live React/TypeScript/Canvas/Three.js procedural components (WeftCut Motifs / Remotion)
+  | 'transition'        // Dedicated Transition Track for standalone WIPES, LUMA-FADE, WHIP-PAN blocks
   | 'caption'           // Word-level animated captions (WhisperX / Hormozi / CapCut Pro style)
   | 'effect-adjustment' // Adjustment layers applying GPU Shaders / LUTs / Transforms to tracks below
   | 'audio-voice'       // Dialogue / TTS Voiceover track (supports Auto-Ducking trigger)
@@ -128,6 +129,21 @@ export interface ColorGradeConfig {
   /** Whether AI Auto Color-Match normalized this clip to the reference hero shot */
   readonly aiColorMatchedToClipId?: string;
 }
+
+export const DEFAULT_COLOR_GRADE: ColorGradeConfig = {
+  enabled: false,
+  exposure: { staticValue: 0, keyframes: [] },
+  contrast: { staticValue: 1, keyframes: [] },
+  saturation: { staticValue: 1, keyframes: [] },
+  temperature: { staticValue: 0, keyframes: [] },
+  tint: { staticValue: 0, keyframes: [] },
+  lift: [0, 0, 0, 0],
+  gamma: [0, 0, 0, 0],
+  gain: [0, 0, 0, 0],
+  lutIntensity: { staticValue: 1, keyframes: [] },
+  filmGrainIntensity: { staticValue: 0, keyframes: [] },
+  halationIntensity: { staticValue: 0, keyframes: [] },
+};
 
 /**
  * AI Computer Vision VFX attachments (SAM 2.1 Rotoscoping, Depth-Anything 3D Parallax, Inpainting, RIFE)
@@ -411,5 +427,64 @@ export interface StudioProject {
 export type Track = TimelineTrack;
 export type Clip = TimelineClip;
 export type { ChoreographedStageScene };
+
+export function createBaseTimelineClip(params: {
+  id: string;
+  name: string;
+  trackId: string;
+  kind: TrackKind;
+  startSec: number;
+  durSec: number;
+  fps?: number;
+  shaders?: readonly ShaderEffectInstance[];
+}): TimelineClip {
+  const fps = params.fps ?? 60;
+  return {
+    id: params.id,
+    name: params.name,
+    trackId: params.trackId,
+    kind: params.kind,
+    timelineRange: {
+      startTime: fromSeconds(params.startSec, fps),
+      duration: fromSeconds(params.durSec, fps),
+    },
+    sourceRange: {
+      startTime: fromSeconds(0, fps),
+      duration: fromSeconds(params.durSec, fps),
+    },
+    speedMultiplier: 1.0,
+    blendMode: 'normal',
+    enabled: true,
+    lockedByUser: false,
+    transform: {
+      positionX: { staticValue: 0, keyframes: [] },
+      positionY: { staticValue: 0, keyframes: [] },
+      positionZ: { staticValue: 0, keyframes: [] },
+      scaleX: { staticValue: 1, keyframes: [] },
+      scaleY: { staticValue: 1, keyframes: [] },
+      rotationX: { staticValue: 0, keyframes: [] },
+      rotationY: { staticValue: 0, keyframes: [] },
+      rotationZ: { staticValue: 0, keyframes: [] },
+      anchorX: { staticValue: 0, keyframes: [] },
+      anchorY: { staticValue: 0, keyframes: [] },
+      opacity: { staticValue: 1, keyframes: [] },
+    },
+    shaders: params.shaders ?? [],
+    colorGrade: DEFAULT_COLOR_GRADE,
+    aiVfx: {},
+    audio: {
+      volumeDb: { staticValue: 0, keyframes: [] },
+      pan: { staticValue: 0, keyframes: [] },
+      mute: false,
+      fadeInDuration: fromSeconds(0, fps),
+      fadeOutDuration: fromSeconds(0, fps),
+      aiDenoiseEnabled: false,
+      aiVocalIsolationEnabled: false,
+      duckingRole: 'none',
+      duckingAmountDb: 0,
+    },
+  };
+}
+
 
 

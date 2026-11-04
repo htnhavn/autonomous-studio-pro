@@ -16,6 +16,7 @@ from __future__ import annotations
 import json
 import sys
 import time
+import uuid
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -191,6 +192,127 @@ def handle_tool_call(name: str, args: Dict[str, Any]) -> Dict[str, Any]:
         seq = emit_bridge_events(events)
         forward_to_sidecar_if_online(name, args)
         return {"ok": True, "seqId": seq, "clipId": clip_id}
+
+    if name == "timeline.insert_broll_clip":
+        query = args.get("query", "B-Roll")
+        url = args.get("url") or "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1280&q=80"
+        track_id = args.get("trackId", "track-video-broll")
+        start_sec = float(args.get("startTimeSec", 0.0))
+        duration_sec = float(args.get("durationSec", 4.0))
+        shader_id = args.get("shaderId")
+        asset_id = f"asset_mcp_{uuid.uuid4().hex[:6]}"
+        clip_id = f"clip_mcp_{uuid.uuid4().hex[:6]}"
+        asset = {
+            "id": asset_id,
+            "name": query,
+            "kind": "image",
+            "localFilePath": url,
+            "semanticTags": query.split(),
+            "aestheticScore": 9.5,
+            "origin": {"provider": "mcp", "searchQuery": query, "sourceUrl": url},
+        }
+        clip = {
+            "id": clip_id,
+            "name": f"🖼️ {query}",
+            "trackId": track_id,
+            "assetId": asset_id,
+            "kind": "video",
+            "timelineRange": {
+                "startTime": {"value": int(round(start_sec * 60)), "rate": 60},
+                "duration": {"value": int(round(duration_sec * 60)), "rate": 60},
+            },
+            "sourceRange": {
+                "startTime": {"value": 0, "rate": 60},
+                "duration": {"value": int(round(duration_sec * 60)), "rate": 60},
+            },
+            "speedMultiplier": 1.0,
+            "blendMode": "normal",
+            "enabled": True,
+            "lockedByUser": False,
+            "transform": {
+                "positionX": {"staticValue": 0, "keyframes": []},
+                "positionY": {"staticValue": 0, "keyframes": []},
+                "positionZ": {"staticValue": 0, "keyframes": []},
+                "scaleX": {"staticValue": 1, "keyframes": []},
+                "scaleY": {"staticValue": 1, "keyframes": []},
+                "rotationX": {"staticValue": 0, "keyframes": []},
+                "rotationY": {"staticValue": 0, "keyframes": []},
+                "rotationZ": {"staticValue": 0, "keyframes": []},
+                "anchorX": {"staticValue": 0.5, "keyframes": []},
+                "anchorY": {"staticValue": 0.5, "keyframes": []},
+                "opacity": {"staticValue": 1, "keyframes": []},
+            },
+            "shaders": ([{
+                "id": f"sh_{uuid.uuid4().hex[:6]}",
+                "shaderId": shader_id,
+                "name": shader_id,
+                "enabled": True,
+                "mix": {"staticValue": 1.0, "keyframes": []},
+                "uniforms": {},
+            }] if shader_id else []),
+            "colorGrade": {
+                "enabled": False,
+                "exposure": {"staticValue": 0, "keyframes": []},
+                "contrast": {"staticValue": 1, "keyframes": []},
+                "saturation": {"staticValue": 1, "keyframes": []},
+                "temperature": {"staticValue": 0, "keyframes": []},
+                "tint": {"staticValue": 0, "keyframes": []},
+                "lift": [0, 0, 0, 0],
+                "gamma": [0, 0, 0, 0],
+                "gain": [0, 0, 0, 0],
+                "lutIntensity": {"staticValue": 1, "keyframes": []},
+                "filmGrainIntensity": {"staticValue": 0, "keyframes": []},
+                "halationIntensity": {"staticValue": 0, "keyframes": []},
+            },
+            "aiVfx": {},
+            "audio": {
+                "volumeDb": {"staticValue": 0, "keyframes": []},
+                "pan": {"staticValue": 0, "keyframes": []},
+                "mute": True,
+                "fadeInDuration": {"value": 0, "rate": 60},
+                "fadeOutDuration": {"value": 0, "rate": 60},
+                "aiDenoiseEnabled": False,
+                "aiVocalIsolationEnabled": False,
+                "duckingRole": "none",
+                "duckingAmountDb": 0,
+            },
+        }
+        events = [
+            make_ghost_cursor_event(
+                timeline_sec=start_sec,
+                status="searching-web",
+                bubble=f"🔍 [MCP Agent] Chèn B-Roll '{query}' tại {start_sec:.1f}s...",
+                target_track_id=track_id,
+            ),
+            make_timeline_command_event(
+                command={"type": "MEDIA_POOL_REGISTER_ASSET", "asset": asset},
+                reasoning=f"Register B-Roll asset '{query}' via MCP",
+            ),
+            {
+                "eventType": "LIVE_ASSET_FLIGHT",
+                "flight": {
+                    "eventId": f"flight_{uuid.uuid4().hex[:6]}",
+                    "agentId": "agent_vscode_external",
+                    "asset": asset,
+                    "targetTrackId": track_id,
+                    "targetStartTime": {"value": int(round(start_sec * 60)), "rate": 60},
+                    "searchQueryUsed": query,
+                    "vlmMatchScore": 9.5,
+                    "timestampMs": int(time.time() * 1000),
+                },
+            },
+            make_timeline_command_event(
+                command={
+                    "type": "CLIP_INSERT",
+                    "trackId": track_id,
+                    "clip": clip,
+                    "rippleShiftSubsequentClips": False,
+                },
+                reasoning=f"Insert B-Roll '{query}' via MCP",
+            ),
+        ]
+        seq = emit_bridge_events(events)
+        return {"ok": True, "seqId": seq, "clipId": clip_id, "assetId": asset_id}
 
     if name == "timeline.split_and_ripple_cut":
         clip_id = args["clipId"]

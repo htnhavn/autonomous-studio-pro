@@ -13,7 +13,9 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
+import urllib.request
 from typing import List, Tuple
 from PIL import Image, ImageDraw, ImageFont
 
@@ -25,10 +27,18 @@ SWIFT_ENCODER_BIN = ROOT_DIR / "scripts" / "native_mp4_encoder_bin"
 
 def _load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
     candidates = [
+        # macOS
         "/System/Library/Fonts/Supplemental/Arial Bold.ttf" if bold else "/System/Library/Fonts/Supplemental/Arial.ttf",
         "/System/Library/Fonts/Helvetica.ttc",
+        "/System/Library/Fonts/Supplemental/Arial Unicode.ttf",
+        "/Library/Fonts/Arial Unicode.ttf",
+        # Windows
         "C:\\Windows\\Fonts\\arialbd.ttf" if bold else "C:\\Windows\\Fonts\\arial.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "C:\\Windows\\Fonts\\segoeuib.ttf" if bold else "C:\\Windows\\Fonts\\segoeui.ttf",
+        "C:\\Windows\\Fonts\\tahomabd.ttf" if bold else "C:\\Windows\\Fonts\\tahoma.ttf",
+        # Linux / generic (DejaVu has Vietnamese coverage)
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/noto/NotoSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf",
     ]
     for path in candidates:
         if os.path.exists(path):
@@ -36,7 +46,17 @@ def _load_font(size: int, bold: bool = False) -> ImageFont.FreeTypeFont:
                 return ImageFont.truetype(path, size=size)
             except Exception:
                 pass
-    return ImageFont.load_default()
+    # Last resort: Pillow >=10.1 supports a scalable default font with size;
+    # older versions return a tiny bitmap font that lacks Unicode coverage.
+    try:
+        return ImageFont.load_default(size=size)  # type: ignore[call-arg]
+    except TypeError:
+        print(
+            "[warn] No TrueType font found; falling back to Pillow's tiny default font. "
+            "Vietnamese/Unicode text may render incorrectly. Install DejaVu/Noto/Arial.",
+            file=sys.stderr,
+        )
+        return ImageFont.load_default()
 
 
 def render_stickman_stage_mp4(
@@ -131,16 +151,16 @@ def render_stickman_stage_mp4(
 
             # Widget Header
             header_title = (
-                "📈 MACRO LIQUIDITY & CANDLESTICK" if genre == "economics-stickman"
-                else "🌌 EVENT HORIZON SCALE" if genre == "universe-cosmic"
-                else "📜 ANCIENT EMPIRE MARCH"
+                "📈 MACRO LIQUIDITY" if genre == "economics-stickman"
+                else "🌌 EVENT HORIZON" if genre == "universe-cosmic"
+                else "📜 EMPIRE MARCH"
             )
             draw.text((chart_x1 + 24, chart_y1 + 18), header_title, font=font_title, fill=(240, 248, 255))
             pct_val = 12.4 + progress * 28.5
             draw.text(
-                (chart_x2 - 165, chart_y1 + 20),
+                (chart_x2 - 130, chart_y1 + 24),
                 f"+{pct_val:.1f}% ▲",
-                font=font_title,
+                font=font_hud,
                 fill=(16, 185, 129),
             )
 
@@ -260,7 +280,7 @@ def render_stickman_stage_mp4(
 
             # Save frame PNG
             frame_file = tmp_dir / f"frame_{frame_idx:04d}.png"
-            img.save(frame_file, format="PNG")
+            img.save(frame_file, format="PNG", compress_level=1)
 
         # 7. Encode PNG sequence to H.264 .mp4
         ffmpeg_bin = shutil.which("ffmpeg")
@@ -299,6 +319,182 @@ def render_stickman_stage_mp4(
         else:
             raise RuntimeError("Neither ffmpeg nor swift AVAssetWriter encoder found.")
 
+        return output_mp4
+    finally:
+        shutil.rmtree(tmp_dir, ignore_errors=True)
+
+
+def _cover_image(img: Image.Image, w: int, h: int, zoom: float = 1.0, pan_x: int = 0, pan_y: int = 0) -> Image.Image:
+    """Scale an image to cover w×h (like object-fit: cover) with optional zoom/pan."""
+    iw, ih = img.size
+    scale = max(w / iw, h / ih) * max(1.0, zoom)
+    nw, nh = max(1, int(iw * scale)), max(1, int(ih * scale))
+    resized = img.resize((nw, nh), Image.BILINEAR)
+    left = (nw - w) // 2 - pan_x
+    top = (nh - h) // 2 - pan_y
+    left = max(0, min(nw - w, left))
+    top = max(0, min(nh - h, top))
+    return resized.crop((left, top, left + w, top + h))
+
+
+def render_timeline_composite_mp4(
+    output_mp4: Path,
+    scenes: List[dict],
+    width: int = 1280,
+    height: int = 720,
+    fps: int = 30,
+    genre: str = "economics-stickman",
+    agent_name: str = "🤖 Master Editor",
+    title: str = "AUTONOMOUS MASTER EDIT",
+) -> Path:
+    """Render an assembled timeline: real A-roll/B-roll media per scene, Ken Burns
+    motion, crossfade/whip transitions between scenes, HUD and word-highlight captions.
+
+    `scenes` items: {startSec, durationSec, imagePath?, subtitle?, title?,
+                     transitionIn?: {type, durationSec}, camera?}
+    """
+    output_mp4 = Path(output_mp4).resolve()
+    output_mp4.parent.mkdir(parents=True, exist_ok=True)
+    if not scenes:
+        raise ValueError("render_timeline_composite_mp4 requires at least one scene")
+
+    total_dur = max(float(s.get("startSec", 0)) + float(s.get("durationSec", 1)) for s in scenes)
+    total_frames = max(1, int(round(total_dur * fps)))
+
+    font_title = _load_font(24, bold=True)
+    font_hud = _load_font(17, bold=True)
+    font_sub = _load_font(30, bold=True)
+    font_badge = _load_font(15, bold=True)
+
+    if genre == "universe-cosmic":
+        bg_color, accent = (8, 10, 26), (56, 189, 248)
+    elif genre == "lore-chronicle":
+        bg_color, accent = (28, 22, 16), (245, 158, 11)
+    else:
+        bg_color, accent = (12, 20, 28), (16, 185, 129)
+
+    tmp_dir = Path(tempfile.mkdtemp(prefix="studio_timeline_frames_"))
+    img_cache: dict = {}
+
+    def load_img(path: str | None):
+        if not path:
+            return None
+        if path not in img_cache:
+            try:
+                if path.startswith("http://") or path.startswith("https://"):
+                    dl = tmp_dir / f"dl_{abs(hash(path)) % 100000}.img"
+                    if not dl.exists():
+                        with urllib.request.urlopen(path, timeout=30) as resp:
+                            dl.write_bytes(resp.read())
+                    raw = Image.open(dl).convert("RGB")
+                else:
+                    raw = Image.open(path).convert("RGB")
+                # Pre-scale once to just above target size so per-frame Ken Burns
+                # only crops a small window instead of resizing a huge image.
+                img_cache[path] = _cover_image(raw, int(width * 1.2), int(height * 1.2), 1.0, 0, 0)
+            except Exception:
+                img_cache[path] = None
+        return img_cache[path]
+
+    try:
+        for frame_idx in range(total_frames):
+            t = frame_idx / float(fps)
+
+            active_i = len(scenes) - 1
+            for i, sc in enumerate(scenes):
+                s0 = float(sc.get("startSec", 0))
+                if s0 <= t < s0 + float(sc.get("durationSec", 1)):
+                    active_i = i
+                    break
+            sc = scenes[active_i]
+            s0 = float(sc.get("startSec", 0))
+            dur = max(0.001, float(sc.get("durationSec", 1)))
+            sp = min(1.0, max(0.0, (t - s0) / dur))
+
+            frame = Image.new("RGB", (width, height), bg_color)
+            draw = ImageDraw.Draw(frame)
+
+            cur_img = load_img(sc.get("imagePath"))
+            if cur_img is not None:
+                cam = sc.get("camera", "slow-push-in-dramatic")
+                zoom = 1.0 + (0.10 if "push" in cam else 0.04) * sp
+                pan_x = int(16 * math.sin(sp * math.pi))
+                pan_y = int(-8 * sp)
+                cur = _cover_image(cur_img, width, height, zoom, pan_x, pan_y)
+
+                trans = sc.get("transitionIn") or {}
+                tdur = float(trans.get("durationSec", 0.0) or 0.0)
+                if active_i > 0 and tdur > 0 and (t - s0) < tdur:
+                    prev_img = load_img(scenes[active_i - 1].get("imagePath"))
+                    if prev_img is not None:
+                        prev = _cover_image(prev_img, width, height, 1.05, 0, 0)
+                        a = min(1.0, max(0.0, (t - s0) / tdur))
+                        if trans.get("type") in ("whip", "slide"):
+                            off = int(width * (1.0 - a))
+                            frame.paste(prev, (0, 0))
+                            frame.paste(cur, (off, 0))
+                        else:
+                            frame.paste(Image.blend(prev, cur, a), (0, 0))
+                    else:
+                        frame.paste(cur, (0, 0))
+                else:
+                    frame.paste(cur, (0, 0))
+
+                # Bottom gradient for caption legibility
+                draw = ImageDraw.Draw(frame, "RGBA")
+                for gy in range(140):
+                    alpha = int(170 * (gy / 140.0))
+                    draw.line([(0, height - 140 + gy), (width, height - 140 + gy)], fill=(0, 0, 0, alpha))
+                draw = ImageDraw.Draw(frame)
+            else:
+                # Synthetic stage backdrop (no media): grid + glow
+                grid = 64
+                for gx in range(0, width, grid):
+                    draw.line([(gx, 0), (gx, height)], fill=(22, 35, 48), width=1)
+                for gy in range(0, height, grid):
+                    draw.line([(0, gy), (width, gy)], fill=(22, 35, 48), width=1)
+
+            # HUD bar
+            draw.rounded_rectangle([24, 20, width - 24, 66], radius=10, fill=(15, 23, 42), outline=(30, 58, 138), width=2)
+            draw.ellipse([40, 36, 54, 50], fill=accent)
+            draw.text((64, 33), f"{agent_name}  •  {title.upper()[:38]}  •  {genre.upper()}", font=font_hud, fill=(226, 232, 240))
+            tc = f"TC 00:00:{int(t):02d}:{frame_idx % fps:02d} ({fps}fps)"
+            draw.text((width - 300, 33), tc, font=font_hud, fill=(56, 189, 248))
+
+            # Scene badge
+            scene_label = sc.get("title") or f"SCENE {active_i + 1}"
+            draw.rounded_rectangle([24, 78, 24 + 10 + int(len(scene_label) * 9), 108], radius=6, fill=(0, 0, 0), outline=accent, width=2)
+            draw.text((34, 84), scene_label, font=font_badge, fill=accent)
+
+            # Subtitle with active-word highlight
+            subtitle = (sc.get("subtitle") or sc.get("dialogue") or "").strip()
+            if subtitle:
+                words = subtitle.split()
+                active_w = min(len(words) - 1, int(sp * len(words))) if words else 0
+                shown = []
+                for wi, wstr in enumerate(words):
+                    shown.append(f"[{wstr.upper()}]" if wi == active_w else wstr)
+                line = " ".join(shown)
+                if len(line) > 64:
+                    line = line[:64] + "..."
+                draw.rounded_rectangle([120, height - 96, width - 120, height - 24], radius=12, fill=(9, 13, 22), outline=accent, width=2)
+                draw.text((150, height - 78), line, font=font_sub, fill=(250, 204, 21))
+
+            frame.save(tmp_dir / f"frame_{frame_idx:04d}.jpg", format="JPEG", quality=90)
+
+        ffmpeg_bin = shutil.which("ffmpeg")
+        if ffmpeg_bin:
+            subprocess.run(
+                [ffmpeg_bin, "-y", "-framerate", str(fps), "-i", str(tmp_dir / "frame_%04d.jpg"),
+                 "-c:v", "libx264", "-pix_fmt", "yuv420p", str(output_mp4)],
+                check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            )
+        elif SWIFT_ENCODER_BIN.exists():
+            subprocess.run([str(SWIFT_ENCODER_BIN), str(tmp_dir), str(fps), str(output_mp4)], check=True)
+        elif shutil.which("swift") and SWIFT_ENCODER.exists():
+            subprocess.run(["swift", str(SWIFT_ENCODER), str(tmp_dir), str(fps), str(output_mp4)], check=True)
+        else:
+            raise RuntimeError("Neither ffmpeg nor swift AVAssetWriter encoder found.")
         return output_mp4
     finally:
         shutil.rmtree(tmp_dir, ignore_errors=True)

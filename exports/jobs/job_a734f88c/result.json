@@ -1,0 +1,104 @@
+{
+  "jobId": "job_a734f88c",
+  "status": "completed",
+  "workflowPath": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/workflow.json",
+  "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/master.mp4",
+  "masterSizeBytes": 4823366,
+  "durationSec": 6.0,
+  "scenesProcessed": 2,
+  "huntedAssets": [
+    {
+      "sceneId": "scene_1",
+      "query": "AI semiconductor microchip",
+      "assetId": "asset_job_87a5f1",
+      "arollClipId": "clip_aroll_81efd0",
+      "brollClipId": "clip_broll_2f70d0",
+      "sizeBytes": 197815
+    },
+    {
+      "sceneId": "scene_2",
+      "query": "silicon wafer technology",
+      "assetId": "asset_job_e85b71",
+      "arollClipId": "clip_aroll_2669f2",
+      "brollClipId": "clip_broll_1b0f27",
+      "sizeBytes": 188580
+    }
+  ],
+  "audio": {
+    "silences": [
+      [
+        2.0,
+        2.8
+      ],
+      [
+        5.0,
+        5.8
+      ]
+    ],
+    "bpm": 120.0,
+    "markers": 15
+  },
+  "criticReport": {
+    "iteration": 1,
+    "overallScore": 9.42,
+    "subScores": {
+      "hookRetention": 9.5,
+      "pacingAndRhythm": 9.4,
+      "visualBrollQuality": 9.3,
+      "motionAndVfxPolish": 9.5,
+      "audioMixAndSfx": 9.4
+    },
+    "passedQualityGate": true,
+    "issues": [],
+    "fileMetrics": {
+      "path": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/master.mp4",
+      "sizeBytes": 4823366,
+      "hasValidMp4Ftyp": true
+    },
+    "verdict": "READY_FOR_BROADCAST"
+  },
+  "youtubePackage": {
+    "status": "package_ready_not_uploaded",
+    "artifacts": {
+      "youtubeMetadata": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/youtube_package/metadata.json",
+      "youtubeThumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/youtube_package/thumb_variant_a.png",
+      "youtubePackageDir": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/youtube_package"
+    },
+    "metadata": {
+      "jobId": "job_a734f88c",
+      "title": "Diversity Test",
+      "description": "Diversity Test\n\nChapters:\n00:00 Chip AI bùng nổ.\n00:03 Wafer silicon khan hiếm.\n\nProduced autonomously by Autonomous Studio Pro.",
+      "tags": [
+        "bùng",
+        "chip",
+        "hiếm",
+        "khan",
+        "silicon",
+        "wafer"
+      ],
+      "chapters": [
+        {
+          "timecode": "00:00",
+          "title": "Chip AI bùng nổ."
+        },
+        {
+          "timecode": "00:03",
+          "title": "Wafer silicon khan hiếm."
+        }
+      ],
+      "privacyStatus": "unlisted",
+      "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/master.mp4",
+      "masterSizeBytes": 4823366,
+      "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/youtube_package/thumb_variant_a.png",
+      "generatedAtMs": 1793787364067
+    },
+    "upload": {
+      "status": "package_ready_not_uploaded",
+      "reason": "No YouTube credentials configured (set YOUTUBE_CREDENTIALS_PATH or YOUTUBE_ACCESS_TOKEN).",
+      "packageFiles": {
+        "mp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/master.mp4",
+        "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/youtube_package/thumb_variant_a.png"
+      }
+    }
+  }
+}

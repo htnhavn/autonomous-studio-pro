@@ -9,6 +9,7 @@
 
 import React, { useState } from 'react';
 import { useStudioStore } from '../../store/useStudioStore';
+import { toSeconds } from '../../../../../packages/core-schema/src/rational-time';
 import { Search, Sparkles, Plus, Check, Wand2, Flame, Layers, Radio, Tv } from 'lucide-react';
 
 export interface EffectItem {
@@ -129,12 +130,30 @@ export const EffectsPanel: React.FC = () => {
   const project = useStudioStore((s) => s.project);
   const dispatchCommand = useStudioStore((s) => s.dispatchCommand);
 
-  // Target clip is either selected clip or first video clip on timeline
-  const targetClip = project.tracks
-    .flatMap((t) => t.clips)
-    .find((c) => selectedClipIds.includes(c.id)) ||
-    project.tracks.find((t) => t.kind === 'video')?.clips[0] ||
-    project.tracks[0]?.clips[0];
+  const playheadTime = useStudioStore((s) => s.playheadTime);
+  const currentSec = toSeconds(playheadTime);
+
+  // Target clip preference (Never target caption track unless explicitly selected):
+  // 1. Manually selected video or stage clip
+  // 2. Video or stage clip actively under playhead
+  // 3. Any video or stage clip
+  // 4. Any selected clip
+  const videoAndStageClips = project.tracks
+    .filter((t) => t.kind === 'video' || t.kind === 'stage-puppet')
+    .flatMap((t) => t.clips);
+
+  const selectedTargetClip = videoAndStageClips.find((c) => selectedClipIds.includes(c.id));
+
+  const clipUnderPlayhead = videoAndStageClips.find((c) => {
+    const start = toSeconds(c.timelineRange.startTime);
+    const end = start + toSeconds(c.timelineRange.duration);
+    return currentSec >= start && currentSec <= end;
+  });
+
+  const anyVideoClip = videoAndStageClips[0];
+  const fallbackSelected = project.tracks.flatMap((t) => t.clips).find((c) => selectedClipIds.includes(c.id));
+
+  const targetClip = selectedTargetClip || clipUnderPlayhead || anyVideoClip || fallbackSelected;
 
   const filteredEffects = CAPCUT_EFFECTS_CATALOG.filter((item) => {
     const matchesCat = activeCategory === 'video' ? true : item.category === activeCategory;
@@ -267,67 +286,87 @@ export const EffectsPanel: React.FC = () => {
           </span>
         </div>
 
-        {/* Cards Grid */}
-        <div className="flex-1 overflow-y-auto grid grid-cols-2 gap-2.5 pr-1">
+        {/* Dense List View (CapCut Pro Workstation Style) */}
+        <div className="flex-1 overflow-y-auto capcut-scroll flex flex-col gap-1 pr-1">
           {filteredEffects.map((effect) => {
             const isApplied = appliedId === effect.id;
 
             return (
               <div
                 key={effect.id}
-                className={`group relative rounded-xl overflow-hidden border bg-[#161a26] hover:bg-[#1a2030] transition-all cursor-pointer flex flex-col ${
+                draggable
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(
+                    'application/json',
+                    JSON.stringify({
+                      type: 'EFFECT',
+                      effectId: effect.id,
+                      shaderId: effect.shaderId,
+                      name: effect.name,
+                    })
+                  );
+                }}
+                className={`group flex items-center justify-between px-2 py-1.5 rounded-md border bg-[#141724] hover:bg-[#1a2032] transition-all cursor-grab active:cursor-grabbing ${
                   effect.id === 'eff_rgb_stroke'
-                    ? 'border-cyan-400/80 shadow-[0_0_12px_rgba(0,229,204,0.25)] ring-1 ring-cyan-400/50'
-                    : 'border-[#272c3d] hover:border-zinc-500'
+                    ? 'border-cyan-500/50 shadow-[0_0_8px_rgba(0,229,204,0.15)] ring-1 ring-cyan-500/30'
+                    : 'border-[#222738] hover:border-zinc-500'
                 }`}
                 onClick={() => handleApplyEffect(effect)}
+                title="Click to apply or Drag onto any Timeline Clip"
               >
-                {/* Thumbnail Image */}
-                <div className="relative h-22 w-full overflow-hidden bg-black/60">
-                  <img
-                    src={effect.thumbnail}
-                    alt={effect.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-                  {/* Badge */}
-                  {effect.badge && (
+                {/* Left: Thumbnail & Name */}
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="relative w-7 h-7 rounded overflow-hidden shrink-0 border border-[#2a3147] bg-black">
+                    <img
+                      src={effect.thumbnail}
+                      alt={effect.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform"
+                    />
                     <span
-                      className="absolute top-1.5 left-1.5 text-[9px] font-bold px-1.5 py-0.5 rounded shadow text-black"
+                      className="absolute bottom-0 right-0 w-2 h-2 rounded-tl"
                       style={{ backgroundColor: effect.accentColor }}
-                    >
-                      {effect.badge}
-                    </span>
-                  )}
-
-                  {/* Apply '+' Action Badge in Top-Right */}
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleApplyEffect(effect);
-                    }}
-                    className={`absolute top-1.5 right-1.5 w-6 h-6 rounded-full flex items-center justify-center transition-all shadow-md ${
-                      isApplied
-                        ? 'bg-emerald-500 text-white scale-110'
-                        : 'bg-black/70 hover:bg-cyan-400 text-zinc-300 hover:text-black opacity-80 group-hover:opacity-100'
-                    }`}
-                    title="Click to apply to timeline clip"
-                  >
-                    {isApplied ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Plus className="w-3.5 h-3.5 stroke-[2.5]" />}
-                  </button>
-                </div>
-
-                {/* Card Title & Info */}
-                <div className="p-2 flex flex-col justify-between flex-1">
-                  <div className="font-semibold text-zinc-100 text-xs truncate flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: effect.accentColor }} />
-                    <span className="truncate">{effect.name}</span>
+                    />
                   </div>
-                  <p className="text-[10px] text-zinc-400 line-clamp-1 mt-0.5">
-                    {effect.description}
-                  </p>
+
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-1.5 truncate">
+                      <span className="font-semibold text-zinc-100 text-[11px] truncate">
+                        {effect.name}
+                      </span>
+                      {effect.badge && (
+                        <span
+                          className="text-[8px] font-bold px-1 py-0.2 rounded text-black shrink-0"
+                          style={{ backgroundColor: effect.accentColor }}
+                        >
+                          {effect.badge}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-[9px] text-zinc-400 truncate max-w-[170px]">
+                      {effect.description}
+                    </span>
+                  </div>
                 </div>
+
+                {/* Right: Quick Apply '+' Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleApplyEffect(effect);
+                  }}
+                  className={`w-5 h-5 rounded flex items-center justify-center transition-all shrink-0 ml-1.5 ${
+                    isApplied
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-[#1b2132] hover:bg-cyan-400 text-zinc-400 hover:text-black opacity-80 group-hover:opacity-100'
+                  }`}
+                  title="Apply to active clip"
+                >
+                  {isApplied ? (
+                    <Check className="w-3 h-3 stroke-[3]" />
+                  ) : (
+                    <Plus className="w-3 h-3 stroke-[2.5]" />
+                  )}
+                </button>
               </div>
             );
           })}

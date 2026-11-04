@@ -40,6 +40,19 @@ export const ClipInspector: React.FC = () => {
     project.tracks.find((t) => t.kind === 'video')?.clips[0] ||
     project.tracks[0]?.clips[0];
 
+  // Synchronize inspector sliders with selected clip properties.
+  // This hook MUST run before any early return so the hook order stays stable.
+  React.useEffect(() => {
+    if (selectedClip) {
+      const op = selectedClip.transform?.opacity?.staticValue ?? 1;
+      setOpacityVal(Math.round(op * 100));
+      setPosXVal(selectedClip.transform?.positionX?.staticValue ?? 0);
+      setPosYVal(selectedClip.transform?.positionY?.staticValue ?? 0);
+      setSpeedVal(selectedClip.speedMultiplier ?? 1.0);
+      setEffectEnabled(selectedClip.shaders?.[0]?.enabled ?? true);
+    }
+  }, [selectedClip?.id]);
+
   if (!selectedClip) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-zinc-500 p-6 text-center text-xs">
@@ -193,7 +206,25 @@ export const ClipInspector: React.FC = () => {
 
                 {/* Cyan Toggle Switch */}
                 <button
-                  onClick={() => setEffectEnabled(!effectEnabled)}
+                  onClick={() => {
+                    const next = !effectEnabled;
+                    setEffectEnabled(next);
+                    if (selectedClip.shaders && selectedClip.shaders.length > 0) {
+                      dispatchCommand({
+                        commandId: `cmd_sh_toggle_${Date.now()}`,
+                        actor: { kind: 'user', id: 'user_local', displayName: 'User' },
+                        timestampMs: Date.now(),
+                        command: {
+                          type: 'CLIP_APPLY_SHADER',
+                          clipId: selectedClip.id,
+                          shader: {
+                            ...activeShader,
+                            enabled: next,
+                          },
+                        },
+                      });
+                    }
+                  }}
                   className={`w-9 h-5 rounded-full transition-colors relative p-0.5 ${
                     effectEnabled ? 'bg-[#00e5cc]' : 'bg-zinc-700'
                   }`}
@@ -229,7 +260,11 @@ export const ClipInspector: React.FC = () => {
                     min={0}
                     max={100}
                     value={opacityVal}
-                    onChange={(e) => setOpacityVal(Number(e.target.value))}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setOpacityVal(v);
+                      handleUpdateStaticTransform('opacity', v / 100);
+                    }}
                     className="w-full accent-cyan-400 h-1 bg-zinc-700 rounded cursor-pointer"
                   />
                 </div>
@@ -255,7 +290,10 @@ export const ClipInspector: React.FC = () => {
                     max={5.0}
                     step={0.1}
                     value={speedVal}
-                    onChange={(e) => setSpeedVal(Number(e.target.value))}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setSpeedVal(v);
+                    }}
                     className="w-full accent-cyan-400 h-1 bg-zinc-700 rounded cursor-pointer"
                   />
                 </div>
@@ -280,7 +318,11 @@ export const ClipInspector: React.FC = () => {
                     min={-500}
                     max={500}
                     value={posXVal}
-                    onChange={(e) => setPosXVal(Number(e.target.value))}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setPosXVal(v);
+                      handleUpdateStaticTransform('positionX', v);
+                    }}
                     className="w-full accent-cyan-400 h-1 bg-zinc-700 rounded cursor-pointer"
                   />
                 </div>
@@ -305,7 +347,11 @@ export const ClipInspector: React.FC = () => {
                     min={-500}
                     max={500}
                     value={posYVal}
-                    onChange={(e) => setPosYVal(Number(e.target.value))}
+                    onChange={(e) => {
+                      const v = Number(e.target.value);
+                      setPosYVal(v);
+                      handleUpdateStaticTransform('positionY', v);
+                    }}
                     className="w-full accent-cyan-400 h-1 bg-zinc-700 rounded cursor-pointer"
                   />
                 </div>

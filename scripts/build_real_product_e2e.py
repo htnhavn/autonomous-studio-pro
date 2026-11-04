@@ -27,6 +27,15 @@ import time
 import wave
 from PIL import Image, ImageDraw, ImageFont
 
+
+def _rounded_rect(draw, box, radius=0, **kwargs):
+    """Draw a rounded rectangle, falling back to a plain rectangle on
+    Pillow versions older than 8.2 that lack ImageDraw.rounded_rectangle."""
+    try:
+        draw.rounded_rectangle(box, radius=radius, **kwargs)
+    except AttributeError:
+        draw.rectangle(box, **kwargs)
+
 ROOT_DIR = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = ROOT_DIR / "output_product"
 SCRIPTS_DIR = ROOT_DIR / "scripts"
@@ -112,13 +121,22 @@ async def build_real_audio(out_wav: Path) -> dict:
 def build_real_vproj_and_otio(out_dir: Path) -> dict:
     print("[2/5] Building Real .vproj Package & .otio Document via Command Gateway...")
     generator_ts = SCRIPTS_DIR / "gen_vproj_artifacts.ts"
-    bundle_cjs = Path("/tmp/gen_vproj_artifacts.cjs")
+    bundle_cjs = Path(tempfile.gettempdir()) / "gen_vproj_artifacts.cjs"
 
+    # Resolve Node/esbuild from the active environment instead of a hardcoded
+    # developer-specific NVM path, so the builder works on any machine.
+    node_bin = shutil.which("node")
+    if not node_bin:
+        raise RuntimeError("Node.js ('node') not found on PATH; install Node to build .vproj/.otio artifacts.")
     env = dict(
         os.environ,
-        PATH=f"{Path.home()}/.nvm/versions/node/v24.21.0/bin:{os.environ.get('PATH', '')}",
+        PATH=f"{Path(node_bin).parent}:{os.environ.get('PATH', '')}",
     )
     esbuild_bin = ROOT_DIR / "apps" / "desktop" / "node_modules" / ".bin" / "esbuild"
+    if not esbuild_bin.exists():
+        esbuild_bin = Path(shutil.which("esbuild") or "")
+    if not esbuild_bin or not Path(esbuild_bin).exists():
+        raise RuntimeError("esbuild not found (expected apps/desktop/node_modules/.bin/esbuild or on PATH).")
     subprocess.run(
         [str(esbuild_bin), str(generator_ts), "--bundle", "--platform=node", f"--outfile={bundle_cjs}"],
         env=env,
@@ -126,7 +144,7 @@ def build_real_vproj_and_otio(out_dir: Path) -> dict:
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
     )
-    subprocess.run(["node", str(bundle_cjs), str(out_dir)], env=env, check=True)
+    subprocess.run([node_bin, str(bundle_cjs), str(out_dir)], env=env, check=True)
 
     vproj_file = out_dir / "macro_crisis_2026.vproj.json"
     otio_file = out_dir / "macro_crisis_2026.otio"
@@ -212,12 +230,12 @@ def build_real_storyboard(out_bmp: Path) -> dict:
         card_x1 = x0 + panel_w - 30
         card_y1 = center_y + 150
 
-        draw.rounded_rectangle([card_x0, card_y0, card_x1, card_y1], radius=14, fill=(18, 26, 38), outline=p["accent"], width=2)
+        _rounded_rect(draw, [card_x0, card_y0, card_x1, card_y1], radius=14, fill=(18, 26, 38), outline=p["accent"], width=2)
         draw.text((card_x0 + 16, card_y0 + 12), f"ACTOR: {p['actor']}", fill=p["accent"])
 
         # Inner speaker monitor with voice equalizer bars
         inner_box = [card_x0 + 16, card_y0 + 38, card_x1 - 16, card_y1 - 16]
-        draw.rounded_rectangle(inner_box, radius=8, fill=(10, 16, 26), outline=(30, 45, 65), width=1)
+        _rounded_rect(draw, inner_box, radius=8, fill=(10, 16, 26), outline=(30, 45, 65), width=1)
 
         bar_count = 14
         bar_w = (inner_box[2] - inner_box[0] - 28) // bar_count
@@ -230,7 +248,7 @@ def build_real_storyboard(out_bmp: Path) -> dict:
 
         # Speech Bubble
         bubble_box = [x0 + 40, center_y - 180, x0 + panel_w - 40, center_y - 135]
-        draw.rounded_rectangle(bubble_box, radius=8, fill=(30, 41, 59), outline=p["accent"], width=2)
+        _rounded_rect(draw, bubble_box, radius=8, fill=(30, 41, 59), outline=p["accent"], width=2)
         draw.text((x0 + 60, center_y - 168), f"💬 \"{p['bubble']}\"", fill=(255, 255, 255))
 
         # Bottom Metadata Strip
@@ -321,7 +339,7 @@ def build_real_master_mp4(out_mp4: Path, fps: int = 30) -> dict:
             actor_card_x2 = 560 + cam_pan_x
             actor_card_y2 = 540
 
-            draw.rounded_rectangle(
+            _rounded_rect(draw, 
                 [actor_card_x1, actor_card_y1, actor_card_x2, actor_card_y2],
                 radius=18,
                 fill=(18, 26, 38),
@@ -337,7 +355,7 @@ def build_real_master_mp4(out_mp4: Path, fps: int = 30) -> dict:
             draw.text((actor_card_x1 + 24, actor_card_y1 + 18), presenter_title, fill=sc["accent"])
 
             presenter_inner_box = [actor_card_x1 + 24, actor_card_y1 + 54, actor_card_x2 - 24, actor_card_y2 - 60]
-            draw.rounded_rectangle(presenter_inner_box, radius=12, fill=(10, 16, 26), outline=(30, 45, 65), width=2)
+            _rounded_rect(draw, presenter_inner_box, radius=12, fill=(10, 16, 26), outline=(30, 45, 65), width=2)
 
             eq_bar_count = 18
             eq_w = (presenter_inner_box[2] - presenter_inner_box[0] - 36) // eq_bar_count
@@ -355,7 +373,7 @@ def build_real_master_mp4(out_mp4: Path, fps: int = 30) -> dict:
             # Right Side Widget Card
             wx = 780
             wy = 180
-            draw.rounded_rectangle([wx, wy, wx + 420, wy + 320], radius=16, fill=(15, 23, 42), outline=sc["accent"], width=2)
+            _rounded_rect(draw, [wx, wy, wx + 420, wy + 320], radius=16, fill=(15, 23, 42), outline=sc["accent"], width=2)
             draw.text((wx + 24, wy + 24), "METRIC INDEX MONITOR", fill=(148, 163, 184))
 
             # Dynamic Chart Curves inside widget
@@ -368,7 +386,7 @@ def build_real_master_mp4(out_mp4: Path, fps: int = 30) -> dict:
                 draw.line(points, fill=sc["accent"], width=3)
 
             # Bottom Subtitle Bar
-            draw.rounded_rectangle([120, 620, width - 120, 696], radius=12, fill=(9, 13, 22), outline=(245, 158, 11), width=2)
+            _rounded_rect(draw, [120, 620, width - 120, 696], radius=12, fill=(9, 13, 22), outline=(245, 158, 11), width=2)
             draw.text((150, 642), sc["sub"], fill=(250, 204, 21))
 
             frame_path = tmp_dir / f"frame_{f_idx:04d}.png"

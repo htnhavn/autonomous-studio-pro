@@ -7,7 +7,7 @@
 
 export interface NativeHardwareStatus {
   readonly isNativeTauriApp: boolean;
-  readonly osPlatform: 'macOS (Apple Silicon Metal)' | 'Windows PC (DirectX 12 / NVENC)' | 'Linux (Vulkan)';
+  readonly osPlatform: 'macOS Ventura (Metal + VideoToolbox)' | 'Windows PC (DirectX 12 / NVENC)' | 'Linux (Vulkan)';
   readonly gpuAdapterName: string;
   readonly backendApi: string;
   readonly hardwareEncodeReady: boolean;
@@ -43,7 +43,7 @@ export async function probeNativeHardwareCapabilities(): Promise<NativeHardwareS
       };
       return {
         isNativeTauriApp: true,
-        osPlatform: isMac ? 'macOS (Apple Silicon Metal)' : 'Windows PC (DirectX 12 / NVENC)',
+        osPlatform: isMac ? 'macOS Ventura (Metal + VideoToolbox)' : 'Windows PC (DirectX 12 / NVENC)',
         gpuAdapterName: rustCaps.gpu_adapter_name || 'Native GPU Compositor',
         backendApi: rustCaps.backend_api || (isMac ? 'Metal + VideoToolbox' : 'DirectX 12 + wgpu'),
         hardwareEncodeReady: rustCaps.supports_nvenc ?? true,
@@ -56,11 +56,11 @@ export async function probeNativeHardwareCapabilities(): Promise<NativeHardwareS
 
   return {
     isNativeTauriApp: isTauri,
-    osPlatform: isMac ? 'macOS (Apple Silicon Metal)' : 'Windows PC (DirectX 12 / NVENC)',
+    osPlatform: isMac ? 'macOS Ventura (Metal + VideoToolbox)' : 'Windows PC (DirectX 12 / NVENC)',
     gpuAdapterName: isMac
-      ? 'Apple Silicon Metal / VideoToolbox Hardware Engine'
+      ? 'Metal / VideoToolbox Hardware Engine'
       : 'NVIDIA RTX / DirectX 12 + NVENC Hardware Engine',
-    backendApi: isMac ? 'Metal + WebGPU 60fps' : 'DirectX 12 + NVENC',
+    backendApi: isMac ? 'Metal + VideoToolbox 60fps' : 'DirectX 12 + NVENC',
     hardwareEncodeReady: true,
     localStreamPort: 49210,
   };
@@ -141,8 +141,11 @@ export async function renderNativeStageMp4Universal(
       body: JSON.stringify({
         genre,
         script,
+        scriptText: script,
         duration_sec: durationSec,
+        durationSec,
         output_path: outputPath,
+        outputPath,
         fps: options?.fps || 30,
         width: options?.resolution === '4k' ? 3840 : options?.resolution === '1080p' ? 1920 : 1280,
         height: options?.resolution === '4k' ? 2160 : options?.resolution === '1080p' ? 1080 : 720,

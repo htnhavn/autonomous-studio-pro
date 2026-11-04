@@ -1,0 +1,1 @@
+/Users/will/Documents/Codes/AI Video Editor/dist-native/Autonomous Studio Pro.app

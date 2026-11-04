@@ -86,7 +86,7 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 54,
+      heightPx: 36,
       clips: [],
     },
     {
@@ -98,7 +98,19 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 64,
+      heightPx: 36,
+      clips: [],
+    },
+    {
+      id: 'track-transition-1',
+      name: 'T1 • Transitions & Wipes (Dedicated Track)',
+      kind: 'transition',
+      order: 38,
+      muted: false,
+      solo: false,
+      lockedByUser: false,
+      visible: true,
+      heightPx: 36,
       clips: [],
     },
     {
@@ -110,7 +122,7 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 76,
+      heightPx: 36,
       clips: [],
     },
     {
@@ -122,7 +134,7 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 76,
+      heightPx: 36,
       clips: [],
     },
     {
@@ -134,7 +146,7 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 84,
+      heightPx: 36,
       clips: [],
     },
     {
@@ -146,7 +158,7 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 64,
+      heightPx: 36,
       clips: [],
     },
     {
@@ -158,7 +170,7 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 54,
+      heightPx: 36,
       clips: [],
     },
     {
@@ -170,7 +182,7 @@ export function createDefaultStudioProject(name: string = 'Untitled Autonomous P
       solo: false,
       lockedByUser: false,
       visible: true,
-      heightPx: 60,
+      heightPx: 36,
       clips: [],
     },
   ];

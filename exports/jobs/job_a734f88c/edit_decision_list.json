@@ -1,0 +1,32 @@
+{
+  "scenes": [
+    {
+      "startSec": 0.0,
+      "durationSec": 3.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/AI_semiconductor_microchip_2940_797.jpg",
+      "subtitle": "Chip AI bùng nổ.",
+      "title": "SCENE 1",
+      "camera": "slow-push-in-dramatic",
+      "transitionIn": {
+        "type": "crossfade",
+        "durationSec": 0.0
+      }
+    },
+    {
+      "startSec": 3.0,
+      "durationSec": 3.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/silicon_wafer_technology_622_885.jpg",
+      "subtitle": "Wafer silicon khan hiếm.",
+      "title": "SCENE 2",
+      "camera": "whip-pan-to-chart-right",
+      "transitionIn": {
+        "type": "whip",
+        "durationSec": 0.35
+      }
+    }
+  ],
+  "arollClipIds": [
+    "clip_aroll_81efd0",
+    "clip_aroll_2669f2"
+  ]
+}

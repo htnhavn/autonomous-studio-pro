@@ -234,17 +234,14 @@ def run_ai_api_dispatch() -> None:
     # 3. Module 1: Asset Hunter (Downloads real stock asset)
     broll_query = prompt_payload["assetHuntingPlan"]["primaryBrollQuery"]
     print(f"\n🔍 [Module 1: Asset Hunter] Đang săn và tải media thật cho '{broll_query}'...")
-    sys.path.insert(0, str(ROOT / "services" / "ai-sidecar"))
+    _sidecar = str(ROOT / "services" / "ai-sidecar")
+    if _sidecar not in sys.path:
+        sys.path.insert(0, _sidecar)
     from pipelines.asset_hunter import AutonomousAssetHunter
 
     hunter = AutonomousAssetHunter()
-    try:
-        loop = asyncio.get_event_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
 
-    download_res = loop.run_until_complete(hunter.search_free_stock_media(query=broll_query, media_type="image"))
+    download_res = asyncio.run(hunter.search_free_stock_media(query=broll_query, media_type="image"))
     local_disk_path = Path(download_res["localFilePath"])
     print(f"   -> Đã tải về máy: {local_disk_path.name} ({download_res['sizeBytes']:,} bytes)")
     print(f"   -> Nguồn: {download_res['origin']['sourceUrl']}")
@@ -545,7 +542,7 @@ def run_ai_api_dispatch() -> None:
     from pipelines.audio_studio import AudioStudioPipeline
     audio_pipe = AudioStudioPipeline()
     wav_path = ROOT / "output_product" / "voiceover_and_beats.wav"
-    beat_data = loop.run_until_complete(audio_pipe.extract_musical_beat_grid(str(wav_path))) if wav_path.exists() else {"bpm": 120.0, "markers": []}
+    beat_data = asyncio.run(audio_pipe.extract_musical_beat_grid(str(wav_path))) if wav_path.exists() else {"bpm": 120.0, "markers": []}
 
     feedback_report = {
         "verifiedAsset": {

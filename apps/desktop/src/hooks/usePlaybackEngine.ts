@@ -36,6 +36,23 @@ export function usePlaybackEngine(): void {
       return;
     }
 
+    // Compute maximum timeline length across all tracks and clips
+    let maxSec = 14.0;
+    for (const track of project.tracks) {
+      for (const clip of track.clips) {
+        const end = toSeconds(clip.timelineRange.startTime) + toSeconds(clip.timelineRange.duration);
+        if (end > maxSec) {
+          maxSec = end;
+        }
+      }
+    }
+
+    // If playhead was already at or beyond end when play started, loop back to start
+    if (playheadSecRef.current >= maxSec - 0.05) {
+      playheadSecRef.current = 0;
+      setPlayheadTime(fromSeconds(0, fps));
+    }
+
     let animId: number;
 
     const tick = (now: number) => {
@@ -47,9 +64,19 @@ export function usePlaybackEngine(): void {
 
         // Advance playhead time (clamp delta to max 0.1s to avoid jumps on tab focus)
         const safeDelta = Math.min(0.1, deltaSec);
-        const nextSec = playheadSecRef.current + safeDelta;
-        playheadSecRef.current = nextSec;
+        let nextSec = playheadSecRef.current + safeDelta;
 
+        // Clamp to max duration and pause gracefully
+        if (nextSec >= maxSec) {
+          nextSec = maxSec;
+          playheadSecRef.current = nextSec;
+          setPlayheadTime(fromSeconds(nextSec, fps));
+          setIsPlaying(false);
+          lastFrameTimeRef.current = null;
+          return;
+        }
+
+        playheadSecRef.current = nextSec;
         setPlayheadTime(fromSeconds(nextSec, fps));
       }
 

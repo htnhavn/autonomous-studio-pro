@@ -202,7 +202,11 @@ export const AutonomousProductionHubPanel: React.FC = () => {
   const handleCopyPromptBlueprint = async () => {
     const blueprint = buildExternalAiPromptBlueprint(briefTitle, genre);
     if (navigator?.clipboard) {
-      await navigator.clipboard.writeText(blueprint);
+      try {
+        await navigator.clipboard.writeText(blueprint);
+      } catch {
+        /* clipboard unavailable (e.g. headless / insecure context) */
+      }
     }
     showToast('✅ Đã copy Prompt Blueprint chuẩn VideoDSL v1.0.0! Hãy dán vào ChatGPT / Claude / Gemini.');
   };

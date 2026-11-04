@@ -1,0 +1,45 @@
+{
+  "scenes": [
+    {
+      "startSec": 0.0,
+      "durationSec": 2.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/Wall_Street_stock_market_1704_2.jpg",
+      "subtitle": "Phố Wall chấn động.",
+      "title": "SCENE 1",
+      "camera": "slow-push-in-dramatic",
+      "transitionIn": {
+        "type": "crossfade",
+        "durationSec": 0.0
+      }
+    },
+    {
+      "startSec": 2.0,
+      "durationSec": 2.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/silicon_wafer_3561_187.jpg",
+      "subtitle": "Wafer khan hiếm.",
+      "title": "SCENE 2",
+      "camera": "whip-pan-to-chart-right",
+      "transitionIn": {
+        "type": "whip",
+        "durationSec": 0.35
+      }
+    },
+    {
+      "startSec": 4.0,
+      "durationSec": 2.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/black_hole_event_horizon_2577_192.jpg",
+      "subtitle": "Hố đen nuốt ánh sáng.",
+      "title": "SCENE 3",
+      "camera": "orbital-3d-parallax-float",
+      "transitionIn": {
+        "type": "crossfade",
+        "durationSec": 0.35
+      }
+    }
+  ],
+  "arollClipIds": [
+    "clip_aroll_9522ed",
+    "clip_aroll_b6433e",
+    "clip_aroll_a56a2f"
+  ]
+}

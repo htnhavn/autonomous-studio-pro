@@ -18,7 +18,7 @@ if fm.fileExists(atPath: outputURL.path) {
 }
 
 let files = (try? fm.contentsOfDirectory(at: framesDir, includingPropertiesForKeys: nil))?
-    .filter { $0.pathExtension.lowercased() == "png" }
+    .filter { ["png", "jpg", "jpeg"].contains($0.pathExtension.lowercased()) }
     .sorted { $0.lastPathComponent < $1.lastPathComponent } ?? []
 
 guard !files.isEmpty else {

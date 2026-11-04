@@ -1,0 +1,28 @@
+{
+  "jobId": "job_a734f88c",
+  "title": "Diversity Test",
+  "description": "Diversity Test\n\nChapters:\n00:00 Chip AI bùng nổ.\n00:03 Wafer silicon khan hiếm.\n\nProduced autonomously by Autonomous Studio Pro.",
+  "tags": [
+    "bùng",
+    "chip",
+    "hiếm",
+    "khan",
+    "silicon",
+    "wafer"
+  ],
+  "chapters": [
+    {
+      "timecode": "00:00",
+      "title": "Chip AI bùng nổ."
+    },
+    {
+      "timecode": "00:03",
+      "title": "Wafer silicon khan hiếm."
+    }
+  ],
+  "privacyStatus": "unlisted",
+  "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/master.mp4",
+  "masterSizeBytes": 4823366,
+  "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_a734f88c/youtube_package/thumb_variant_a.png",
+  "generatedAtMs": 1793787364067
+}

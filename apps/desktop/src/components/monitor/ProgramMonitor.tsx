@@ -9,6 +9,7 @@ import { useStudioStore } from '../../store/useStudioStore';
 import { MotionCodeRenderer } from './MotionCodeRenderer';
 import { StickmanStageRenderer } from '../stage-studio/StickmanStageRenderer';
 import { ShaderColorCompositor } from './ShaderColorCompositor';
+import { FIFTY_SOURCE_ASSETS } from '../timeline/StackedCardsAssetDeck';
 import {
   toSeconds,
   toFrames,
@@ -215,7 +216,7 @@ export const ProgramMonitor: React.FC = () => {
         </div>
 
         <button
-          onClick={() => containerRef.current?.requestFullscreen?.()}
+          onClick={() => { const p = containerRef.current?.requestFullscreen?.(); p?.catch?.(() => {}); }}
           className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white transition-colors"
           title="Fullscreen Monitor"
         >
@@ -252,14 +253,27 @@ export const ProgramMonitor: React.FC = () => {
             ) : activeVideoClip ? (
               <div className="absolute inset-0 flex items-center justify-center overflow-hidden">
                 {(() => {
+                  // Match against 50 Deck Assets or Clip metadata
+                  const matchedDeck = FIFTY_SOURCE_ASSETS.find(
+                    (a) =>
+                      a.id === activeVideoClip.assetId ||
+                      a.name.toLowerCase() === activeVideoClip.name.toLowerCase() ||
+                      activeVideoClip.name.toLowerCase().includes(a.name.toLowerCase()) ||
+                      activeVideoClip.name.toLowerCase().includes(a.category.toLowerCase())
+                  );
+
                   const mediaSrc =
                     activeVideoAsset?.localFilePath?.startsWith('blob:') || activeVideoAsset?.localFilePath?.startsWith('http')
                       ? activeVideoAsset.localFilePath
                       : activeVideoAsset?.origin?.sourceUrl?.startsWith('http')
                       ? activeVideoAsset.origin.sourceUrl
+                      : (activeVideoClip as any)?.thumbnailUrl
+                      ? (activeVideoClip as any).thumbnailUrl
+                      : matchedDeck?.thumbnailUrl
+                      ? matchedDeck.thumbnailUrl
                       : activeVideoAsset?.localFilePath
                       ? `http://127.0.0.1:49210/stream/frame?file_path=${encodeURIComponent(activeVideoAsset.localFilePath)}&frame_index=0`
-                      : null;
+                      : 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1280&q=80';
 
                   const activeTransformClip = activeVideoClip || selectedClip;
                   const activeClipStartSec = activeTransformClip ? toSeconds(activeTransformClip.timelineRange.startTime) : 0;
@@ -483,7 +497,7 @@ export const ProgramMonitor: React.FC = () => {
               Fit to Screen
             </span>
             <button
-              onClick={() => containerRef.current?.requestFullscreen?.()}
+              onClick={() => { const p = containerRef.current?.requestFullscreen?.(); p?.catch?.(() => {}); }}
               className="p-1 rounded hover:bg-zinc-800 text-zinc-400 hover:text-white"
               title="Fullscreen"
             >

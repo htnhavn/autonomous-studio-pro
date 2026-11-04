@@ -7,6 +7,7 @@ when setting up Autonomous Studio Pro on a new machine (Windows PC / macOS / Lin
 
 from pathlib import Path
 import subprocess
+import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 REF_DIR = ROOT / "references"
@@ -29,17 +30,25 @@ REPOS = {
 }
 
 
-def main() -> None:
+def main() -> int:
     REF_DIR.mkdir(parents=True, exist_ok=True)
+    failures: list[str] = []
     for name, url in REPOS.items():
         dest = REF_DIR / name
         if dest.exists():
             print(f"[SKIP] {name} already exists at {dest}")
             continue
         print(f"[CLONE] Cloning {name} from {url}...")
-        subprocess.run(["git", "clone", "--depth", "1", url, str(dest)], check=False)
+        result = subprocess.run(["git", "clone", "--depth", "1", url, str(dest)], check=False)
+        if result.returncode != 0:
+            print(f"[FAIL] {name} failed to clone (exit {result.returncode})", file=sys.stderr)
+            failures.append(name)
+    if failures:
+        print(f"\n{len(failures)} reference repo(s) failed: {', '.join(failures)}", file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
 

@@ -1,0 +1,20 @@
+{
+  "include": [
+    "services",
+    "scripts",
+    "tests"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "references",
+    ".venv",
+    "cache",
+    "output_product",
+    "dist",
+    "apps/desktop"
+  ],
+  "venvPath": "/Users/will",
+  "venv": ".venv"
+}
+

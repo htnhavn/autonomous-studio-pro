@@ -33,7 +33,12 @@ export interface ExportPublishModalProps {
 export const ExportPublishModal: React.FC<ExportPublishModalProps> = ({ isOpen, onClose }) => {
   const project = useStudioStore((s) => s.project);
 
-  const [codec, setCodec] = useState<string>('h264_nvenc');
+  const isMac =
+    typeof navigator !== 'undefined' &&
+    (navigator.platform?.toLowerCase().includes('mac') ||
+      navigator.userAgent?.toLowerCase().includes('mac'));
+
+  const [codec, setCodec] = useState<string>(isMac ? 'h264_videotoolbox' : 'h264_nvenc');
   const [resolution, setResolution] = useState<string>('4k');
   const [fps, setFps] = useState<number>(60);
   const [bitrateMbps, setBitrateMbps] = useState<number>(45);
@@ -42,6 +47,7 @@ export const ExportPublishModal: React.FC<ExportPublishModalProps> = ({ isOpen, 
   const [isExporting, setIsExporting] = useState<boolean>(false);
   const [exportProgress, setExportProgress] = useState<number>(0);
   const [exportFinished, setExportFinished] = useState<boolean>(false);
+  const [exportedFilePath, setExportedFilePath] = useState<string>('');
 
   if (!isOpen) return null;
 
@@ -75,8 +81,6 @@ export const ExportPublishModal: React.FC<ExportPublishModalProps> = ({ isOpen, 
     { time: '00:15', title: 'Bằng chứng số liệu & Đồ thị cung cầu' },
     { time: '00:32', title: 'Kỷ nguyên mới & Bài học tương lai' },
   ];
-
-  const [exportedFilePath, setExportedFilePath] = useState<string>('');
 
   const handleStartExport = async () => {
     setIsExporting(true);
@@ -134,7 +138,7 @@ export const ExportPublishModal: React.FC<ExportPublishModalProps> = ({ isOpen, 
             <div>
               <h2 className="font-bold text-sm text-zinc-100">Xuất Bản Video 4K & YouTube Studio</h2>
               <p className="text-[10px] text-zinc-500 font-mono">
-                GPU NVENC ACCELERATED • 0-LOSS RENDER
+                {isMac ? 'APPLE VIDEOTOOLBOX / METAL ACCELERATED • 0-LOSS RENDER' : 'GPU NVENC ACCELERATED • 0-LOSS RENDER'}
               </p>
             </div>
           </div>
@@ -151,15 +155,23 @@ export const ExportPublishModal: React.FC<ExportPublishModalProps> = ({ isOpen, 
           {/* Section 1: Hardware Codec & Quality */}
           <div className="space-y-2">
             <span className="font-semibold text-zinc-100 flex items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5 text-blue-400" /> Cấu Hình Render GPU NVENC
+              <Cpu className="w-3.5 h-3.5 text-blue-400" /> {isMac ? 'Cấu Hình Render Apple VideoToolbox / Metal' : 'Cấu Hình Render GPU NVENC'}
             </span>
             <div className="grid grid-cols-4 gap-2">
-              {[
-                { id: 'h264_nvenc', label: 'NVIDIA NVENC H.264', sub: 'Tương thích tối đa' },
-                { id: 'hevc_nvenc', label: 'NVIDIA HEVC (H.265)', sub: 'File nhẹ hơn 40%' },
-                { id: 'av1_nvenc', label: 'NVIDIA NVENC AV1', sub: 'Chuẩn YouTube mới' },
-                { id: 'prores', label: 'Apple ProRes 422 HQ', sub: 'Chất lượng Master' },
-              ].map((c) => (
+              {(isMac
+                ? [
+                    { id: 'h264_videotoolbox', label: 'Apple VideoToolbox H.264', sub: 'Tăng tốc phần cứng Mac (Metal)' },
+                    { id: 'hevc_videotoolbox', label: 'Apple VideoToolbox HEVC', sub: 'H.265 tối ưu dung lượng' },
+                    { id: 'prores', label: 'Apple ProRes 422 HQ', sub: 'Master điện ảnh nguyên bản' },
+                    { id: 'libx264', label: 'H.264 Universal CPU', sub: 'Tương thích 100% mọi nền tảng' },
+                  ]
+                : [
+                    { id: 'h264_nvenc', label: 'NVIDIA NVENC H.264', sub: 'Tương thích tối đa' },
+                    { id: 'hevc_nvenc', label: 'NVIDIA HEVC (H.265)', sub: 'File nhẹ hơn 40%' },
+                    { id: 'av1_nvenc', label: 'NVIDIA NVENC AV1', sub: 'Chuẩn YouTube mới' },
+                    { id: 'prores', label: 'Apple ProRes 422 HQ', sub: 'Chất lượng Master' },
+                  ]
+              ).map((c) => (
                 <button
                   key={c.id}
                   onClick={() => setCodec(c.id)}

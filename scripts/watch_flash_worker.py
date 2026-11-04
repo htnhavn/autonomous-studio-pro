@@ -151,7 +151,7 @@ def main() -> int:
                 print(run_pre_audit(list(changed_since_start)), flush=True)
                 return 0
 
-        # Trigger 3: Code files were modified and settled for QUIET_SECONDS_AFTER_LAST_EDIT (120s fallback)
+        # Trigger 3: Code files were modified and settled for QUIET_SECONDS_AFTER_LAST_EDIT (45s fallback)
         if changed_since_start and last_change_ts is not None:
             idle_time = time.time() - last_change_ts
             if idle_time >= QUIET_SECONDS_AFTER_LAST_EDIT:

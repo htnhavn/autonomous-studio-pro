@@ -1,0 +1,48 @@
+{
+  "jobId": "job_feb89689",
+  "createdAtMs": 1793783688722,
+  "prompt": "Cuộc đột phá bán dẫn AI 2026 và dòng vốn Phố Wall",
+  "title": "Cuộc Đột Phá Bán Dẫn AI 2026",
+  "genreKit": "economics-stickman",
+  "targetDurationSec": 9.0,
+  "fullScript": "Năm 2026, nhu cầu chip AI bùng nổ vượt đỉnh lịch sử. Dòng vốn Phố Wall rót kỷ lục vào chuỗi cung ứng bán dẫn. Nhưng nút thắt công nghệ thử thách mọi đế chế!",
+  "scenes": [
+    {
+      "sceneId": "scene_1",
+      "startSec": 0.0,
+      "durationSec": 3.0,
+      "dialogue": "Năm 2026, nhu cầu chip AI bùng nổ vượt đỉnh lịch sử.",
+      "cameraChoreography": "slow-push-in-dramatic",
+      "stageActorAction": "point-chart-upper-right",
+      "searchQuery": "AI semiconductor microchip"
+    },
+    {
+      "sceneId": "scene_2",
+      "startSec": 3.0,
+      "durationSec": 3.0,
+      "dialogue": "Dòng vốn Phố Wall rót kỷ lục vào chuỗi cung ứng bán dẫn.",
+      "cameraChoreography": "whip-pan-to-chart-right",
+      "stageActorAction": "econ-celebrate-stonks",
+      "searchQuery": "Wall Street stock market"
+    },
+    {
+      "sceneId": "scene_3",
+      "startSec": 6.0,
+      "durationSec": 3.0,
+      "dialogue": "Nhưng nút thắt công nghệ thử thách mọi đế chế!",
+      "cameraChoreography": "orbital-3d-parallax-float",
+      "stageActorAction": "econ-panic-head-grab",
+      "searchQuery": "silicon wafer technology"
+    }
+  ],
+  "stages": [
+    "stage_compile",
+    "audio_analysis",
+    "asset_hunt",
+    "vfx_grading",
+    "audio_mix",
+    "render_master",
+    "vlm_qa",
+    "youtube_package"
+  ]
+}

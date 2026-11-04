@@ -1,0 +1,118 @@
+{
+  "jobId": "job_10af2a51",
+  "status": "completed",
+  "workflowPath": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/workflow.json",
+  "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/master.mp4",
+  "masterSizeBytes": 4206137,
+  "durationSec": 6.0,
+  "scenesProcessed": 3,
+  "huntedAssets": [
+    {
+      "sceneId": "scene_1",
+      "query": "Wall Street stock market",
+      "assetId": "asset_job_cbf4c4",
+      "arollClipId": "clip_aroll_9522ed",
+      "brollClipId": "clip_broll_732d26",
+      "sizeBytes": 856099
+    },
+    {
+      "sceneId": "scene_2",
+      "query": "silicon wafer",
+      "assetId": "asset_job_12608a",
+      "arollClipId": "clip_aroll_b6433e",
+      "brollClipId": "clip_broll_f49c24",
+      "sizeBytes": 1264062
+    },
+    {
+      "sceneId": "scene_3",
+      "query": "black hole event horizon",
+      "assetId": "asset_job_c55344",
+      "arollClipId": "clip_aroll_a56a2f",
+      "brollClipId": "clip_broll_b84f20",
+      "sizeBytes": 38869
+    }
+  ],
+  "audio": {
+    "silences": [
+      [
+        2.0,
+        2.8
+      ],
+      [
+        5.0,
+        5.8
+      ]
+    ],
+    "bpm": 120.0,
+    "markers": 15
+  },
+  "criticReport": {
+    "iteration": 1,
+    "overallScore": 9.42,
+    "subScores": {
+      "hookRetention": 9.5,
+      "pacingAndRhythm": 9.4,
+      "visualBrollQuality": 9.3,
+      "motionAndVfxPolish": 9.5,
+      "audioMixAndSfx": 9.4
+    },
+    "passedQualityGate": true,
+    "issues": [],
+    "fileMetrics": {
+      "path": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/master.mp4",
+      "sizeBytes": 4206137,
+      "hasValidMp4Ftyp": true
+    },
+    "verdict": "READY_FOR_BROADCAST"
+  },
+  "youtubePackage": {
+    "status": "package_ready_not_uploaded",
+    "artifacts": {
+      "youtubeMetadata": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/youtube_package/metadata.json",
+      "youtubeThumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/youtube_package/thumb_variant_a.png",
+      "youtubePackageDir": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/youtube_package"
+    },
+    "metadata": {
+      "jobId": "job_10af2a51",
+      "title": "Real Search Test",
+      "description": "Real Search Test\n\nChapters:\n00:00 Phố Wall chấn động.\n00:02 Wafer khan hiếm.\n00:04 Hố đen nuốt ánh sáng.\n\nProduced autonomously by Autonomous Studio Pro.",
+      "tags": [
+        "chấn",
+        "hiếm",
+        "khan",
+        "nuốt",
+        "sáng",
+        "wafer",
+        "wall",
+        "động"
+      ],
+      "chapters": [
+        {
+          "timecode": "00:00",
+          "title": "Phố Wall chấn động."
+        },
+        {
+          "timecode": "00:02",
+          "title": "Wafer khan hiếm."
+        },
+        {
+          "timecode": "00:04",
+          "title": "Hố đen nuốt ánh sáng."
+        }
+      ],
+      "privacyStatus": "unlisted",
+      "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/master.mp4",
+      "masterSizeBytes": 4206137,
+      "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/youtube_package/thumb_variant_a.png",
+      "generatedAtMs": 1793790074784
+    },
+    "upload": {
+      "status": "package_ready_not_uploaded",
+      "reason": "No YouTube credentials configured (set YOUTUBE_CREDENTIALS_PATH or YOUTUBE_ACCESS_TOKEN).",
+      "packageFiles": {
+        "mp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/master.mp4",
+        "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/youtube_package/thumb_variant_a.png"
+      }
+    }
+  }
+}

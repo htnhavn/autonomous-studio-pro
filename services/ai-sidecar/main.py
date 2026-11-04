@@ -12,6 +12,8 @@ import json
 import os
 from pathlib import Path
 import sys
+import time
+import uuid
 from typing import Any, Dict, List, Optional, Set
 
 from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
@@ -31,7 +33,7 @@ from mcp_server import EmbeddedMCPServer
 from pipelines.audio_studio import AudioStudioPipeline
 from pipelines.vlm_critic_pipeline import VLMCriticReviewer
 from pipelines.asset_hunter import AutonomousAssetHunter
-from scripts.native_stage_renderer import render_stickman_stage_mp4
+from scripts.native_stage_renderer import render_stickman_stage_mp4, render_timeline_composite_mp4
 
 app = FastAPI(
     title="Autonomous Studio Pro • AI Sidecar Engine",
@@ -112,6 +114,19 @@ class RenderMp4Request(BaseModel):
     height: int = 720
 
 
+class RenderTimelineRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    scenes: List[Dict[str, Any]]
+    outputPath: Optional[str] = Field(default=None, alias="output_path")
+    fps: int = 30
+    width: int = 1280
+    height: int = 720
+    genre: str = "economics-stickman"
+    title: str = "AUTONOMOUS MASTER EDIT"
+    agentName: str = Field(default="🤖 Master Editor", alias="agent_name")
+
+
 class AudioAnalyzeRequest(BaseModel):
     audioPath: str
     thresholdDb: float = -35.0
@@ -153,9 +168,10 @@ async def handle_mcp_call(req: MCPRequest) -> Dict[str, Any]:
 
 @app.post("/api/v1/jobs/autonomous")
 async def launch_autonomous_job(job: JobRequest) -> Dict[str, Any]:
-    """Launch full autonomous production pipeline (Frame 0 -> YouTube)."""
+    """Launch full autonomous production pipeline (Frame 0 -> render -> QA -> package)."""
+    job_id = f"job_{uuid.uuid4().hex[:8]}"
     payload = {
-        "jobId": f"job_{int(asyncio.get_event_loop().time() * 1000)}",
+        "jobId": job_id,
         "input": {"topicOrPrompt": job.topicOrPrompt},
         "preferences": {
             "aspectRatio": job.aspectRatio,
@@ -164,8 +180,50 @@ async def launch_autonomous_job(job: JobRequest) -> Dict[str, Any]:
             "qualityGateThreshold": 9.0,
         },
     }
+    orchestrator.jobs[job_id] = {
+        "jobId": job_id,
+        "status": "dispatched",
+        "progress": 0,
+        "stage": "queued",
+        "logs": [],
+        "artifacts": {},
+        "prompt": job.topicOrPrompt,
+        "startedAtMs": int(time.time() * 1000),
+    }
     asyncio.create_task(orchestrator.run_full_autonomous_pipeline(payload))
-    return {"status": "dispatched", "job": payload}
+    return {"status": "dispatched", "jobId": job_id, "job": payload}
+
+
+@app.post("/api/v1/jobs/structured")
+async def launch_structured_job(payload: Dict[str, Any]) -> Dict[str, Any]:
+    """Launch the autonomous pipeline from a full structured prompt (script scenes, plans)."""
+    job_id = payload.get("jobId") or f"job_{uuid.uuid4().hex[:8]}"
+    payload["jobId"] = job_id
+    orchestrator.jobs[job_id] = {
+        "jobId": job_id,
+        "status": "dispatched",
+        "progress": 0,
+        "stage": "queued",
+        "logs": [],
+        "artifacts": {},
+        "prompt": payload.get("input", {}).get("topicOrPrompt", ""),
+        "startedAtMs": int(time.time() * 1000),
+    }
+    asyncio.create_task(orchestrator.run_full_autonomous_pipeline(payload))
+    return {"status": "dispatched", "jobId": job_id}
+
+
+@app.get("/api/v1/jobs")
+async def list_jobs() -> Dict[str, Any]:
+    return {"jobs": list(orchestrator.jobs.values())}
+
+
+@app.get("/api/v1/jobs/{job_id}")
+async def get_job(job_id: str) -> Dict[str, Any]:
+    job = orchestrator.jobs.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail=f"Job '{job_id}' not found")
+    return job
 
 
 @app.post("/api/compile-dsl")
@@ -292,6 +350,38 @@ async def render_mp4_endpoint(req: RenderMp4Request) -> Dict[str, Any]:
         raise HTTPException(status_code=500, detail=f"MP4 Render Failed: {str(exc)}")
 
 
+@app.post("/api/render-timeline")
+async def render_timeline_endpoint(req: RenderTimelineRequest) -> Dict[str, Any]:
+    """Render an assembled multi-clip timeline (A-Roll/B-Roll + transitions + captions)."""
+    if not req.scenes:
+        raise HTTPException(status_code=400, detail="scenes must be a non-empty array")
+    output_path = Path(req.outputPath) if req.outputPath else (
+        ROOT_DIR / "exports" / f"timeline_render_{int(asyncio.get_event_loop().time() * 1000)}.mp4"
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        rendered_file = await asyncio.to_thread(
+            render_timeline_composite_mp4,
+            output_mp4=output_path,
+            scenes=req.scenes,
+            width=req.width,
+            height=req.height,
+            fps=req.fps,
+            genre=req.genre,
+            agent_name=req.agentName,
+            title=req.title,
+        )
+        return {
+            "status": "completed",
+            "outputPath": str(rendered_file),
+            "sizeBytes": rendered_file.stat().st_size,
+            "scenes": len(req.scenes),
+            "fps": req.fps,
+        }
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Timeline render failed: {str(exc)}")
+
+
 @app.post("/api/audio-analyze")
 async def audio_analyze_endpoint(req: AudioAnalyzeRequest) -> Dict[str, Any]:
     """
@@ -381,19 +471,27 @@ async def studio_websocket_endpoint(websocket: WebSocket) -> None:
                 })
             elif event_type == "START_AUTONOMOUS_PIPELINE" or data.get("action") == "START_AUTONOMOUS_PIPELINE":
                 payload = data.get("payload") or {}
+                job_id = f"job_{uuid.uuid4().hex[:8]}"
                 job_payload = {
-                    "jobId": f"job_{int(time.time() * 1000)}",
+                    "jobId": job_id,
                     "input": {
                         "topicOrPrompt": payload.get("topicOrPrompt") or payload.get("input", {}).get("topicOrPrompt") or "FED interest rates",
                         "scriptText": payload.get("scriptText") or payload.get("input", {}).get("scriptText") or "",
                     },
+                    "genreKit": payload.get("genre") or payload.get("genreKit") or "economics-stickman",
                     "preferences": {
                         "genre": payload.get("genre") or payload.get("genreKit") or "economics-stickman",
                         "targetDurationSeconds": payload.get("targetDurationSeconds") or payload.get("targetDurationSec") or 10,
                         "qualityGateThreshold": 9.0,
                     },
                 }
+                orchestrator.jobs[job_id] = {
+                    "jobId": job_id, "status": "dispatched", "progress": 0,
+                    "stage": "queued", "logs": [], "artifacts": {},
+                    "startedAtMs": int(time.time() * 1000),
+                }
                 asyncio.create_task(orchestrator.run_full_autonomous_pipeline(job_payload))
+                await websocket.send_text(json.dumps({"eventType": "JOB_DISPATCHED", "jobId": job_id}))
             elif event_type == "MCP_INVOKE":
                 tool = data.get("tool")
                 args = data.get("arguments", {})

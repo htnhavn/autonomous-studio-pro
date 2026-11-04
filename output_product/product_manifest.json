@@ -1,6 +1,6 @@
 {
-  "generatedAtIso": "2026-11-03T09:02:50Z",
-  "elapsedSeconds": 107.66,
+  "generatedAtIso": "2026-11-04T08:42:59Z",
+  "elapsedSeconds": 38.29,
   "products": [
     {
       "filename": "voiceover_and_beats.wav",
@@ -20,14 +20,14 @@
     },
     {
       "filename": "macro_crisis_2026.vproj.json",
-      "bytes": 72590,
-      "sha256": "fea221ffaeb710ffdf4d50cc8cc9ce43e6e5303e80ce8d2d2597d1fef34312ed",
+      "bytes": 72905,
+      "sha256": "671d6120bf87e820221b7e3f8e0a4db4a29b9f5124b3022741b560a653bc40fa",
       "format": "autonomous-studio.vproj"
     },
     {
       "filename": "macro_crisis_2026.otio",
-      "bytes": 11809,
-      "sha256": "c44d92153e56a5b5afd7a3b6160a9bb38c1adc15acb2c57fb4f8170c69f1c08e",
+      "bytes": 12085,
+      "sha256": "358e278579251ffeaa88c51139c62b75c9654bb6c1f9b61cabb9303ba67176f6",
       "schema": "Timeline.1"
     },
     {
@@ -39,7 +39,7 @@
     {
       "filename": "macro_crisis_2026_master.mp4",
       "bytes": 2890696,
-      "sha256": "2e4f7c441ff94c1f569695d4a802e932e86a8488be5be18e3c0dbd49a61b0571",
+      "sha256": "dc34ed86a512d49854102bf401c2a0508e479f71d03a6714c86423013b8914f7",
       "atomsVerified": [
         "ftyp",
         "moov"

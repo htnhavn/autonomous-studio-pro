@@ -1,0 +1,45 @@
+{
+  "scenes": [
+    {
+      "startSec": 0.0,
+      "durationSec": 3.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/AI_semiconductor_microchip_5065.jpg",
+      "subtitle": "Năm 2026, nhu cầu chip AI bùng nổ vượt đỉnh lịch sử.",
+      "title": "SCENE 1",
+      "camera": "slow-push-in-dramatic",
+      "transitionIn": {
+        "type": "crossfade",
+        "durationSec": 0.0
+      }
+    },
+    {
+      "startSec": 3.0,
+      "durationSec": 3.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/Wall_Street_stock_market_9515.jpg",
+      "subtitle": "Dòng vốn Phố Wall rót kỷ lục vào chuỗi cung ứng bán dẫn.",
+      "title": "SCENE 2",
+      "camera": "whip-pan-to-chart-right",
+      "transitionIn": {
+        "type": "whip",
+        "durationSec": 0.35
+      }
+    },
+    {
+      "startSec": 6.0,
+      "durationSec": 3.0,
+      "imagePath": "/Users/will/Documents/Codes/AI Video Editor/cache/assets/silicon_wafer_technology_156.jpg",
+      "subtitle": "Nhưng nút thắt công nghệ thử thách mọi đế chế!",
+      "title": "SCENE 3",
+      "camera": "orbital-3d-parallax-float",
+      "transitionIn": {
+        "type": "crossfade",
+        "durationSec": 0.35
+      }
+    }
+  ],
+  "arollClipIds": [
+    "clip_aroll_bc75e9",
+    "clip_aroll_c53bc8",
+    "clip_aroll_cbcd66"
+  ]
+}

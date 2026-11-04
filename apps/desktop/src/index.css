@@ -16,20 +16,76 @@
   }
 }
 
-/* Custom scrollbars */
+/* Custom CapCut sleek scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #141721;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #272c3d;
-  border-radius: 3px;
+  background: #252a3b;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #3b425b;
+}
+
+.capcut-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
+.capcut-scroll::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.capcut-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.capcut-scroll::-webkit-scrollbar-thumb {
+  background: #24293a;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+.capcut-scroll:hover::-webkit-scrollbar-thumb {
+  background: #384059;
+}
+.capcut-scroll::-webkit-scrollbar-thumb:hover {
+  background: #00e5cc;
+}
+
+/* Native Titlebar window drag region */
+.window-drag-region {
+  -webkit-app-region: drag;
+}
+.no-drag-region {
+  -webkit-app-region: no-drag;
+}
+
+/* Polished CapCut Range Slider Inputs */
+input[type="range"] {
+  -webkit-appearance: none;
+  background: #202434;
+  height: 4px;
+  border-radius: 2px;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #00e5cc;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(0, 229, 204, 0.5);
+  transition: transform 0.1s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+  background: #ffffff;
 }
 
 /* Dockview theme overrides */

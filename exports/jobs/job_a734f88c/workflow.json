@@ -1,0 +1,39 @@
+{
+  "jobId": "job_a734f88c",
+  "createdAtMs": 1793787201485,
+  "prompt": "Chip AI và wafer silicon",
+  "title": "Diversity Test",
+  "genreKit": "economics-stickman",
+  "targetDurationSec": 6.0,
+  "fullScript": "Chip AI bùng nổ. Wafer silicon khan hiếm.",
+  "scenes": [
+    {
+      "sceneId": "scene_1",
+      "startSec": 0.0,
+      "durationSec": 3.0,
+      "dialogue": "Chip AI bùng nổ.",
+      "cameraChoreography": "slow-push-in-dramatic",
+      "stageActorAction": "point-chart-upper-right",
+      "searchQuery": "AI semiconductor microchip"
+    },
+    {
+      "sceneId": "scene_2",
+      "startSec": 3.0,
+      "durationSec": 3.0,
+      "dialogue": "Wafer silicon khan hiếm.",
+      "cameraChoreography": "whip-pan-to-chart-right",
+      "stageActorAction": "econ-panic-head-grab",
+      "searchQuery": "silicon wafer technology"
+    }
+  ],
+  "stages": [
+    "stage_compile",
+    "audio_analysis",
+    "asset_hunt",
+    "vfx_grading",
+    "audio_mix",
+    "render_master",
+    "vlm_qa",
+    "youtube_package"
+  ]
+}

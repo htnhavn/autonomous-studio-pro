@@ -6,6 +6,7 @@
 
 import React from 'react';
 import { useStudioStore } from '../../store/useStudioStore';
+import { toSeconds } from '../../../../../packages/core-schema/src/rational-time';
 import { Palette, Sparkles, Sun, Eye, Sliders } from 'lucide-react';
 
 export const ColorGradingPanel: React.FC = () => {
@@ -13,10 +14,32 @@ export const ColorGradingPanel: React.FC = () => {
   const project = useStudioStore((s) => s.project);
   const dispatchCommand = useStudioStore((s) => s.dispatchCommand);
 
-  // Find target clip
-  const targetClip = project.tracks
+  const playheadTime = useStudioStore((s) => s.playheadTime);
+  const currentSec = toSeconds(playheadTime);
+
+  // Preference for target clip:
+  // 1. Specifically selected video/stage/image clip
+  // 2. Video or stage clip actively under playhead
+  // 3. First video or stage clip on timeline
+  // 4. Any selected clip
+  const videoAndStageClips = project.tracks
+    .filter((t) => t.kind === 'video' || t.kind === 'stage-puppet')
+    .flatMap((t) => t.clips);
+
+  const selectedClip = project.tracks
     .flatMap((t) => t.clips)
     .find((c) => selectedClipIds.includes(c.id));
+
+  const clipUnderPlayhead = videoAndStageClips.find((c) => {
+    const start = toSeconds(c.timelineRange.startTime);
+    const end = start + toSeconds(c.timelineRange.duration);
+    return currentSec >= start && currentSec <= end;
+  });
+
+  const targetClip =
+    (selectedClip && selectedClip.kind !== 'caption')
+      ? selectedClip
+      : clipUnderPlayhead || videoAndStageClips[0] || selectedClip;
 
   const colorGrade = targetClip?.colorGrade;
 

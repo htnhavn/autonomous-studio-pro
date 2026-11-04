@@ -1,0 +1,34 @@
+{
+  "jobId": "job_10af2a51",
+  "title": "Real Search Test",
+  "description": "Real Search Test\n\nChapters:\n00:00 Phố Wall chấn động.\n00:02 Wafer khan hiếm.\n00:04 Hố đen nuốt ánh sáng.\n\nProduced autonomously by Autonomous Studio Pro.",
+  "tags": [
+    "chấn",
+    "hiếm",
+    "khan",
+    "nuốt",
+    "sáng",
+    "wafer",
+    "wall",
+    "động"
+  ],
+  "chapters": [
+    {
+      "timecode": "00:00",
+      "title": "Phố Wall chấn động."
+    },
+    {
+      "timecode": "00:02",
+      "title": "Wafer khan hiếm."
+    },
+    {
+      "timecode": "00:04",
+      "title": "Hố đen nuốt ánh sáng."
+    }
+  ],
+  "privacyStatus": "unlisted",
+  "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/master.mp4",
+  "masterSizeBytes": 4206137,
+  "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_10af2a51/youtube_package/thumb_variant_a.png",
+  "generatedAtMs": 1793790074784
+}

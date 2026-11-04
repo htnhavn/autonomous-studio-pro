@@ -47,7 +47,11 @@ export const ExternalAgentConnectModal: React.FC<ExternalAgentConnectModalProps>
   if (!isOpen) return null;
 
   const copyToClipboard = (text: string, key: string) => {
-    navigator.clipboard.writeText(text);
+    try {
+      navigator.clipboard?.writeText(text).catch(() => {});
+    } catch {
+      /* clipboard unavailable (e.g. headless / insecure context) */
+    }
     setCopiedKey(key);
     setTimeout(() => {
       setCopiedKey((prev) => (prev === key ? null : prev));

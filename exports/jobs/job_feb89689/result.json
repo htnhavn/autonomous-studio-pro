@@ -1,0 +1,119 @@
+{
+  "jobId": "job_feb89689",
+  "status": "completed",
+  "workflowPath": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/workflow.json",
+  "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/master.mp4",
+  "masterSizeBytes": 2535942,
+  "durationSec": 9.0,
+  "scenesProcessed": 3,
+  "huntedAssets": [
+    {
+      "sceneId": "scene_1",
+      "query": "AI semiconductor microchip",
+      "assetId": "asset_job_997ed6",
+      "clipId": "clip_job_4f39f8",
+      "sizeBytes": 644292
+    },
+    {
+      "sceneId": "scene_2",
+      "query": "Wall Street stock market",
+      "assetId": "asset_job_6eeab8",
+      "clipId": "clip_job_5fa21a",
+      "sizeBytes": 82297
+    },
+    {
+      "sceneId": "scene_3",
+      "query": "silicon wafer technology",
+      "assetId": "asset_job_aa40dd",
+      "clipId": "clip_job_27cfc3",
+      "sizeBytes": 644292
+    }
+  ],
+  "audio": {
+    "silences": [
+      [
+        2.0,
+        2.8
+      ],
+      [
+        5.0,
+        5.8
+      ]
+    ],
+    "bpm": 120.0,
+    "markers": 15
+  },
+  "criticReport": {
+    "iteration": 1,
+    "overallScore": 9.42,
+    "subScores": {
+      "hookRetention": 9.5,
+      "pacingAndRhythm": 9.4,
+      "visualBrollQuality": 9.3,
+      "motionAndVfxPolish": 9.5,
+      "audioMixAndSfx": 9.4
+    },
+    "passedQualityGate": true,
+    "issues": [],
+    "fileMetrics": {
+      "path": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/master.mp4",
+      "sizeBytes": 2535942,
+      "hasValidMp4Ftyp": true
+    },
+    "verdict": "READY_FOR_BROADCAST"
+  },
+  "youtubePackage": {
+    "status": "package_ready_not_uploaded",
+    "artifacts": {
+      "youtubeMetadata": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/youtube_package/metadata.json",
+      "youtubeThumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/youtube_package/thumb_variant_a.png",
+      "youtubePackageDir": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/youtube_package"
+    },
+    "metadata": {
+      "jobId": "job_feb89689",
+      "title": "Cuộc Đột Phá Bán Dẫn AI 2026",
+      "description": "Cuộc Đột Phá Bán Dẫn AI 2026\n\nChapters:\n00:00 Năm 2026, nhu cầu chip AI bùng nổ vượt đỉnh lịch\n00:03 Dòng vốn Phố Wall rót kỷ lục vào chuỗi cung ứng \n00:06 Nhưng nút thắt công nghệ thử thách mọi đế chế!\n\nProduced autonomously by Autonomous Studio Pro.",
+      "tags": [
+        "2026",
+        "bùng",
+        "chip",
+        "chuỗi",
+        "chế",
+        "cung",
+        "công",
+        "dòng",
+        "dẫn",
+        "lịch",
+        "nghệ",
+        "nhưng"
+      ],
+      "chapters": [
+        {
+          "timecode": "00:00",
+          "title": "Năm 2026, nhu cầu chip AI bùng nổ vượt đỉnh lịch"
+        },
+        {
+          "timecode": "00:03",
+          "title": "Dòng vốn Phố Wall rót kỷ lục vào chuỗi cung ứng "
+        },
+        {
+          "timecode": "00:06",
+          "title": "Nhưng nút thắt công nghệ thử thách mọi đế chế!"
+        }
+      ],
+      "privacyStatus": "unlisted",
+      "masterMp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/master.mp4",
+      "masterSizeBytes": 2535942,
+      "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/youtube_package/thumb_variant_a.png",
+      "generatedAtMs": 1793783740103
+    },
+    "upload": {
+      "status": "package_ready_not_uploaded",
+      "reason": "No YouTube credentials configured (set YOUTUBE_CREDENTIALS_PATH or YOUTUBE_ACCESS_TOKEN).",
+      "packageFiles": {
+        "mp4": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/master.mp4",
+        "thumbnail": "/Users/will/Documents/Codes/AI Video Editor/exports/jobs/job_feb89689/youtube_package/thumb_variant_a.png"
+      }
+    }
+  }
+}
