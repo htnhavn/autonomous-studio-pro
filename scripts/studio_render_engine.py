@@ -730,11 +730,11 @@ def _skeleton_points(pose: dict, cx: float, cy: float, scale: float, flip: bool)
     def arm(side: str, shoulder_deg: float, elbow_deg: float):
         sx = neck[0] + (10 * s * (1 if side == "r" else -1)) * sign
         sy = neck[1] + 6 * s
-        # Pose angles are authored relative to "arm hanging down"; negate so a
-        # positive right-shoulder angle swings the right arm outward (screen right).
-        ux, uy = _rotate(0, 34 * s, -shoulder_deg)
+        # Mirror the authored angle per side so both arms swing outward.
+        ang = shoulder_deg * (1.0 if side == "l" else -1.0)
+        ux, uy = _rotate(0, 34 * s, ang)
         ex = (sx + ux * sign, sy + uy)
-        fx, fy = _rotate(0, 30 * s, -(shoulder_deg + elbow_deg))
+        fx, fy = _rotate(0, 30 * s, ang + elbow_deg * (1.0 if side == "l" else -1.0))
         hand = (ex[0] + fx * sign, ex[1] + fy)
         return (sx, sy), ex, hand
 
@@ -744,9 +744,10 @@ def _skeleton_points(pose: dict, cx: float, cy: float, scale: float, flip: bool)
     def leg(side: str, hip_deg: float, knee_deg: float):
         hx = hip[0] + (9 * s * (1 if side == "r" else -1)) * sign
         hy = hip[1]
-        kx, ky = _rotate(0, 40 * s, -hip_deg)
+        ang = hip_deg * (1.0 if side == "l" else -1.0)
+        kx, ky = _rotate(0, 40 * s, ang)
         knee = (hx + kx * sign, hy + ky)
-        fx, fy = _rotate(0, 38 * s, -(hip_deg + knee_deg))
+        fx, fy = _rotate(0, 38 * s, ang + knee_deg * (1.0 if side == "l" else -1.0))
         foot = (knee[0] + fx * sign, knee[1] + fy)
         return (hx, hy), knee, foot
 
@@ -1121,10 +1122,20 @@ def _draw_pixel_backdrop(draw, backdrop: str, W, H, ox, oy, t):
 def _widget_rect(widget: dict, W: int, H: int, cam: CameraFrame) -> tuple[float, float, float, float]:
     nx = (float(widget.get("stageX", 0.68)) - 0.5) * cam.zoom + 0.5 + cam.pan_x
     ny = (float(widget.get("stageY", 0.45)) - 0.5) * cam.zoom + 0.5 + cam.pan_y
-    scale = float(widget.get("scale", 1.0)) * (H / 720.0)
+    scale = float(widget.get("scale", 1.0)) * (min(W, H) / 720.0)
     w = 380 * scale
     h = 250 * scale
     return nx * W - w / 2, ny * H - h / 2, nx * W + w / 2, ny * H + h / 2
+
+
+def _fit_font(draw: ImageDraw.ImageDraw, style: str, text: str, max_width: float, start_size: int) -> ImageFont.FreeTypeFont:
+    size = max(10, start_size)
+    while size > 10:
+        font = load_font(style, size)
+        if draw.textlength(text, font=font) <= max_width:
+            return font
+        size -= 2
+    return load_font(style, 10)
 
 
 def draw_widget(layer: Image.Image, widget: dict, t_scene: float, p: float,
@@ -1137,10 +1148,16 @@ def draw_widget(layer: Image.Image, widget: dict, t_scene: float, p: float,
     radius = 2 if pixel else 16
 
     panel = (24, 24, 30) if pixel else (16, 22, 32)
+    x0 = max(8.0, x0)
+    y0 = max(8.0, y0)
+    x1 = min(float(W - 8), x1)
+    y1 = min(float(H - 8), y1)
     draw.rounded_rectangle([x0, y0, x1, y1], radius=radius, fill=panel, outline=accent, width=2)
 
-    title_font = load_font("mono" if pixel else "sans", max(12, int(H * 0.022)))
-    value_font = load_font("mono" if pixel else "sans", max(18, int(H * 0.04)))
+    title_font = _fit_font(draw, "mono" if pixel else "sans", str(widget.get("title", "")),
+                           x1 - x0 - 32, max(12, int(H * 0.022)))
+    value_font = _fit_font(draw, "mono" if pixel else "sans", str(widget.get("primaryValueLabel", "")),
+                           x1 - x0 - 32, max(18, int(H * 0.038)))
     draw.text((x0 + 16, y0 + 12), str(widget.get("title", "")), font=title_font, fill=(220, 226, 235))
     draw.text((x0 + 16, y0 + 36), str(widget.get("primaryValueLabel", "")), font=value_font, fill=accent)
 
@@ -1327,15 +1344,15 @@ def _draw_lore_widget(draw, box, p, accent):
 # ---------------------------------------------------------------------------
 
 CAPTION_STYLES = {
-    "hormozi-punch": dict(font="display", size=0.062, color=(255, 255, 255), active=(250, 204, 21),
+    "hormozi-punch": dict(font="sans", size=0.062, color=(255, 255, 255), active=(250, 204, 21),
                           stroke=(0, 0, 0), stroke_w=0.008, uppercase=True, y=0.86, max_words=4),
     "ali-abdaal-minimal": dict(font="sans", size=0.044, color=(245, 245, 245), active=(255, 255, 255),
                                stroke=(0, 0, 0), stroke_w=0.003, uppercase=False, y=0.88, max_words=6),
-    "capcut-neon-glow": dict(font="display", size=0.058, color=(255, 255, 255), active=(34, 211, 238),
+    "capcut-neon-glow": dict(font="sans", size=0.058, color=(255, 255, 255), active=(34, 211, 238),
                              stroke=(0, 0, 0), stroke_w=0.006, uppercase=True, y=0.86, max_words=4),
     "cinematic-serif-sub": dict(font="serif", size=0.042, color=(240, 236, 228), active=(255, 214, 120),
                                 stroke=(0, 0, 0), stroke_w=0.0025, uppercase=False, y=0.88, max_words=7),
-    "karaoke-word-fill": dict(font="display", size=0.056, color=(230, 230, 230), active=(255, 214, 60),
+    "karaoke-word-fill": dict(font="sans", size=0.056, color=(230, 230, 230), active=(255, 214, 60),
                               stroke=(0, 0, 0), stroke_w=0.006, uppercase=True, y=0.86, max_words=4),
     "glassmorphism-pill": dict(font="sans", size=0.046, color=(255, 255, 255), active=(255, 255, 255),
                                stroke=(0, 0, 0), stroke_w=0.002, uppercase=False, y=0.86, max_words=6),

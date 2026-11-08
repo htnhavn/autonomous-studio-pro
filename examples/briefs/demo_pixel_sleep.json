@@ -1,0 +1,369 @@
+{
+  "schemaVersion": "2.0.0",
+  "meta": {
+    "title": "Ánh sáng phá giấc ngủ của bạn",
+    "topic": "Melatonin, ánh sáng xanh và bịt mắt ngủ",
+    "logline": "Ngủ đủ 8 tiếng mà vẫn như cái xác — vì ánh sáng vẫn lọt qua mí mắt.",
+    "genreKit": "pixel-retro-arcade",
+    "language": "vi",
+    "toneKeywords": [
+      "game hoá",
+      "hài",
+      "y học",
+      "retro"
+    ],
+    "widthPx": 720,
+    "heightPx": 1280,
+    "fps": 30,
+    "targetDurationSec": 16
+  },
+  "audio": {
+    "voice": {
+      "provider": "elevenlabs",
+      "apiKeyEnvVar": "ELEVENLABS_API_KEY",
+      "voiceId": "REPLACE_WITH_ELEVENLABS_VOICE_ID",
+      "modelId": "eleven_multilingual_v2",
+      "stability": 0.38,
+      "similarityBoost": 0.8,
+      "style": 0.45,
+      "speed": 1.05,
+      "outputFormat": "mp3_44100_128"
+    },
+    "music": {
+      "sourcePath": "",
+      "searchQuery": "8-bit chiptune playful",
+      "bpm": 128,
+      "gainDb": -16,
+      "duckAmountDb": -14
+    },
+    "loudnessTargetLufs": -16,
+    "truePeakDb": -1.5
+  },
+  "colorGrade": {
+    "enabled": true,
+    "exposure": 0.02,
+    "contrast": 1.08,
+    "saturation": 1.18,
+    "temperature": 0.05,
+    "tint": 0.0,
+    "filmGrainIntensity": 0.0,
+    "halationIntensity": 0.0
+  },
+  "scenes": [
+    {
+      "id": "hook_eyes",
+      "narration": "Bạn tưởng nhắm mắt là tối? Ánh sáng vẫn xuyên qua mí mắt.",
+      "onScreenText": "NHẮM MẮT KHÔNG PHẢI LÀ TỐI",
+      "asset": {
+        "kind": "none",
+        "fit": "cover",
+        "motion": "static",
+        "opacity": 1.0,
+        "layout": "background"
+      },
+      "backdrop": "pixel.bedroom-8bit",
+      "atmosphere": "particles.pixel-coin-sparkle",
+      "cameraRig": "pixel-side-scroll-lock",
+      "actors": [
+        {
+          "archetype": "pixel-hero-sprite",
+          "moveSet": "pixel-hp-low-stagger",
+          "expression": "panic-sweat",
+          "prop": "none",
+          "costumeId": "pixelHero",
+          "stageX": 0.32,
+          "stageY": 0.9,
+          "scale": 0.9,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "pixel.energy-status-bar",
+          "title": "TRẠNG THÁI",
+          "primaryValueLabel": "NGỦ 8H",
+          "stageX": 0.72,
+          "stageY": 0.18,
+          "scale": 0.95,
+          "accentColorHex": "#22D3EE"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.kinetic-type-pop",
+          "atProgress": 0.1,
+          "durationSec": 0.6,
+          "intensity": 0.9
+        },
+        {
+          "effectId": "claude.glitch-scanline",
+          "atProgress": 0.5,
+          "durationSec": 0.5,
+          "intensity": 0.3
+        }
+      ],
+      "transitionIn": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "transitionOut": {
+        "type": "flash",
+        "durationSec": 0.15
+      },
+      "captionStyleId": "karaoke-word-fill"
+    },
+    {
+      "id": "light_sources",
+      "narration": "Đèn sạc, đèn router, đèn đường — đủ để cơ thể giảm melatonin.",
+      "onScreenText": "MELATONIN GIẢM",
+      "asset": {
+        "kind": "none",
+        "fit": "cover",
+        "motion": "static",
+        "opacity": 1.0,
+        "layout": "background"
+      },
+      "backdrop": "pixel.bedroom-8bit",
+      "atmosphere": "particles.pixel-coin-sparkle",
+      "cameraRig": "pixel-crash-zoom-8bit",
+      "actors": [
+        {
+          "archetype": "pixel-hero-sprite",
+          "moveSet": "pixel-hp-low-stagger",
+          "expression": "panic-sweat",
+          "prop": "none",
+          "costumeId": "pixelHero",
+          "stageX": 0.3,
+          "stageY": 0.92,
+          "scale": 0.95,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "pixel.score-counter",
+          "title": "MELATONIN",
+          "primaryValueLabel": "ĐANG TỤT",
+          "stageX": 0.72,
+          "stageY": 0.2,
+          "scale": 0.95,
+          "accentColorHex": "#FBBF24"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.glitch-scanline",
+          "atProgress": 0.2,
+          "durationSec": 0.8,
+          "intensity": 0.45
+        },
+        {
+          "effectId": "claude.sound-waveform-bar",
+          "atProgress": 0.45,
+          "durationSec": 1.2,
+          "intensity": 0.5
+        }
+      ],
+      "transitionIn": {
+        "type": "flash",
+        "durationSec": 0.15
+      },
+      "transitionOut": {
+        "type": "whip",
+        "durationSec": 0.2
+      },
+      "captionStyleId": "karaoke-word-fill"
+    },
+    {
+      "id": "walking_dead",
+      "narration": "Thiếu melatonin, ngủ đủ tám tiếng mà sáng dậy vẫn như cái xác.",
+      "onScreenText": "NHƯ CÁI XÁC",
+      "asset": {
+        "kind": "none",
+        "fit": "cover",
+        "motion": "static",
+        "opacity": 1.0,
+        "layout": "background"
+      },
+      "backdrop": "pixel.arcade-level-1",
+      "atmosphere": "particles.pixel-coin-sparkle",
+      "cameraRig": "static-stage-wide",
+      "actors": [
+        {
+          "archetype": "pixel-hero-sprite",
+          "moveSet": "pixel-hp-low-stagger",
+          "expression": "deadpan-unamused",
+          "prop": "none",
+          "costumeId": "pixelHero",
+          "stageX": 0.28,
+          "stageY": 0.93,
+          "scale": 0.95,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "pixel.research-ab-card",
+          "title": "NGHIÊN CỨU",
+          "primaryValueLabel": "ĐEO KÍN vs LỌT SÁNG",
+          "stageX": 0.7,
+          "stageY": 0.3,
+          "scale": 1.0,
+          "accentColorHex": "#50DC8C"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.flash-transition",
+          "atProgress": 0.05,
+          "durationSec": 0.2,
+          "intensity": 0.9
+        },
+        {
+          "effectId": "claude.vignette-focus",
+          "atProgress": 0.0,
+          "durationSec": 4.0,
+          "intensity": 0.45
+        }
+      ],
+      "transitionIn": {
+        "type": "whip",
+        "durationSec": 0.2
+      },
+      "transitionOut": {
+        "type": "crossfade",
+        "durationSec": 0.25
+      },
+      "captionStyleId": "karaoke-word-fill"
+    },
+    {
+      "id": "the_fix",
+      "narration": "Một chiếc bịt mắt che kín chặn phần lớn ánh sáng đó.",
+      "onScreenText": "BỊT MẮT 3D",
+      "asset": {
+        "kind": "none",
+        "fit": "cover",
+        "motion": "static",
+        "opacity": 1.0,
+        "layout": "background"
+      },
+      "backdrop": "pixel.retro-os-desktop",
+      "atmosphere": "none",
+      "cameraRig": "pixel-crash-zoom-8bit",
+      "actors": [
+        {
+          "archetype": "pixel-hero-sprite",
+          "moveSet": "pixel-victory-jump",
+          "expression": "happy-talk",
+          "prop": "pixel-orb",
+          "costumeId": "pixelHero",
+          "stageX": 0.3,
+          "stageY": 0.9,
+          "scale": 0.95,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "pixel.retro-dialog-box",
+          "title": "CẢNH BÁO",
+          "primaryValueLabel": "NÓI-THẬT.TXT",
+          "stageX": 0.7,
+          "stageY": 0.24,
+          "scale": 1.0,
+          "accentColorHex": "#C0C0C0"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.kinetic-type-pop",
+          "atProgress": 0.3,
+          "durationSec": 0.6,
+          "intensity": 0.8
+        }
+      ],
+      "transitionIn": {
+        "type": "crossfade",
+        "durationSec": 0.25
+      },
+      "transitionOut": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "captionStyleId": "karaoke-word-fill"
+    },
+    {
+      "id": "outro",
+      "narration": "Đeo kín, ngủ sâu, sáng ra tỉnh táo hơn hẳn.",
+      "onScreenText": "TỈNH TÁO HƠN",
+      "asset": {
+        "kind": "none",
+        "fit": "cover",
+        "motion": "static",
+        "opacity": 1.0,
+        "layout": "background"
+      },
+      "backdrop": "pixel.bedroom-8bit",
+      "atmosphere": "particles.pixel-coin-sparkle",
+      "cameraRig": "pixel-side-scroll-lock",
+      "actors": [
+        {
+          "archetype": "pixel-hero-sprite",
+          "moveSet": "pixel-victory-jump",
+          "expression": "happy-talk",
+          "prop": "pixel-orb",
+          "costumeId": "pixelHero",
+          "stageX": 0.34,
+          "stageY": 0.9,
+          "scale": 0.95,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "pixel.energy-status-bar",
+          "title": "NĂNG LƯỢNG",
+          "primaryValueLabel": "HỒI ĐẦY",
+          "stageX": 0.72,
+          "stageY": 0.18,
+          "scale": 0.95,
+          "accentColorHex": "#50DC8C"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.outro-punch-badge",
+          "atProgress": 0.35,
+          "durationSec": 0.9,
+          "intensity": 1.0
+        }
+      ],
+      "transitionIn": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "transitionOut": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "captionStyleId": "karaoke-word-fill"
+    }
+  ],
+  "qa": {
+    "probeFramesPerScene": 2,
+    "checks": [
+      "framing",
+      "occlusion",
+      "caption-contrast",
+      "vfx-intensity",
+      "pacing"
+    ],
+    "minScore": 0.6,
+    "autoFix": true
+  },
+  "directorNotes": [
+    "Long-take 3.5s/cảnh theo reference V5 (pixel y học).",
+    "HP bar tụt dần theo lời bình, hộp thoại Win95 làm punchline.",
+    "Master -16 LUFS vì nội dung ngắn dọc, tránh bị nền tảng nén."
+  ]
+}
