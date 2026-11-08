@@ -17,7 +17,11 @@ export type CameraRigPresetId =
   | 'isometric-tactical-tilt'
   | 'handheld-documentary-float'
   | 'vertigo-contra-zoom'
-  | 'whip-pan-target-snap';
+  | 'whip-pan-target-snap'
+  | 'vox-map-flyover-topdown'
+  | 'vox-schematic-push'
+  | 'pixel-side-scroll-lock'
+  | 'pixel-crash-zoom-8bit';
 
 export interface EvaluatedCameraFrame {
   readonly zoom: number;
@@ -113,6 +117,34 @@ export const CAMERA_RIG_CATALOG: readonly CameraRigMetadata[] = [
     nameVi: 'Quất Máy Chuyển Điểm (Whip-Pan Snap)',
     bestForGenre: ['economics', 'all'],
     descriptionVi: 'Quất máy cực nhanh có gia tốc Ease-Out Expo sang đối tượng tiếp theo.',
+  },
+  {
+    id: 'vox-map-flyover-topdown',
+    nameVi: 'Flyover Bản Đồ Từ Trên Xuống (Vox GIS)',
+    bestForGenre: ['all'],
+    descriptionVi:
+      'Nghiêng mặt bản đồ vệ tinh 55 độ và trôi chậm từ trên xuống, như flycam phóng sự dữ liệu Vox.',
+  },
+  {
+    id: 'vox-schematic-push',
+    nameVi: 'Push Vào Mặt Cắt Kỹ Thuật (Schematic Push)',
+    bestForGenre: ['all'],
+    descriptionVi:
+      'Đẩy máy chậm vào bản vẽ mặt cắt thủy lực/kiến trúc để nhấn vào chi tiết van, mực nước, cao độ.',
+  },
+  {
+    id: 'pixel-side-scroll-lock',
+    nameVi: 'Khóa Máy Cuộn Ngang Pixel (Side-Scroll)',
+    bestForGenre: ['all'],
+    descriptionVi:
+      'Camera khóa trục Y và cuộn ngang đều như màn chơi platformer 8-bit, nhân vật luôn ở 1/3 khung hình.',
+  },
+  {
+    id: 'pixel-crash-zoom-8bit',
+    nameVi: 'Crash Zoom 8-Bit Giật Cục (Stepped Zoom)',
+    bestForGenre: ['all'],
+    descriptionVi:
+      'Zoom nhảy từng nấc 0.1x như sprite pixel phóng to, không nội suy mượt, tạo cảm giác arcade.',
   },
 ];
 
@@ -235,6 +267,50 @@ export function evaluateCameraRigAtProgress(
         zoom: 1.1,
         panX: (1 - easeOutExpo) * -0.6,
       };
+
+    case 'vox-map-flyover-topdown':
+      return {
+        ...base,
+        zoom: 1.22 - smoothP * 0.12,
+        panX: Math.sin(timeSec * 0.35) * 0.04,
+        panY: -0.18 + smoothP * 0.28,
+        tilt3DXDeg: 52 + smoothP * 8,
+        tilt3DYDeg: -6 + smoothP * 6,
+        parallaxMultiplier: 1.4,
+        vignetteStrength: 0.4,
+      };
+
+    case 'vox-schematic-push':
+      return {
+        ...base,
+        zoom: 1.0 + smoothP * 0.35,
+        panX: 0.05 - smoothP * 0.1,
+        panY: -0.06 + smoothP * 0.08,
+        vignetteStrength: 0.3,
+      };
+
+    case 'pixel-side-scroll-lock':
+      return {
+        ...base,
+        zoom: 1.1,
+        panX: -0.3 + smoothP * 0.6,
+        panY: 0,
+        tilt3DXDeg: 8,
+        parallaxMultiplier: 1.0,
+        vignetteStrength: 0.1,
+      };
+
+    case 'pixel-crash-zoom-8bit': {
+      // Quantized zoom: 1.0, 1.1, 1.2 ... 1.5 — deliberately not smooth.
+      const step = Math.min(5, Math.floor(p * 6)) / 10;
+      return {
+        ...base,
+        zoom: 1.0 + step,
+        panX: 0,
+        panY: 0,
+        vignetteStrength: 0.12,
+      };
+    }
 
     default:
       return base;

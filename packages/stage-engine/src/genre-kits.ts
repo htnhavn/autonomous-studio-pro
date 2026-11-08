@@ -16,7 +16,9 @@ import {
 export type VideoGenreKitId =
   | 'economics-stickman' // 📈 Kinh tế / Tài chính / Giải thích hài hước (Casually Explained / Plain Bagel / OverSimplified)
   | 'universe-cosmic'    // 🌌 Vũ trụ / Thiên văn / Khoa học (Kurzgesagt / Lemmino / Sci-Fi)
-  | 'lore-chronicle';    // 📜 Lore / Lịch sử / Địa chính trị / Game Mythos (VaatiVidya / Kings & Generals)
+  | 'lore-chronicle'     // 📜 Lore / Lịch sử / Địa chính trị / Game Mythos (VaatiVidya / Kings & Generals)
+  | 'vox-documentary'    // 🗺️ Phóng sự dữ liệu Vox / Johnny Harris: bản đồ GIS, mặt cắt kỹ thuật, HUD telemetry
+  | 'pixel-retro-arcade'; // 🕹️ Pixel-art 8-bit gamified: HP bar, hộp thoại Win95, sprite arcade
 
 export type StageBackdropId =
   | 'econ.chalkboard-grid-dark'
@@ -30,7 +32,14 @@ export type StageBackdropId =
   | 'lore.ancient-parchment-map'
   | 'lore.gothic-cathedral-ruins'
   | 'lore.tactical-war-room-table'
-  | 'lore.faction-bloodline-board';
+  | 'lore.faction-bloodline-board'
+  | 'vox.satellite-aerial-gray'
+  | 'vox.hydraulic-cross-section'
+  | 'vox.telemetry-server-rack'
+  | 'vox.map-room-table-light'
+  | 'pixel.bedroom-8bit'
+  | 'pixel.arcade-level-1'
+  | 'pixel.retro-os-desktop';
 
 export type StageAtmosphereId =
   | 'none'
@@ -40,7 +49,10 @@ export type StageAtmosphereId =
   | 'particles.nebula-stardust'
   | 'particles.torch-fire-embers'
   | 'particles.ancient-dust-motes'
-  | 'particles.rain-noir-storm';
+  | 'particles.rain-noir-storm'
+  | 'particles.gis-river-flow'
+  | 'particles.pixel-coin-sparkle'
+  | 'particles.retro-crt-scanlines';
 
 export type BuiltInStageWidgetKind =
   | 'econ.supply-demand-curve'       // Đường cung-cầu tự cắt nhau + điểm cân bằng
@@ -52,7 +64,15 @@ export type BuiltInStageWidgetKind =
   | 'cosmic.lightspeed-distance-ruler'// Thước đo vận tốc ánh sáng / năm ánh sáng
   | 'lore.faction-relation-web'      // Sơ đồ dây nối mối quan hệ giữa các nhân vật / đế chế
   | 'lore.animated-map-march-line'   // Đường mũi tên hành quân / hải trình chạy trên bản đồ cổ
-  | 'lore.boss-item-stat-card';      // Thẻ thông tin Nhân vật / Vũ khí / Cổ vật kiểu RPG
+  | 'lore.boss-item-stat-card'       // Thẻ thông tin Nhân vật / Vũ khí / Cổ vật kiểu RPG
+  | 'vox.hud-timestamp-counter'      // Đồng hồ HUD bán trong suốt đếm mốc sự kiện (04:00, 20:10)
+  | 'vox.water-level-gauge'          // Thước đo mực nước/triều so với cao độ mặt đường
+  | 'vox.map-route-trace'            // Vệt tuyến đường/kênh rạch vẽ dần trên bản đồ GIS
+  | 'vox.telemetry-waveform'         // Đồ thị sóng sin telemetry từ trạm đo
+  | 'pixel.energy-status-bar'        // Thanh HP/Năng lượng tụt dần theo lời bình
+  | 'pixel.retro-dialog-box'         // Hộp thoại Windows 95 với nút OK/Cancel
+  | 'pixel.score-counter'            // Bảng điểm/coin kiểu arcade nhảy số
+  | 'pixel.research-ab-card';       // Thẻ so sánh A/B kèm thanh chỉ số
 
 export interface StageActorPlacement {
   readonly actorId: string;
@@ -96,10 +116,26 @@ export interface ChoreographedStageScene {
   readonly widgets: readonly StageWidgetPlacement[];
   readonly headlineBanner?: string;
   readonly transitionOutId: string;
+  readonly effects?: readonly {
+    readonly effectId: string;
+    readonly atProgress: number;
+    readonly intensity?: number;
+  }[];
+  readonly captionStyleId?: string;
   readonly sfxTriggers: readonly {
     readonly atNormalizedProgress: number; // [0..1]
     readonly sfxId: string;
   }[];
+}
+
+export interface GenrePacingProfile {
+  /** Average cut length measured from the reference videos (seconds). */
+  readonly targetShotSec: number;
+  readonly minShotSec: number;
+  readonly maxShotSec: number;
+  /** Narration speed used to derive scene duration from word count. */
+  readonly wordsPerSecond: number;
+  readonly pacingClass: 'fast' | 'moderate' | 'long-take';
 }
 
 export interface GenreKitDefinition {
@@ -112,6 +148,16 @@ export interface GenreKitDefinition {
   readonly recommendedCameras: readonly CameraRigPresetId[];
   readonly availableBackdrops: readonly StageBackdropId[];
   readonly availableWidgets: readonly BuiltInStageWidgetKind[];
+  readonly pacing: GenrePacingProfile;
+  readonly defaultCaptionStyleId:
+    | 'hormozi-punch'
+    | 'ali-abdaal-minimal'
+    | 'capcut-neon-glow'
+    | 'cinematic-serif-sub'
+    | 'karaoke-word-fill'
+    | 'glassmorphism-pill';
+  /** Effect ids from the Claude VFX catalog that fit this genre. */
+  readonly recommendedEffects: readonly string[];
 }
 
 export const GENRE_KIT_CATALOG: Record<VideoGenreKitId, GenreKitDefinition> = {
@@ -141,6 +187,23 @@ export const GENRE_KIT_CATALOG: Record<VideoGenreKitId, GenreKitDefinition> = {
       'econ.balance-scale-tilt',
       'econ.stock-candlestick-crash',
     ],
+    pacing: {
+      targetShotSec: 4.25,
+      minShotSec: 2.0,
+      maxShotSec: 8.0,
+      wordsPerSecond: 2.8,
+      pacingClass: 'moderate',
+    },
+    defaultCaptionStyleId: 'hormozi-punch',
+    recommendedEffects: [
+      'claude.snap-zoom',
+      'claude.kinetic-type-pop',
+      'claude.headline-storm',
+      'claude.lower-third-card',
+      'claude.vignette-focus',
+      'claude.flash-transition',
+      'claude.sound-waveform-bar',
+    ],
   },
 
   'universe-cosmic': {
@@ -168,6 +231,22 @@ export const GENRE_KIT_CATALOG: Record<VideoGenreKitId, GenreKitDefinition> = {
       'cosmic.orbital-gravity-well',
       'cosmic.lightspeed-distance-ruler',
     ],
+    pacing: {
+      targetShotSec: 5.0,
+      minShotSec: 2.5,
+      maxShotSec: 12.0,
+      wordsPerSecond: 2.8,
+      pacingClass: 'moderate',
+    },
+    defaultCaptionStyleId: 'cinematic-serif-sub',
+    recommendedEffects: [
+      'claude.glow-edge-rim-light',
+      'claude.vignette-focus',
+      'claude.halation-glow',
+      'claude.film-grain-35mm',
+      'claude.liquid-glass',
+      'claude.light-sweep',
+    ],
   },
 
   'lore-chronicle': {
@@ -194,6 +273,110 @@ export const GENRE_KIT_CATALOG: Record<VideoGenreKitId, GenreKitDefinition> = {
       'lore.animated-map-march-line',
       'lore.faction-relation-web',
       'lore.boss-item-stat-card',
+    ],
+    pacing: {
+      targetShotSec: 6.0,
+      minShotSec: 3.0,
+      maxShotSec: 12.0,
+      wordsPerSecond: 2.8,
+      pacingClass: 'moderate',
+    },
+    defaultCaptionStyleId: 'cinematic-serif-sub',
+    recommendedEffects: [
+      'claude.glow-edge-rim-light',
+      'claude.vignette-focus',
+      'claude.film-grain-35mm',
+      'claude.halation-glow',
+      'claude.lower-third-card',
+    ],
+  },
+
+  'vox-documentary': {
+    id: 'vox-documentary',
+    nameVi: '🗺️ Phóng Sự Dữ Liệu Vox (Data Journalism)',
+    descriptionVi:
+      'Phong cách Vox / Johnny Harris: bản đồ vệ tinh giảm bão hòa, mặt cắt kỹ thuật 2D, HUD timestamp, nhịp cắt nhanh 3.1s, giọng đọc dồn dập và bằng chứng số liệu trên màn hình.',
+    defaultBackdrop: 'vox.satellite-aerial-gray',
+    defaultAtmosphere: 'particles.gis-river-flow',
+    defaultHeroArchetype: 'investigative-reporter',
+    recommendedCameras: [
+      'vox-map-flyover-topdown',
+      'vox-schematic-push',
+      'handheld-documentary-float',
+      'dolly-pull-reveal',
+      'crash-zoom-actor-face',
+    ],
+    availableBackdrops: [
+      'vox.satellite-aerial-gray',
+      'vox.hydraulic-cross-section',
+      'vox.telemetry-server-rack',
+      'vox.map-room-table-light',
+    ],
+    availableWidgets: [
+      'vox.hud-timestamp-counter',
+      'vox.water-level-gauge',
+      'vox.map-route-trace',
+      'vox.telemetry-waveform',
+    ],
+    pacing: {
+      targetShotSec: 3.12,
+      minShotSec: 1.8,
+      maxShotSec: 6.5,
+      wordsPerSecond: 3.3,
+      pacingClass: 'fast',
+    },
+    defaultCaptionStyleId: 'cinematic-serif-sub',
+    recommendedEffects: [
+      'claude.snap-zoom',
+      'claude.lower-third-card',
+      'claude.color-isolation',
+      'claude.light-sweep',
+      'claude.vignette-focus',
+      'claude.film-grain-35mm',
+      'claude.halation-glow',
+      'claude.flash-transition',
+    ],
+  },
+
+  'pixel-retro-arcade': {
+    id: 'pixel-retro-arcade',
+    nameVi: '🕹️ Pixel Art 8-Bit Gamified',
+    descriptionVi:
+      'Phong cách game retro: sprite pixel, thanh HP/Năng lượng tụt theo lời bình, hộp thoại Windows 95, bảng điểm arcade và nhịp kể chuyện kiểu màn chơi.',
+    defaultBackdrop: 'pixel.bedroom-8bit',
+    defaultAtmosphere: 'particles.pixel-coin-sparkle',
+    defaultHeroArchetype: 'pixel-hero-sprite',
+    recommendedCameras: [
+      'pixel-side-scroll-lock',
+      'pixel-crash-zoom-8bit',
+      'static-stage-wide',
+      'whip-pan-target-snap',
+    ],
+    availableBackdrops: [
+      'pixel.bedroom-8bit',
+      'pixel.arcade-level-1',
+      'pixel.retro-os-desktop',
+    ],
+    availableWidgets: [
+      'pixel.energy-status-bar',
+      'pixel.retro-dialog-box',
+      'pixel.score-counter',
+      'pixel.research-ab-card',
+    ],
+    pacing: {
+      targetShotSec: 6.0,
+      minShotSec: 2.5,
+      maxShotSec: 14.0,
+      wordsPerSecond: 3.4,
+      pacingClass: 'long-take',
+    },
+    defaultCaptionStyleId: 'karaoke-word-fill',
+    recommendedEffects: [
+      'claude.kinetic-type-pop',
+      'claude.glitch-scanline',
+      'claude.outro-punch-badge',
+      'claude.sound-waveform-bar',
+      'claude.flash-transition',
     ],
   },
 };
@@ -234,23 +417,30 @@ export function compileScriptToDeterministicStageScenes(
   let cursorSec = 0;
   const compiledScenes = fallbackSentences.map((line, idx) => {
     const wordCount = line.split(/\s+/).length;
-    // Average speaking rate ~ 2.8 words/sec, flexible dynamic duration
-    const durationSec = Math.min(20.0, Math.max(2.0, Number((wordCount / 2.8).toFixed(1))));
+    const pacing = kit.pacing;
+    // Speech rate decides sentence length; pacing bounds keep cuts from
+    // dragging (Vox reference averages 3.12s per cut, pixel long-takes 6s+).
+    const spokenDuration = wordCount / pacing.wordsPerSecond;
+    const durationSec = Number(
+      Math.min(pacing.maxShotSec, Math.max(pacing.minShotSec, spokenDuration)).toFixed(1)
+    );
     const startTimeSec = cursorSec;
     cursorSec = Number((cursorSec + durationSec).toFixed(1));
 
     const moveSet = inferMoveSetFromTranscriptLine(line);
     const cameraRig = kit.recommendedCameras[idx % kit.recommendedCameras.length];
-    const backdrop = kit.availableBackdrops[idx % kit.availableBackdrops.length];
-    const widgetKind = kit.availableWidgets[idx % kit.availableWidgets.length];
-
+    const backdrop = pickBackdropForLine(kit, line, idx);
+    const widgetKind = pickWidgetForLine(kit, line, idx);
     const lower = line.toLowerCase();
     const isPanicOrCrash =
       lower.includes('khủng hoảng') ||
       lower.includes('sụp đổ') ||
       lower.includes('hoảng loạn') ||
-      lower.includes('crash');
+      lower.includes('crash') ||
+      lower.includes('ngập') ||
+      lower.includes('triều cường');
     const isMoneyPrint = lower.includes('in tiền') || lower.includes('lạm phát') || lower.includes('bơm tiền');
+    const effects = pickEffectsForLine(kit, line, idx);
 
     const stageScene: ChoreographedStageScene = {
       sceneId: `stage_scene_${idx + 1}`,
@@ -291,7 +481,9 @@ export function compileScriptToDeterministicStageScenes(
         },
       ],
       headlineBanner: idx === 0 ? line.toUpperCase() : undefined,
-      transitionOutId: idx % 2 === 0 ? 'capcut.whip-pan-blur' : 'gl.directionalwipe',
+      transitionOutId: pickTransitionForPacing(kit, idx),
+      effects,
+      captionStyleId: kit.defaultCaptionStyleId,
       sfxTriggers: [
         { atNormalizedProgress: 0.0, sfxId: 'sfx.whoosh-soft' },
         { atNormalizedProgress: 0.15, sfxId: 'sfx.pop-bubble-02' },
@@ -310,5 +502,90 @@ export function compileScriptToDeterministicStageScenes(
     estimatedDurationSec: cursorSec,
     scenes: compiledScenes,
   };
+}
+
+/**
+ * Genre-aware widget choice. Falls back to round-robin so every scene still
+ * gets a visual anchor when the narration has no obvious keyword.
+ */
+function pickWidgetForLine(
+  kit: GenreKitDefinition,
+  line: string,
+  idx: number
+): BuiltInStageWidgetKind {
+  const lower = line.toLowerCase();
+  const has = (...keys: string[]) => keys.some((k) => lower.includes(k));
+
+  if (kit.id === 'vox-documentary') {
+    if (has('triều', 'ngập', 'nước', 'mực nước', 'mét', 'cao độ')) return 'vox.water-level-gauge';
+    if (has('bản đồ', 'kênh', 'sông', 'tuyến', 'cống', 'vị trí')) return 'vox.map-route-trace';
+    if (has('trạm', 'đo', 'dữ liệu', 'cảm biến', 'server', 'điều khiển')) return 'vox.telemetry-waveform';
+    if (/\d/.test(lower)) return 'vox.hud-timestamp-counter';
+  }
+
+  if (kit.id === 'pixel-retro-arcade') {
+    if (has('hp', 'năng lượng', 'mệt', 'kiệt sức', 'máu', 'ngủ')) return 'pixel.energy-status-bar';
+    if (has('nghiên cứu', 'so sánh', 'thử nghiệm', 'a/b', 'chỉ số')) return 'pixel.research-ab-card';
+    if (has('cảnh báo', 'lỗi', 'sai', 'nguy hiểm')) return 'pixel.retro-dialog-box';
+    if (/\d/.test(lower)) return 'pixel.score-counter';
+  }
+
+  return kit.availableWidgets[idx % kit.availableWidgets.length];
+}
+
+function pickBackdropForLine(
+  kit: GenreKitDefinition,
+  line: string,
+  idx: number
+): StageBackdropId {
+  const lower = line.toLowerCase();
+  const has = (...keys: string[]) => keys.some((k) => lower.includes(k));
+
+  if (kit.id === 'vox-documentary') {
+    if (has('mặt cắt', 'kỹ thuật', 'cống', 'van', 'thép', 'cao độ')) return 'vox.hydraulic-cross-section';
+    if (has('trạm', 'điều khiển', 'dữ liệu', 'server')) return 'vox.telemetry-server-rack';
+    if (has('bản đồ', 'kênh', 'sông', 'thành phố')) return 'vox.satellite-aerial-gray';
+  }
+
+  if (kit.id === 'pixel-retro-arcade') {
+    if (has('phòng', 'giường', 'ngủ', 'nhà')) return 'pixel.bedroom-8bit';
+    if (has('màn chơi', 'level', 'game', 'nhảy', 'chạy')) return 'pixel.arcade-level-1';
+    if (has('cảnh báo', 'hệ thống', 'lỗi', 'windows')) return 'pixel.retro-os-desktop';
+  }
+
+  return kit.availableBackdrops[idx % kit.availableBackdrops.length];
+}
+
+function pickEffectsForLine(
+  kit: GenreKitDefinition,
+  line: string,
+  idx: number
+): readonly { readonly effectId: string; readonly atProgress: number; readonly intensity?: number }[] {
+  const pool = kit.recommendedEffects;
+  if (pool.length === 0) return [];
+  const primary = pool[idx % pool.length];
+  const lower = line.toLowerCase();
+  const cues: { effectId: string; atProgress: number; intensity?: number }[] = [
+    { effectId: primary, atProgress: 0.18, intensity: 1.0 },
+  ];
+
+  const punchy = /[!?]/.test(line) || /\d/.test(line);
+  if (punchy && pool.length > 1) {
+    cues.push({ effectId: pool[(idx + 1) % pool.length], atProgress: 0.55, intensity: 0.8 });
+  }
+  if (lower.includes('khủng hoảng') || lower.includes('sụp') || lower.includes('ngập')) {
+    cues.push({ effectId: 'claude.vignette-focus', atProgress: 0.05, intensity: 1.0 });
+  }
+  return cues;
+}
+
+function pickTransitionForPacing(kit: GenreKitDefinition, idx: number): string {
+  if (kit.pacing.pacingClass === 'fast') {
+    return idx % 3 === 0 ? 'gl.cross-zoom' : idx % 3 === 1 ? 'capcut.whip-pan-blur' : 'gl.directionalwipe';
+  }
+  if (kit.pacing.pacingClass === 'long-take') {
+    return idx % 2 === 0 ? 'gl.pixelize' : 'gl.luma-fade';
+  }
+  return idx % 2 === 0 ? 'capcut.whip-pan-blur' : 'gl.directionalwipe';
 }
 

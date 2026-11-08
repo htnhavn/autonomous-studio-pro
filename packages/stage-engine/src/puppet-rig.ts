@@ -15,6 +15,9 @@ export type CharacterArchetypeId =
   | 'astronaut-explorer'     // Visor helmet + backpack suit for Universe / Space documentaries
   | 'lore-chronicler-hooded' // Cloak + glowing eyes + lantern/staff for Deep Lore / History / Fantasy
   | 'king-emperor-crown'     // Crown + royal cape for History / Geopolitics / Empire Lore
+  | 'investigative-reporter' // Press cap, lanyard, clipboard — Vox-style data journalist
+  | 'pixel-hero-sprite'      // Low-res sprite hero with HP bar — 8-bit gamified explainer
+  | 'mograph-wizard-npc'     // Floating wizard guide — motion-graphics retention style
   | 'custom-sprite-rig';     // User-supplied PNG limbs mapped onto the same deterministic skeleton
 
 export type ExpressionId =
@@ -38,7 +41,10 @@ export type HeldPropId =
   | 'ancient-scroll'         // History / Lore parchment
   | 'glowing-sword'          // Fantasy / Gaming lore weapon
   | 'telescope'              // Astronomy / Universe
-  | 'microphone-news';       // Reporter / Interview
+  | 'microphone-news'        // Reporter / Interview
+  | 'map-pointer'            // Data journalist pointing at a GIS map
+  | 'clipboard'              // Reporter / inspector with evidence
+  | 'pixel-orb';             // Floating arcade orb / power-up
 
 export type MoveSetId =
   | 'idle-breathe'
@@ -58,7 +64,11 @@ export type MoveSetId =
   | 'lore-scroll-read'
   | 'walk-confident'
   | 'run-flee-danger'
-  | 'bowtie-adjust-smug';
+  | 'bowtie-adjust-smug'
+  | 'vox-point-map'
+  | 'vox-explain-schematic'
+  | 'pixel-hp-low-stagger'
+  | 'pixel-victory-jump';
 
 /**
  * Deterministic 2D Skeletal Bone Angles (in degrees, relative to parent bone)
@@ -251,6 +261,41 @@ export const MOVE_SET_CATALOG: readonly MoveSetMetadata[] = [
     defaultExpression: 'smug-smirk',
     defaultProp: 'none',
     autoTriggerKeywords: ['chuyên gia', 'tỷ phú', 'chiến lược', 'bí quyết', 'thâu tóm'],
+  },
+  {
+    id: 'vox-point-map',
+    nameVi: 'Chỉ tay lên Bản đồ GIS (Vox)',
+    category: 'explainer-core',
+    defaultExpression: 'determined-focused',
+    defaultProp: 'map-pointer',
+    defaultOverheadEmote: '🗺️',
+    autoTriggerKeywords: ['bản đồ', 'kênh', 'sông', 'vị trí', 'tuyến', 'địa hình', 'gis', 'map'],
+  },
+  {
+    id: 'vox-explain-schematic',
+    nameVi: 'Giải thích Mặt cắt Kỹ thuật',
+    category: 'explainer-core',
+    defaultExpression: 'neutral',
+    defaultProp: 'clipboard',
+    autoTriggerKeywords: ['mặt cắt', 'kỹ thuật', 'van', 'cống', 'cao độ', 'mực nước', 'schematic'],
+  },
+  {
+    id: 'pixel-hp-low-stagger',
+    nameVi: 'Lảo đảo khi HP cạn (Pixel)',
+    category: 'explainer-core',
+    defaultExpression: 'panic-sweat',
+    defaultProp: 'none',
+    defaultOverheadEmote: '💔',
+    autoTriggerKeywords: ['hp', 'năng lượng', 'kiệt sức', 'mệt', 'cạn', 'hết pin', 'ngủ'],
+  },
+  {
+    id: 'pixel-victory-jump',
+    nameVi: 'Nhảy chiến thắng kiểu Arcade',
+    category: 'explainer-core',
+    defaultExpression: 'happy-talk',
+    defaultProp: 'pixel-orb',
+    defaultOverheadEmote: '⭐',
+    autoTriggerKeywords: ['chiến thắng', 'qua màn', 'level up', 'thắng', 'phục hồi', 'tỉnh táo'],
   },
 ];
 
@@ -509,6 +554,62 @@ export function evaluateMoveSetAtTime(
         overheadEmote: '💨',
       };
 
+    case 'vox-point-map':
+      return {
+        ...basePose,
+        torsoLeanDeg: -5,
+        headTiltDeg: -12 + breathe * 2,
+        shoulderLeftDeg: -28,
+        elbowLeftDeg: -12,
+        shoulderRightDeg: 118 + Math.sin(t * 2.4) * 10,
+        elbowRightDeg: 8,
+        overheadEmote: '🗺️',
+      };
+
+    case 'vox-explain-schematic':
+      return {
+        ...basePose,
+        torsoLeanDeg: 4,
+        headTiltDeg: 8,
+        shoulderLeftDeg: -55,
+        elbowLeftDeg: -75 + medOsc * 8,
+        shoulderRightDeg: 62,
+        elbowRightDeg: 78 - medOsc * 8,
+      };
+
+    case 'pixel-hp-low-stagger':
+      return {
+        ...basePose,
+        rootOffsetX: Math.sin(t * 2.2) * 10,
+        rootOffsetY: Math.abs(Math.sin(t * 3.1)) * -4,
+        torsoLeanDeg: 16 + Math.sin(t * 2.0) * 6,
+        headTiltDeg: 20 + Math.sin(t * 1.7) * 8,
+        shoulderLeftDeg: -35 + Math.sin(t * 2.3) * 12,
+        elbowLeftDeg: -25,
+        shoulderRightDeg: 35 - Math.sin(t * 2.3) * 12,
+        elbowRightDeg: 25,
+        hipLeftDeg: -14,
+        hipRightDeg: 14,
+        overheadEmote: '💔',
+      };
+
+    case 'pixel-victory-jump':
+      return {
+        ...basePose,
+        rootOffsetY: Math.abs(Math.sin(t * 4.2)) * -30,
+        scaleSquashX: 1.0 + Math.sin(t * 4.2) * 0.08,
+        scaleStretchY: 1.0 - Math.sin(t * 4.2) * 0.08,
+        shoulderLeftDeg: -150,
+        elbowLeftDeg: -15,
+        shoulderRightDeg: 150,
+        elbowRightDeg: 15,
+        hipLeftDeg: -20,
+        kneeLeftDeg: 30,
+        hipRightDeg: 20,
+        kneeRightDeg: -30,
+        overheadEmote: '⭐',
+      };
+
     default:
       return basePose;
   }
@@ -529,4 +630,216 @@ export function inferMoveSetFromTranscriptLine(spokenText: string): MoveSetId {
   }
   return 'talk-explain-gestures';
 }
+
+/**
+ * RIG.TSX COSTUME SYSTEM (from reference video V2):
+ * One skeleton, a costume per character. Swapping a character means swapping a
+ * palette + headwear, never rebuilding the bones — so motion stays identical
+ * and faces never morph between frames.
+ */
+export type HeadwearId =
+  | 'none'
+  | 'hood'
+  | 'curls'
+  | 'bunches'
+  | 'suit-collar'
+  | 'press-cap'
+  | 'pixel-helmet'
+  | 'wizard-hat'
+  | 'crown';
+
+export interface RimLightConfig {
+  readonly enabled: boolean;
+  readonly colorHex: string;
+  readonly blurPx: number;
+}
+
+export interface CostumePalette {
+  readonly id: string;
+  readonly nameVi: string;
+  readonly jacketHex: string;
+  readonly pantsHex: string;
+  readonly skinHex: string;
+  readonly hairHex: string;
+  readonly accentHex: string;
+  readonly headwear: HeadwearId;
+  readonly rimLight: RimLightConfig;
+}
+
+export const COSTUME_PALETTES: Readonly<Record<string, CostumePalette>> = {
+  pipHood: {
+    id: 'pipHood',
+    nameVi: 'Hoodie đỏ viền vàng',
+    jacketHex: '#D32F2F',
+    pantsHex: '#1F1E29',
+    skinHex: '#F5E6D3',
+    hairHex: '#2B1B12',
+    accentHex: '#FFD54F',
+    headwear: 'hood',
+    rimLight: { enabled: true, colorHex: '#FFD54F', blurPx: 6 },
+  },
+  mo: {
+    id: 'mo',
+    nameVi: 'Áo khoác rêu, tóc xoăn',
+    jacketHex: '#5E6E46',
+    pantsHex: '#2B2B2B',
+    skinHex: '#E8C4A0',
+    hairHex: '#3A2A1E',
+    accentHex: '#C9D6A3',
+    headwear: 'curls',
+    rimLight: { enabled: false, colorHex: '#C9D6A3', blurPx: 0 },
+  },
+  sis: {
+    id: 'sis',
+    nameVi: 'Áo xanh ngọc, tóc buộc hai bên',
+    jacketHex: '#3E8C86',
+    pantsHex: '#1A2A28',
+    skinHex: '#F8D8B8',
+    hairHex: '#22160F',
+    accentHex: '#8FE3DA',
+    headwear: 'bunches',
+    rimLight: { enabled: false, colorHex: '#8FE3DA', blurPx: 0 },
+  },
+  suit: {
+    id: 'suit',
+    nameVi: 'Vest công sở',
+    jacketHex: '#2B2F3A',
+    pantsHex: '#1C1F26',
+    skinHex: '#F0D0B0',
+    hairHex: '#1A1410',
+    accentHex: '#7DD3FC',
+    headwear: 'suit-collar',
+    rimLight: { enabled: false, colorHex: '#7DD3FC', blurPx: 0 },
+  },
+  reporter: {
+    id: 'reporter',
+    nameVi: 'Phóng viên dữ liệu (mũ lưỡi trai + thẻ)',
+    jacketHex: '#243B53',
+    pantsHex: '#141C24',
+    skinHex: '#E8C4A0',
+    hairHex: '#1B120C',
+    accentHex: '#38BDF8',
+    headwear: 'press-cap',
+    rimLight: { enabled: true, colorHex: '#38BDF8', blurPx: 5 },
+  },
+  pixelHero: {
+    id: 'pixelHero',
+    nameVi: 'Sprite anh hùng 8-bit',
+    jacketHex: '#EAB308',
+    pantsHex: '#7C3AED',
+    skinHex: '#FDE68A',
+    hairHex: '#111827',
+    accentHex: '#22D3EE',
+    headwear: 'pixel-helmet',
+    rimLight: { enabled: true, colorHex: '#22D3EE', blurPx: 4 },
+  },
+  wizard: {
+    id: 'wizard',
+    nameVi: 'Pháp sư NPC (nón chóp, đũa phép)',
+    jacketHex: '#1A237E',
+    pantsHex: '#0D47A1',
+    skinHex: '#E0E0E0',
+    hairHex: '#E5E7EB',
+    accentHex: '#7C4DFF',
+    headwear: 'wizard-hat',
+    rimLight: { enabled: true, colorHex: '#7C4DFF', blurPx: 8 },
+  },
+  crown: {
+    id: 'crown',
+    nameVi: 'Hoàng đế (vương miện + áo choàng)',
+    jacketHex: '#7F1D1D',
+    pantsHex: '#1C1917',
+    skinHex: '#F0D0B0',
+    hairHex: '#2A1B10',
+    accentHex: '#FBBF24',
+    headwear: 'crown',
+    rimLight: { enabled: true, colorHex: '#FBBF24', blurPx: 6 },
+  },
+};
+
+export interface CharacterArchetypeDefinition {
+  readonly id: CharacterArchetypeId;
+  readonly nameVi: string;
+  readonly descriptionVi: string;
+  readonly costumeId: keyof typeof COSTUME_PALETTES;
+  readonly defaultProp: HeldPropId;
+}
+
+export const CHARACTER_ARCHETYPE_CATALOG: readonly CharacterArchetypeDefinition[] = [
+  {
+    id: 'stickman-classic',
+    nameVi: 'Người que cổ điển',
+    descriptionVi: 'Nét vẽ vector sạch, không phụ kiện.',
+    costumeId: 'mo',
+    defaultProp: 'none',
+  },
+  {
+    id: 'stickman-economist',
+    nameVi: 'Chuyên gia kinh tế',
+    descriptionVi: 'Vest, cà vạt đỏ, que chỉ bảng.',
+    costumeId: 'suit',
+    defaultProp: 'pointer-stick',
+  },
+  {
+    id: 'stickman-wallstreet',
+    nameVi: 'Dân phố Wall',
+    descriptionVi: 'Kính râm, tóc vuốt, cặp tài liệu.',
+    costumeId: 'suit',
+    defaultProp: 'money-bag',
+  },
+  {
+    id: 'astronaut-explorer',
+    nameVi: 'Phi hành gia',
+    descriptionVi: 'Mũ kính, bình dưỡng khí, trôi không trọng lực.',
+    costumeId: 'suit',
+    defaultProp: 'telescope',
+  },
+  {
+    id: 'lore-chronicler-hooded',
+    nameVi: 'Học giả trùm đầu',
+    descriptionVi: 'Áo choàng, mắt phát sáng, cuộn cổ thư.',
+    costumeId: 'pipHood',
+    defaultProp: 'ancient-scroll',
+  },
+  {
+    id: 'king-emperor-crown',
+    nameVi: 'Hoàng đế',
+    descriptionVi: 'Vương miện, áo choàng đỏ, kiếm phát sáng.',
+    costumeId: 'crown',
+    defaultProp: 'glowing-sword',
+  },
+  {
+    id: 'investigative-reporter',
+    nameVi: 'Phóng viên điều tra',
+    descriptionVi: 'Mũ lưỡi trai, thẻ tòa soạn, bảng chú thích — phong cách Vox.',
+    costumeId: 'reporter',
+    defaultProp: 'map-pointer',
+  },
+  {
+    id: 'pixel-hero-sprite',
+    nameVi: 'Sprite anh hùng pixel',
+    descriptionVi: 'Sprite 8-bit, thanh HP, hiệu ứng arcade.',
+    costumeId: 'pixelHero',
+    defaultProp: 'pixel-orb',
+  },
+  {
+    id: 'mograph-wizard-npc',
+    nameVi: 'Pháp sư NPC motion-graphics',
+    descriptionVi: 'Nón chóp, đũa phép phát sáng, trôi lơ lửng.',
+    costumeId: 'wizard',
+    defaultProp: 'glowing-sword',
+  },
+  {
+    id: 'custom-sprite-rig',
+    nameVi: 'Sprite tự cung cấp',
+    descriptionVi: 'Ảnh PNG tay/chân gắn lên cùng bộ xương chuẩn.',
+    costumeId: 'mo',
+    defaultProp: 'none',
+  },
+];
+
+export function getArchetypeDefinition(id: CharacterArchetypeId): CharacterArchetypeDefinition {
+  return CHARACTER_ARCHETYPE_CATALOG.find((a) => a.id === id) ?? CHARACTER_ARCHETYPE_CATALOG[0];
+}
+
 

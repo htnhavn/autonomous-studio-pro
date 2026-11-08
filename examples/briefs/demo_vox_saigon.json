@@ -1,0 +1,397 @@
+{
+  "schemaVersion": "2.0.0",
+  "meta": {
+    "title": "Vì sao triều cường nhấn chìm Sài Gòn",
+    "topic": "Hệ thống cống ngăn triều và địa hình thấp của TP.HCM",
+    "logline": "430 tấn thép nằm dưới đáy kênh, chờ đúng khoảnh khắc để cứu một thành phố 6 triệu người.",
+    "genreKit": "vox-documentary",
+    "language": "vi",
+    "toneKeywords": [
+      "điều tra",
+      "dữ liệu",
+      "khẩn cấp",
+      "kiểm chứng"
+    ],
+    "widthPx": 1280,
+    "heightPx": 720,
+    "fps": 30,
+    "targetDurationSec": 27
+  },
+  "audio": {
+    "voice": {
+      "provider": "elevenlabs",
+      "apiKeyEnvVar": "ELEVENLABS_API_KEY",
+      "voiceId": "REPLACE_WITH_ELEVENLABS_VOICE_ID",
+      "modelId": "eleven_multilingual_v2",
+      "stability": 0.42,
+      "similarityBoost": 0.82,
+      "style": 0.28,
+      "speed": 1.02,
+      "outputFormat": "mp3_44100_128"
+    },
+    "music": {
+      "sourcePath": "",
+      "searchQuery": "tense documentary pulse",
+      "bpm": 92,
+      "gainDb": -18,
+      "duckAmountDb": -14
+    },
+    "loudnessTargetLufs": -12.5,
+    "truePeakDb": -1.5
+  },
+  "colorGrade": {
+    "enabled": true,
+    "exposure": 0.04,
+    "contrast": 1.14,
+    "saturation": 0.82,
+    "temperature": -0.08,
+    "tint": 0.0,
+    "filmGrainIntensity": 0.18,
+    "halationIntensity": 0.22
+  },
+  "scenes": [
+    {
+      "id": "hook_steel_gate",
+      "narration": "Dưới đáy con kênh giữa trung tâm Sài Gòn, một tấm thép nặng 430 tấn đang nằm chờ sẵn.",
+      "onScreenText": "430 TẤN THÉP DƯỚI ĐÁY KÊNH",
+      "asset": {
+        "kind": "image",
+        "path": "examples/assets/vox/saigon_map.jpg",
+        "fit": "cover",
+        "motion": "ken-burns-in",
+        "opacity": 0.92,
+        "layout": "full",
+        "cropBottomRatio": 0.18
+      },
+      "backdrop": "vox.satellite-aerial-gray",
+      "atmosphere": "particles.gis-river-flow",
+      "cameraRig": "vox-map-flyover-topdown",
+      "actors": [
+        {
+          "archetype": "investigative-reporter",
+          "moveSet": "vox-point-map",
+          "expression": "determined-focused",
+          "prop": "map-pointer",
+          "costumeId": "reporter",
+          "stageX": 0.26,
+          "stageY": 0.8,
+          "scale": 1.0,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "vox.map-route-trace",
+          "title": "TUYẾN KÊNH TRUNG TÂM",
+          "primaryValueLabel": "Bến Nghé · 430 tấn",
+          "stageX": 0.72,
+          "stageY": 0.4,
+          "scale": 1.0,
+          "accentColorHex": "#00FFCC"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.snap-zoom",
+          "atProgress": 0.12,
+          "durationSec": 0.5,
+          "intensity": 0.85
+        },
+        {
+          "effectId": "claude.light-sweep",
+          "atProgress": 0.42,
+          "durationSec": 0.9,
+          "intensity": 0.5
+        },
+        {
+          "effectId": "claude.vignette-focus",
+          "atProgress": 0.0,
+          "durationSec": 6.0,
+          "intensity": 0.55
+        }
+      ],
+      "transitionIn": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "transitionOut": {
+        "type": "whip",
+        "durationSec": 0.25
+      },
+      "captionStyleId": "cinematic-serif-sub"
+    },
+    {
+      "id": "tide_rises",
+      "narration": "Trời khô ráo, không một giọt mưa, vậy mà nước vẫn trôi lên từ miệng cống dưới đường.",
+      "onScreenText": "NƯỚC DÂNG NGƯỢC TỪ MIỆNG CỐNG",
+      "asset": {
+        "kind": "image",
+        "path": "examples/assets/vox/saigon_cross_section.jpg",
+        "fit": "cover",
+        "motion": "pan-left",
+        "opacity": 0.9,
+        "layout": "full",
+        "cropBottomRatio": 0.18
+      },
+      "backdrop": "vox.hydraulic-cross-section",
+      "atmosphere": "particles.gis-river-flow",
+      "cameraRig": "vox-schematic-push",
+      "actors": [
+        {
+          "archetype": "investigative-reporter",
+          "moveSet": "vox-explain-schematic",
+          "expression": "neutral",
+          "prop": "clipboard",
+          "costumeId": "reporter",
+          "stageX": 0.22,
+          "stageY": 0.8,
+          "scale": 1.0,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "vox.water-level-gauge",
+          "title": "MỰC TRIỀU",
+          "primaryValueLabel": "+1.78 m",
+          "stageX": 0.74,
+          "stageY": 0.42,
+          "scale": 1.0,
+          "accentColorHex": "#38BDF8"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.halation-glow",
+          "atProgress": 0.2,
+          "durationSec": 2.5,
+          "intensity": 0.4
+        },
+        {
+          "effectId": "claude.lower-third-card",
+          "atProgress": 0.05,
+          "durationSec": 3.0,
+          "intensity": 0.9
+        }
+      ],
+      "transitionIn": {
+        "type": "whip",
+        "durationSec": 0.25
+      },
+      "transitionOut": {
+        "type": "crossfade",
+        "durationSec": 0.3
+      },
+      "captionStyleId": "cinematic-serif-sub"
+    },
+    {
+      "id": "telemetry",
+      "narration": "Tháng 11 năm ngoái, trạm Phú An đo được một mét bảy tám, mức cao nhất từng ghi nhận.",
+      "onScreenText": "TRẠM PHÚ AN · 1.78 M",
+      "asset": {
+        "kind": "image",
+        "path": "examples/assets/vox/saigon_telemetry.jpg",
+        "fit": "cover",
+        "motion": "ken-burns-out",
+        "opacity": 0.88,
+        "layout": "full",
+        "cropBottomRatio": 0.18
+      },
+      "backdrop": "vox.telemetry-server-rack",
+      "atmosphere": "none",
+      "cameraRig": "handheld-documentary-float",
+      "actors": [
+        {
+          "archetype": "investigative-reporter",
+          "moveSet": "talk-explain-gestures",
+          "expression": "determined-focused",
+          "prop": "microphone-news",
+          "costumeId": "reporter",
+          "stageX": 0.24,
+          "stageY": 0.8,
+          "scale": 1.0,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "vox.hud-timestamp-counter",
+          "title": "19 TRẠM ĐO",
+          "primaryValueLabel": "LIVE TELEMETRY",
+          "stageX": 0.72,
+          "stageY": 0.4,
+          "scale": 1.0,
+          "accentColorHex": "#22D3EE"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.glitch-scanline",
+          "atProgress": 0.3,
+          "durationSec": 0.7,
+          "intensity": 0.35
+        },
+        {
+          "effectId": "claude.film-grain-35mm",
+          "atProgress": 0.0,
+          "durationSec": 6.0,
+          "intensity": 0.25
+        }
+      ],
+      "transitionIn": {
+        "type": "crossfade",
+        "durationSec": 0.3
+      },
+      "transitionOut": {
+        "type": "zoom",
+        "durationSec": 0.3
+      },
+      "captionStyleId": "cinematic-serif-sub"
+    },
+    {
+      "id": "eleven_gates",
+      "narration": "Sáu cống, mười một cánh, mỗi cánh dài bốn mươi mét. Đóng đúng lúc, cả thành phố thoát.",
+      "onScreenText": "6 CỐNG · 11 CÁNH · 40 M",
+      "asset": {
+        "kind": "image",
+        "path": "examples/assets/vox/saigon_gate.jpg",
+        "fit": "cover",
+        "motion": "ken-burns-in",
+        "opacity": 0.9,
+        "layout": "full",
+        "cropBottomRatio": 0.18
+      },
+      "backdrop": "vox.hydraulic-cross-section",
+      "atmosphere": "particles.gis-river-flow",
+      "cameraRig": "dolly-pull-reveal",
+      "actors": [
+        {
+          "archetype": "investigative-reporter",
+          "moveSet": "vox-point-map",
+          "expression": "determined-focused",
+          "prop": "map-pointer",
+          "costumeId": "reporter",
+          "stageX": 0.25,
+          "stageY": 0.8,
+          "scale": 1.0,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "vox.telemetry-waveform",
+          "title": "LƯU LƯỢNG CỬA CỐNG",
+          "primaryValueLabel": "11 / 11 CÁNH",
+          "stageX": 0.73,
+          "stageY": 0.42,
+          "scale": 1.0,
+          "accentColorHex": "#38BDF8"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.headline-storm",
+          "atProgress": 0.15,
+          "durationSec": 2.2,
+          "intensity": 0.55
+        },
+        {
+          "effectId": "claude.halation-glow",
+          "atProgress": 0.0,
+          "durationSec": 6.0,
+          "intensity": 0.35
+        }
+      ],
+      "transitionIn": {
+        "type": "zoom",
+        "durationSec": 0.3
+      },
+      "transitionOut": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "captionStyleId": "cinematic-serif-sub"
+    },
+    {
+      "id": "resolution",
+      "narration": "Đó là lý do thành phố này vẫn đứng vững, mỗi lần nước sông dâng cao hơn mặt đường.",
+      "onScreenText": "KIỂM SOÁT TRIỀU CƯỜNG",
+      "asset": {
+        "kind": "image",
+        "path": "examples/assets/vox/saigon_gate_open.jpg",
+        "fit": "cover",
+        "motion": "ken-burns-out",
+        "opacity": 0.9,
+        "layout": "full",
+        "cropBottomRatio": 0.18
+      },
+      "backdrop": "vox.satellite-aerial-gray",
+      "atmosphere": "particles.gis-river-flow",
+      "cameraRig": "dolly-pull-reveal",
+      "actors": [
+        {
+          "archetype": "investigative-reporter",
+          "moveSet": "talk-explain-gestures",
+          "expression": "happy-talk",
+          "prop": "clipboard",
+          "costumeId": "reporter",
+          "stageX": 0.26,
+          "stageY": 0.8,
+          "scale": 1.0,
+          "flipHorizontal": false
+        }
+      ],
+      "widgets": [
+        {
+          "kind": "vox.map-route-trace",
+          "title": "VÙNG BẢO VỆ",
+          "primaryValueLabel": "570 km²",
+          "stageX": 0.73,
+          "stageY": 0.42,
+          "scale": 1.0,
+          "accentColorHex": "#00FFCC"
+        }
+      ],
+      "effects": [
+        {
+          "effectId": "claude.lower-third-card",
+          "atProgress": 0.1,
+          "durationSec": 2.4,
+          "intensity": 0.8
+        },
+        {
+          "effectId": "claude.vignette-focus",
+          "atProgress": 0.0,
+          "durationSec": 6.0,
+          "intensity": 0.5
+        }
+      ],
+      "transitionIn": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "transitionOut": {
+        "type": "cut",
+        "durationSec": 0
+      },
+      "captionStyleId": "cinematic-serif-sub"
+    }
+  ],
+  "qa": {
+    "probeFramesPerScene": 2,
+    "checks": [
+      "framing",
+      "occlusion",
+      "caption-contrast",
+      "vfx-intensity",
+      "pacing"
+    ],
+    "minScore": 0.6,
+    "autoFix": true
+  },
+  "directorNotes": [
+    "Nhịp cắt 3.1s theo reference V3 (Vox Sài Gòn).",
+    "Master -12.5 LUFS thay vì -8.2 LUFS của bản gốc để nền tảng không normalize ngược.",
+    "Voice chờ ELEVENLABS_API_KEY; nếu chưa có key engine dùng bed nhạc tạm."
+  ]
+}
